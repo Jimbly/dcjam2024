@@ -1,3 +1,11 @@
-* room that feels like a spaceship
-* stars outside in the background
+Agenda
+* palette
+* visual style
+  * fonts
+  * pixel art
+
+* prototype combat (paper)
 * UI mockup
+
+Polish
+* scrolling starfield

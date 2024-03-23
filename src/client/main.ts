@@ -18,7 +18,7 @@ import { uiSetPanelColor } from 'glov/client/ui';
 import * as ui from 'glov/client/ui';
 // import './client_cmds.js'; // for side effects
 import { crawlerBuildModeStartup } from './crawler_build_mode';
-import { crawlerOnPixelyChange } from './crawler_play.js';
+// import { crawlerOnPixelyChange } from './crawler_play.js';
 import { crawlerRenderSetLODBiasRange } from './crawler_render';
 import { game_height, game_width } from './globals';
 import { playStartup } from './play';
@@ -40,10 +40,10 @@ Z.CHAT_FOCUSED = 100;
 
 let fonts: Font[] | undefined;
 
-crawlerOnPixelyChange(function (new_value: number): void {
-  assert(fonts);
-  engine.setFonts(fonts[new_value] || fonts[2]);
-});
+// crawlerOnPixelyChange(function (new_value: number): void {
+//   assert(fonts);
+//   engine.setFonts(fonts[new_value] || fonts[2]);
+// });
 
 export let chat_ui: ReturnType<typeof chatUICreate>;
 
@@ -61,6 +61,7 @@ export function main(): void {
   let antialias = false;
   let use_fbos = 1;
   let need_dfdxy = false;
+  let override_pixely = false;
   if ('AA hires') { // !!!!1
     need_dfdxy = true;
     antialias = true; // antialiases 3D geometry edges only
@@ -69,6 +70,7 @@ export function main(): void {
       SSAA4X: true,
     });
     settings.set('pixely', 0);
+    override_pixely = true;
     settings.set('filter', 0);
     settings.set('entity_split', 0);
     settings.set('entity_nosplit_use_near', 1);
@@ -110,18 +112,13 @@ export function main(): void {
     settings.set('filter', 1);
     settings.set('entity_split', 1);
   }
-  const font_info_04b03x2 = require('./img/font/04b03_8x2.json');
-  const font_info_04b03x1 = require('./img/font/04b03_8x1.json');
   const font_info_palanquin32 = require('./img/font/palanquin32.json');
-  let pixely = settings.pixely === 2 ? 'strict' : settings.pixely ? 'on' : false;
-  let font;
-  if (pixely === 'strict') {
-    font = { info: font_info_04b03x1, texture: 'font/04b03_8x1' };
-  } else if (pixely && pixely !== 'off') {
-    font = { info: font_info_04b03x2, texture: 'font/04b03_8x2' };
-  } else {
-    font = { info: font_info_palanquin32, texture: 'font/palanquin32' };
-  }
+  let pixely = settings.pixely === 2 ? 'strict' : settings.pixely ? 'on' : override_pixely ? 'on' : false;
+  let font_info = require('./img/font/ibm8x8x1.json');
+  let font = {
+    info: font_info,
+    texture: 'font/ibm8x8x1',
+  };
   settings.set('use_fbos', use_fbos); // Needed for our effects
 
   spritesheetTextureOpts('whitebox', { force_mipmaps: true });
@@ -177,8 +174,7 @@ export function main(): void {
   }
   fonts = [
     fontCreate(font_info_palanquin32, 'font/palanquin32'),
-    fontCreate(font_info_04b03x2, 'font/04b03_8x2'),
-    fontCreate(font_info_04b03x1, 'font/04b03_8x1'),
+    fontCreate(font_info, 'font/ibm8x8x1'),
   ];
 
   let build_font = fonts[0];
@@ -192,7 +188,7 @@ export function main(): void {
     textureDefaultFilters(gl.LINEAR_MIPMAP_LINEAR, gl.NEAREST);
   }
 
-  ui.scaleSizes(13 / 32);
+  ui.scaleSizes(15 / 32);
   ui.setModalSizes(0, round(game_width * 0.8), round(game_height * 0.23), 0, 0);
   ui.setFontHeight(8);
   ui.setPanelPixelScale(1);

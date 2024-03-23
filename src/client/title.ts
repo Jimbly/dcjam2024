@@ -93,7 +93,7 @@ function title(dt: number): void {
   y += uiButtonHeight() * 3 + 6;
   if (netSubs().loggedIn()) {
     if (buttonText({
-      x, y, text: 'Online Test',
+      x, y, text: 'Online Test', w: uiButtonWidth() * 1.5,
     })) {
       urlhash.go('?c=build');
     }

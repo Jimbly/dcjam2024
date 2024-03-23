@@ -87,7 +87,7 @@ import {
   crawlerRoom,
   crawlerSetLevelGenMode,
 } from './crawler_play';
-import { crawlerRenderGetThumbnail } from './crawler_render';
+import { crawlerRenderGetThumbnail, crawlerRenderViewportGet } from './crawler_render';
 import { statusPush } from './status';
 
 const { floor, min } = Math;
@@ -802,7 +802,8 @@ type PaletteConfigTab = 'all' | 'wall' | 'cell' | 'spawn';
 let palette_config_tab: PaletteConfigTab = (localStorageGet('pal_tab') as PaletteConfigTab) || 'all';
 
 function showPaintPaletteConfig(level: CrawlerLevel, x1: number): void {
-  const x0 = camera2d.x0() + 2;
+  x1 = engine.game_width - 2; // DCJ24
+  const x0 = 274; // VIEWPORT_X0 //  camera2d.x0() + 2;
   const y0 = camera2d.y0() + 2;
   const w = x1 - x0;
   const y1 = camera2d.y1() - 2;
@@ -1457,7 +1458,7 @@ export function crawlerBuildModeUI(frame: Box & { map_view: boolean }): void {
 
   let { x, y, w, h } = frame;
   const x0 = x;
-  const x1 = x + w;
+  // const x1 = x + w;
   // const y0 = y;
   let z = Z.UI;
   drawRect(x, y, x + w, y + h, z - 1, [0,0,0,0.1]);
@@ -1488,10 +1489,13 @@ export function crawlerBuildModeUI(frame: Box & { map_view: boolean }): void {
 
   if (build_tab === BuildTab.Paint) {
     // Palette area
+    let eff_col_width = min(col_width, 48); // DCJ24
     ({ x, y } = showPaintPalette({
       level,
       x, y, z,
-      x0, x1, col_width,
+      x0,
+      x1: x0 + eff_col_width * 3 + 8,
+      col_width: eff_col_width,
     }));
     ({ x, y } = showCurrentCell({
       level, x, y, z, w,
@@ -1710,8 +1714,9 @@ export function crawlerBuildModeUI(frame: Box & { map_view: boolean }): void {
     }
   }
 
-  x = 5;
-  y = 5;
+  let viewport = crawlerRenderViewportGet();
+  x = viewport.x;
+  y = viewport.y;
   if (keyDownEdge(KEYS.F1)) {
     settings.set('build_mode_help', 1 - settings.build_mode_help);
   }

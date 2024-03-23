@@ -122,14 +122,27 @@ declare module 'glov/client/settings' {
 }
 
 // const ATTACK_WINDUP_TIME = 1000;
+const BOTTOM_UI_Y = 275;
 const MINIMAP_RADIUS = 3;
-const MINIMAP_X = 261;
-const MINIMAP_Y = 3;
+const MINIMAP_X = 520;
+const MINIMAP_Y = BOTTOM_UI_Y;
 const MINIMAP_W = 5+7*(MINIMAP_RADIUS*2 + 1);
 const COMPASS_X = MINIMAP_X;
 const COMPASS_Y = MINIMAP_Y + MINIMAP_W;
-const VIEWPORT_X0 = 3;
-const VIEWPORT_Y0 = 3;
+const VIEWPORT_X0 = 274;
+const VIEWPORT_Y0 = 8;
+
+const MOVE_BUTTONS_X0 = 400;
+const MOVE_BUTTONS_Y0 = BOTTOM_UI_Y;
+
+const BUTTON_W = 26;
+
+// const MENU_BUTTON_X = VIEWPORT_X0;
+// const MENU_BUTTON_Y = BOTTOM_UI_Y;
+const MENU_BUTTON_X = game_width - BUTTON_W - 4;
+const MENU_BUTTON_Y = 4;
+
+const PAUSE_MENU_W = 240;
 
 type Entity = EntityDemoClient;
 
@@ -172,7 +185,6 @@ export function myEntOptional(): Entity | undefined {
 //   return crawlerEntityManager() as ClientEntityManagerInterface<Entity>;
 // }
 
-const PAUSE_MENU_W = 160;
 let pause_menu: SimpleMenu;
 function pauseMenu(): void {
   if (!pause_menu) {
@@ -350,11 +362,6 @@ function moveBlockDead(): boolean {
   return true;
 }
 
-const BUTTON_W = 26;
-
-const MOVE_BUTTONS_X0 = MINIMAP_X;
-const MOVE_BUTTONS_Y0 = 179;
-
 
 function useNoText(): boolean {
   return input.inputTouchMode() || input.inputPadMode() || settings.turn_toggle;
@@ -408,12 +415,11 @@ function playCrawl(): void {
   let compass_h = show_compass ? 11 : 0;
 
   if (build_mode && !controller.ignoreGameplay()) {
-    let build_y = MINIMAP_Y + minimap_display_h + 2;
     crawlerBuildModeUI({
-      x: MINIMAP_X,
-      y: build_y,
-      w: game_width - MINIMAP_X - 2,
-      h: MOVE_BUTTONS_Y0 - build_y - 2,
+      x: 2,
+      y: 2,
+      w: VIEWPORT_X0 - 4,
+      h: game_height - 4,
       map_view: frame_map_view,
     });
   }
@@ -473,8 +479,8 @@ function playCrawl(): void {
 
 
   // Escape / open/close menu button - *before* pauseMenu()
-  button_x0 = 317;
-  button_y0 = 3;
+  button_x0 = MENU_BUTTON_X;
+  button_y0 = MENU_BUTTON_Y;
   let menu_up = frame_map_view || build_mode || overlay_menu_up;
   let menu_keys = [KEYS.ESC];
   let menu_pads = [PAD.START];
