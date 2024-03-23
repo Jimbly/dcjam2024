@@ -1489,7 +1489,7 @@ export function crawlerBuildModeUI(frame: Box & { map_view: boolean }): void {
 
   if (build_tab === BuildTab.Paint) {
     // Palette area
-    let eff_col_width = min(col_width, 48); // DCJ24
+    let eff_col_width = min(col_width, 32); // DCJ24
     ({ x, y } = showPaintPalette({
       level,
       x, y, z,

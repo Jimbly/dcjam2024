@@ -122,24 +122,24 @@ declare module 'glov/client/settings' {
 }
 
 // const ATTACK_WINDUP_TIME = 1000;
-const BOTTOM_UI_Y = 275;
+const BOTTOM_UI_Y = 200;
 const MINIMAP_RADIUS = 3;
-const MINIMAP_X = 520;
+const MINIMAP_X = 390;
 const MINIMAP_Y = BOTTOM_UI_Y;
 const MINIMAP_W = 5+7*(MINIMAP_RADIUS*2 + 1);
 const COMPASS_X = MINIMAP_X;
 const COMPASS_Y = MINIMAP_Y + MINIMAP_W;
-const VIEWPORT_X0 = 274;
-const VIEWPORT_Y0 = 8;
+const VIEWPORT_X0 = 207;
+const VIEWPORT_Y0 = 6;
 
-const MOVE_BUTTONS_X0 = 400;
+const MOVE_BUTTONS_X0 = 300;
 const MOVE_BUTTONS_Y0 = BOTTOM_UI_Y;
 
 const BUTTON_W = 26;
 
 // const MENU_BUTTON_X = VIEWPORT_X0;
 // const MENU_BUTTON_Y = BOTTOM_UI_Y;
-const MENU_BUTTON_X = game_width - BUTTON_W - 4;
+const MENU_BUTTON_X = game_width - BUTTON_W - 2;
 const MENU_BUTTON_Y = 4;
 
 const PAUSE_MENU_W = 240;

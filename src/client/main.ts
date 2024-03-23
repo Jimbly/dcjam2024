@@ -188,7 +188,7 @@ export function main(): void {
     textureDefaultFilters(gl.LINEAR_MIPMAP_LINEAR, gl.NEAREST);
   }
 
-  ui.scaleSizes(15 / 32);
+  ui.scaleSizes(13 / 32);
   ui.setModalSizes(0, round(game_width * 0.8), round(game_height * 0.23), 0, 0);
   ui.setFontHeight(8);
   ui.setPanelPixelScale(1);
