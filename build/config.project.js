@@ -58,7 +58,7 @@ module.exports = function (config) {
   config.server_fsdata.push('vstyles:**');
   config.fsdata_embed.push('.vstyle');
   let client_spritesheets = [];
-  ['crawlertest', 'whitebox'].forEach((name) => {
+  ['crawlertest', 'whitebox', 'ship1', 'ship2'].forEach((name) => {
     gb.task({
       name: `client_sprites_${name}`,
       input: `textures/spritesheets/${name}/*.png`,

@@ -1,0 +1,8 @@
+---
+open_move: false
+open_vis: false
+visuals:
+- type: simple_wall
+  opts:
+    spritesheet: ship1
+    tile: oryx_16bit_scifi_world-42

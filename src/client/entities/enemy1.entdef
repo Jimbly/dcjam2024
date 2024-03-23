@@ -13,7 +13,7 @@ traits:
 - id: drawable_sprite
   anim_data:
     idle:
-      frames: [0]
+      frames: [1]
       times: 10000
   sprite_data:
     name: sprites/tyler_pixel
@@ -21,5 +21,5 @@ traits:
     hs: [72]
     filter_min: LINEAR_MIPMAP_LINEAR
     filter_mag: LINEAR
-    origin: [0.5, 1.1]
-  scale: 0.8
+    origin: [0.5, 1]
+  scale: 0.62

@@ -1,0 +1,10 @@
+---
+open_move: false
+open_vis: false
+map_view_wall_frames_from: solid
+visuals:
+- type: simple_wall
+  opts:
+    do_alpha: true
+    spritesheet: ship1
+    tile: window1

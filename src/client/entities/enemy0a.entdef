@@ -16,9 +16,9 @@ traits:
       frames: [0]
       times: 10000
   sprite_data:
-    name: sprites/tyler_pixel
-    ws: [72,72]
-    hs: [72]
+    name: sprites/tyler_420
+    ws: [680,680]
+    hs: [680]
     filter_min: LINEAR_MIPMAP_LINEAR
     filter_mag: LINEAR
     origin: [0.5, 1.1]

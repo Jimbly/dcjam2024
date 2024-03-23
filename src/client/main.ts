@@ -61,7 +61,7 @@ export function main(): void {
   let antialias = false;
   let use_fbos = 1;
   let need_dfdxy = false;
-  if ('AA hires') {
+  if ('AA hires') { // !!!!1
     need_dfdxy = true;
     antialias = true; // antialiases 3D geometry edges only
     use_fbos = 0;
@@ -72,7 +72,7 @@ export function main(): void {
     settings.set('filter', 0);
     settings.set('entity_split', 0);
     settings.set('entity_nosplit_use_near', 1);
-  } else if (!'simple lowres') {
+  } else if (!'simple lowres') { // !!!!2
     settings.set('pixely', 1);
     settings.set('filter', 0);
     settings.set('entity_split', 0);
@@ -84,7 +84,8 @@ export function main(): void {
     settings.set('filter', 2);
     settings.set('entity_split', 0);
     settings.set('entity_nosplit_use_near', 1);
-  } else if (!'simple AA lowres') {
+  } else if (!'simple AA lowres') { // !!!!3
+    need_dfdxy = true;
     antialias = true;
     use_fbos = 0;
     shadersSetInternalDefines({
@@ -94,13 +95,13 @@ export function main(): void {
     settings.set('filter', 0);
     settings.set('entity_split', 0);
     settings.set('entity_nosplit_use_near', 1);
-  } else if (!'CRT filter') {
-    settings.set('pixely', 2);
+  } else if (!'CRT filter') { // !!!!4
+    settings.set('pixely', 3);
     settings.set('hybrid', 1);
     settings.set('filter', 0);
     settings.set('entity_split', 0);
     settings.set('entity_nosplit_use_near', 1);
-  } else if ('split logic') {
+  } else if ('split logic') { // !!!!5
     settings.set('pixely', 1);
     settings.set('filter', 0);
     settings.set('entity_split', 1);
