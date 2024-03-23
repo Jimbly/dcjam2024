@@ -40,7 +40,8 @@ export function entityManager(): ClientEntityManagerInterface<Entity> {
 }
 
 export type StatsData = {
-  hp: number;
+  hp: number; // ignored
+  encounter: string;
 };
 
 export type EntityDataClient = {

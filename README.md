@@ -19,4 +19,4 @@ Credits for assets used (may not make it into final version)
 ============================================================
 
 * Likely many textures from Dungeon Crawl Stone Soup - https://opengameart.org/content/dungeon-crawl-32x32-tiles-supplemental
-* TBD
+* Sci-Fi UI Pack - https://digital-mosaic-games.itch.io/sci-fi-ui-pack

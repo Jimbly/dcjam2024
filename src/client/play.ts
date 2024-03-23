@@ -39,13 +39,16 @@ import {
 import { clamp } from 'glov/common/util';
 import {
   Vec2,
+  v2sub,
+  vec2,
 } from 'glov/common/vmath';
 import {
-  crawlerLoadData,
+  crawlerLoadData, dirFromDelta,
 } from '../common/crawler_state';
 import {
-  aiDoFloor, aiTraitsClientStartup,
+  aiDoFloor, aiTraitsClientStartup, entitiesAdjacentTo,
 } from './ai';
+import { cleanupCombat, doCombat } from './combat';
 // import './client_cmds';
 import {
   buildModeActive,
@@ -90,6 +93,7 @@ import {
   crawlerRenderViewportSet,
 } from './crawler_render';
 import {
+  crawlerEntInFront,
   crawlerRenderEntitiesStartup,
 } from './crawler_render_entities';
 import { crawlerScriptAPIDummyServer } from './crawler_script_api_client';
@@ -98,11 +102,14 @@ import { dialogMoveLocked, dialogRun, dialogStartup } from './dialog_system';
 import { EntityDemoClient, entityManager } from './entity_demo_client';
 // import { EntityDemoClient } from './entity_demo_client';
 import {
+  VIEWPORT_X0,
+  VIEWPORT_Y0,
   game_height,
   game_width,
   render_height,
   render_width,
 } from './globals';
+import { jamTraitsStartup } from './jam_events';
 import { levelGenTest } from './level_gen_test';
 import { renderAppStartup, renderResetFilter } from './render_app';
 import {
@@ -129,8 +136,6 @@ const MINIMAP_Y = BOTTOM_UI_Y;
 const MINIMAP_W = 5+7*(MINIMAP_RADIUS*2 + 1);
 const COMPASS_X = MINIMAP_X;
 const COMPASS_Y = MINIMAP_Y + MINIMAP_W;
-const VIEWPORT_X0 = 207;
-const VIEWPORT_Y0 = 6;
 
 const MOVE_BUTTONS_X0 = 300;
 const MOVE_BUTTONS_Y0 = BOTTOM_UI_Y;
@@ -165,6 +170,7 @@ type BarSprite = {
 };
 let bar_sprites: {
   healthbar: BarSprite;
+  enemy_healthbar: BarSprite;
 };
 
 const style_text = fontStyle(null, {
@@ -287,7 +293,7 @@ function drawBar(
       z: z + 1,
     }, bar.hp, 1);
   }
-  if (empty_w) {
+  if (empty_w && full_w) {
     let temp_x = x + full_w;
     if (full_w) {
       temp_x -= 2;
@@ -302,18 +308,39 @@ function drawBar(
 }
 
 export function drawHealthBar(
+  enemy: boolean,
   x: number, y: number, z: number,
   w: number, h: number,
   hp: number, hp_max: number,
   show_text: boolean
 ): void {
-  drawBar(bar_sprites.healthbar, x, y, z, w, h, hp / hp_max);
+  drawBar(bar_sprites[enemy ? 'enemy_healthbar' : 'healthbar'], x, y, z, w, h, hp / hp_max);
   if (show_text) {
     font.drawSizedAligned(style_text, x, y + (settings.pixely > 1 ? 0.5 : 0), z+2,
       8, ALIGN.HVCENTERFIT,
       w, h, `${hp}`);
   }
 }
+
+function engagedEnemy(): Entity | null {
+  if (buildModeActive() || engine.defines.PEACE) {
+    return null;
+  }
+  let game_state = crawlerGameState();
+  let me = crawlerMyEnt();
+  // search, needs game_state, returns list of foes
+  let ents: Entity[] = entitiesAdjacentTo(game_state,
+    entityManager(),
+    me.data.floor, me.data.pos, crawlerScriptAPI());
+  ents = ents.filter((ent: Entity) => {
+    return ent.is_enemy && ent.isAlive();
+  });
+  if (ents.length) {
+    return ents[0];
+  }
+  return null;
+}
+
 function moveBlocked(): boolean {
   return false;
 }
@@ -367,6 +394,7 @@ function useNoText(): boolean {
   return input.inputTouchMode() || input.inputPadMode() || settings.turn_toggle;
 }
 
+let temp_delta = vec2();
 function playCrawl(): void {
   profilerStartFunc();
 
@@ -408,10 +436,11 @@ function playCrawl(): void {
   dialogRun(dt, dialog_viewport);
 
   const build_mode = buildModeActive();
+  let frame_combat = engagedEnemy();
   let locked_dialog = dialogMoveLocked();
   const overlay_menu_up = pause_menu_up; // || inventory_up
   let minimap_display_h = build_mode ? BUTTON_W : MINIMAP_W;
-  let show_compass = !build_mode;
+  let show_compass = false; // !build_mode;
   let compass_h = show_compass ? 11 : 0;
 
   if (build_mode && !controller.ignoreGameplay()) {
@@ -499,6 +528,15 @@ function playCrawl(): void {
     pauseMenu();
   }
 
+  if (frame_combat && engagedEnemy() !== crawlerEntInFront()) {
+    // turn to face
+    let me = crawlerMyEnt();
+    let dir = dirFromDelta(v2sub(temp_delta, frame_combat.data.pos, me.data.pos));
+    controller.forceFaceDir(dir);
+  } else {
+    controller.forceFaceDir(null);
+  }
+
   button_x0 = MOVE_BUTTONS_X0;
   button_y0 = MOVE_BUTTONS_Y0;
 
@@ -511,6 +549,15 @@ function playCrawl(): void {
   //   inventory_up = !inventory_up;
   // }
 
+  if (frame_combat) {
+    if (controller.queueLength() === 1) {
+      doCombat(frame_combat, dt);
+    }
+  } else {
+    cleanupCombat(dt);
+  }
+
+
   controller.doPlayerMotion({
     dt,
     button_x0: MOVE_BUTTONS_X0,
@@ -519,8 +566,8 @@ function playCrawl(): void {
     button_w: build_mode ? 6 : BUTTON_W,
     button_sprites: useNoText() ? button_sprites_notext : button_sprites,
     disable_move: moveBlocked() || overlay_menu_up,
-    disable_player_impulse: Boolean(locked_dialog),
-    show_buttons: !locked_dialog,
+    disable_player_impulse: Boolean(frame_combat || locked_dialog),
+    show_buttons: !frame_combat && !locked_dialog,
     do_debug_move: engine.defines.LEVEL_GEN || build_mode,
     show_debug: settings.show_fps ? { x: VIEWPORT_X0, y: VIEWPORT_Y0 + (build_mode ? 3 : 0) } : null,
   });
@@ -580,7 +627,7 @@ function playCrawl(): void {
     crawlerMapViewDraw(game_state, 0, 0, game_width, game_height, 0, Z.MAP,
       engine.defines.LEVEL_GEN, script_api, overlay_menu_up,
       floor((game_width - MINIMAP_W)/2), 2); // note: compass ignored, compass_h = 0 above
-  } else {
+  } else if (!frame_combat) {
     crawlerMapViewDraw(game_state, MINIMAP_X, MINIMAP_Y, MINIMAP_W, minimap_display_h, compass_h, Z.MAP,
       false, script_api, overlay_menu_up,
       COMPASS_X, COMPASS_Y);
@@ -715,7 +762,7 @@ export function playStartup(): void {
   });
   crawlerEntityClientStartupEarly();
   aiTraitsClientStartup();
-  // appTraitsStartup();
+  jamTraitsStartup();
   crawlerEntityTraitsClientStartup({
     name: 'EntityDemoClient',
     Ctor: EntityDemoClient,
@@ -804,6 +851,26 @@ export function playStartup(): void {
       empty: spriteCreate({
         name: 'crawler_healthbar_empty',
         ...bar_param,
+      }),
+    },
+    enemy_healthbar: {
+      bg: spriteCreate({
+        name: 'enemy_healthbar_bg',
+        ...bar_param,
+        ws: [2,2,2],
+        hs: [2,7,2],
+      }),
+      hp: spriteCreate({
+        name: 'enemy_healthbar_hp',
+        ...bar_param,
+        ws: [2,3,2],
+        hs: [2,7,2],
+      }),
+      empty: spriteCreate({
+        name: 'enemy_healthbar_empty',
+        ...bar_param,
+        ws: [2,1,2],
+        hs: [2,7,2],
       }),
     },
   };

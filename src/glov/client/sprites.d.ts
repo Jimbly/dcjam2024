@@ -84,6 +84,7 @@ export interface Sprite {
   texs: Texture[];
   isLazyLoad(): boolean;
   lazyLoad(): number;
+  getAspect(): number;
 }
 export interface UISprite extends Sprite {
   uidata: SpriteUIData;

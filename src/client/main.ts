@@ -16,6 +16,7 @@ import { spritesheetTextureOpts } from 'glov/client/spritesheet';
 import { textureDefaultFilters } from 'glov/client/textures';
 import { uiSetPanelColor } from 'glov/client/ui';
 import * as ui from 'glov/client/ui';
+import { combatStartup } from './combat';
 // import './client_cmds.js'; // for side effects
 import { crawlerBuildModeStartup } from './crawler_build_mode';
 // import { crawlerOnPixelyChange } from './crawler_play.js';
@@ -34,6 +35,8 @@ Z.PARTICLES = 20;
 Z.CHAT = 60;
 Z.UI = 100;
 Z.MAP = Z.UI + 5; // also minimap
+Z.COMBAT_SHADE = Z.UI - 1;
+Z.COMBAT = 120;
 Z.FLOATERS = 125;
 Z.STATUS = 140;
 Z.CHAT_FOCUSED = 100;
@@ -215,6 +218,7 @@ export function main(): void {
     button_height: 11,
   });
   playStartup();
+  combatStartup();
   engine.setState(titleInit);
   titleStartup();
 }

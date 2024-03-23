@@ -5,3 +5,6 @@ export const game_height = 270;
 // export const game_height = 192;
 export const render_width = 270;
 export const render_height = 192;
+
+export const VIEWPORT_X0 = 207;
+export const VIEWPORT_Y0 = 6;
