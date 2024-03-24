@@ -228,7 +228,7 @@ class CombatState {
     }
   }
 
-  heroes_attacked!: Partial<Record<number, true>>;
+  heroes_attacked!: Partial<Record<number, [AttackType, number][]>>;
   aggro_targetted!: Partial<Record<number, true>>;
   decayAggro(): void {
     let { heroes } = this;
@@ -246,16 +246,17 @@ class CombatState {
     }
   }
 
-  damageHero(idx: number, amount: number): void {
+  damageHero(attack_type: AttackType, idx: number, amount: number): void {
     let hero = this.heroes[idx];
     let class_tier = hero.tier_ref;
-    hero.hp -= max(0, amount - (hero.temp_shield || 0) - class_tier.shield);
+    amount = max(0, amount - (hero.temp_shield || 0) - class_tier.shield);
+    hero.hp -= amount;
     if (hero.hp <= 0) {
-      // TODO: died!
       hero.hp = 0;
       this.deaths++;
     }
-    this.heroes_attacked[idx] = true;
+    let arr = this.heroes_attacked[idx] = this.heroes_attacked[idx] || [];
+    arr.push([attack_type, amount]);
   }
   doEnemyAction(enemy_idx: number): void {
     let { heroes, enemies } = this;
@@ -286,13 +287,13 @@ class CombatState {
           }
           for (let kk = 0; kk < best.length; ++kk) {
             this.aggro_targetted[best[kk]] = true;
-            this.damageHero(best[kk], floor(effect.amount / best.length));
+            this.damageHero(effect.type, best[kk], floor(effect.amount / best.length));
           }
         } break;
         case AttackType.ALL:
           for (let kk = 0; kk < heroes.length; ++kk) {
             if (heroes[kk].hp > 0) {
-              this.damageHero(kk, effect.amount);
+              this.damageHero(effect.type, kk, effect.amount);
             }
           }
           break;
@@ -344,8 +345,9 @@ class CombatState {
 
 class CombatScene {
   combat_state: CombatState;
-  preview_state: CombatState;
-  preview_state_frame: number;
+  preview_state!: CombatState;
+  preview_state_frame!: number;
+  enemy_preview_state!: CombatState;
   anims: AnimationSequencer[] = [];
   did_death = false;
   did_victory = false;
@@ -377,8 +379,17 @@ class CombatScene {
       hero.hp = hero_ref.dead ? 0 : class_tier.hp;
       combat_state.heroes.push(hero);
     }
-    this.preview_state = combat_state;
+    this.setPreviewState(combat_state);
+  }
+
+  setPreviewState(new_state: CombatState): void {
+    this.preview_state = new_state;
     this.preview_state_frame = getFrameIndex();
+    this.updateEnemyPreview();
+  }
+  updateEnemyPreview(): void {
+    this.enemy_preview_state = this.preview_state.clone();
+    this.enemy_preview_state.doEnemyTurn();
   }
 
   needsRoll(): boolean {
@@ -390,18 +401,25 @@ let combat_scene: CombatScene | null = null;
 
 export function combatSetPreviewState(state: CombatState): void {
   assert(combat_scene);
-  combat_scene.preview_state = state;
-  combat_scene.preview_state_frame = getFrameIndex();
+  combat_scene.setPreviewState(state);
+}
+
+export function combatAcitvateAbility(hero_idx: number, ability_idx: number): void {
+  assert(combat_scene);
+  combat_scene.combat_state.activateAbility(hero_idx, ability_idx);
+  combat_scene.updateEnemyPreview();
 }
 
 export function combatGetStates(): {
   combat_state: CombatState;
   preview_state: CombatState;
+  enemy_preview_state: CombatState;
 } | null {
   if (combat_scene) {
     return {
       combat_state: combat_scene.combat_state,
       preview_state: combat_scene.preview_state,
+      enemy_preview_state: combat_scene.enemy_preview_state,
     };
   }
   return null;
@@ -475,7 +493,7 @@ export function doCombat(target: Entity, dt: number): void {
   } else {
     if (combat_scene.preview_state !== combat_scene.combat_state) {
       if (combat_scene.preview_state_frame !== getFrameIndex()) {
-        combat_scene.preview_state = combat_scene.combat_state;
+        combat_scene.setPreviewState(combat_scene.combat_state);
       }
     }
   }
@@ -493,11 +511,12 @@ export function doCombat(target: Entity, dt: number): void {
   let y0 = VIEWPORT_Y0;
   let y1 = VIEWPORT_Y0 + render_height;
 
-  drawRect(x0, y0, x1, y1, Z.COMBAT_SHADE, color_combat_shade);
+  drawRect(x0 - 0.1, y0 - 0.1, x1 + 0.1, y1 + 0.1, Z.COMBAT_SHADE, color_combat_shade);
 
   let { combat_state, preview_state } = combat_scene;
   let { enemies } = preview_state;
 
+  // draw enemies
   let enemy_w = 56;
   const ENEMY_PAD = 2;
   const ENEMY_SPRITE_Y = y0 + 68;

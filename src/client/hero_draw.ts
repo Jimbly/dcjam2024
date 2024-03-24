@@ -1,4 +1,5 @@
 import assert from 'assert';
+import * as engine from 'glov/client/engine';
 import { ALIGN, Font, fontStyle, fontStyleAlpha } from 'glov/client/font';
 import {
   buttonText,
@@ -7,12 +8,15 @@ import {
 } from 'glov/client/ui';
 import { vec4 } from 'glov/common/vmath';
 import {
-  CombatHero,
+  combatAcitvateAbility,
   combatGetStates,
   combatReadyForEnemyTurn,
   combatSetPreviewState,
 } from './combat';
-import { AttackTypeToFrameHeroes } from './encounters';
+import {
+  AttackTypeToFrameEnemies,
+  AttackTypeToFrameHeroes,
+} from './encounters';
 import { Hero } from './entity_demo_client';
 import { game_height } from './globals';
 import {
@@ -33,6 +37,7 @@ const {
   FRAME_HEALTHBAR_RIGHT,
   FRAME_SHIELD_ON_BLACK,
   FRAME_STAR,
+  FRAME_SKULL,
   sprite_icons,
 } = spritesheet_icons;
 
@@ -61,10 +66,23 @@ const style_aggro = fontStyle(null, {
   color: 0xda1625ff,
 });
 const style_aggro_dead = fontStyleAlpha(style_aggro, DEAD_ALPHA);
+const style_aggro_top = fontStyle(style_aggro, {
+  color: 0x721313ff,
+  outline_color: 0xda1625ff,
+  outline_width: 4,
+});
 const style_effect = fontStyle(null, {
   color: 0x000000ff,
 });
 const style_effect_dead = fontStyleAlpha(style_effect, DEAD_ALPHA);
+
+const style_attack = fontStyle(null, {
+  color: 0xFFFFFFff,
+  outline_width: 4,
+  outline_color: 0x201b25ff,
+});
+const style_attack_blocked = fontStyleAlpha(style_attack, 0.25);
+
 
 const HERO_H = floor(game_height / 6);
 const HP_W = 91;
@@ -83,7 +101,10 @@ const ABILITY_H = 32;
 let dice_usable: Partial<Record<number, true>>;
 const color_dead = vec4(1, 1, 1, DEAD_ALPHA);
 const color_dead_portrait = vec4(0, 0, 0, 1);
-function drawHero(idx: number, hero_def: Hero, combat_hero: CombatHero | null, preview_hero: CombatHero | null): void {
+function drawHero(idx: number, hero_def: Hero): void {
+  let combat_states = combatGetStates();
+  let combat_hero = combat_states && combat_states.combat_state.heroes[idx] || null;
+  let preview_hero = combat_states && combat_states.preview_state.heroes[idx] || null;
   let x0 = 0;
   let y0 = idx * HERO_H;
   let aspect = sprite_icons.uidata.aspect[FRAME_HERO_BG];
@@ -200,8 +221,32 @@ function drawHero(idx: number, hero_def: Hero, combat_hero: CombatHero | null, p
       frame: FRAME_AGGRO,
       color: dead ? color_dead : undefined,
     });
+
+    let aggro_top = false;
+    {
+      assert(combat_states);
+      let { heroes } = combat_states.preview_state;
+      let most_aggro = 1;
+      for (let ii = 0; ii < heroes.length; ++ii) {
+        let hero = heroes[ii];
+        if (hero.hp) {
+          most_aggro = max(most_aggro, hero.aggro);
+        }
+      }
+      aggro_top = preview_hero.aggro === most_aggro;
+      // This behaves weird when killing monsters
+      // let incoming = combat_states.enemy_preview_state.heroes_attacked[idx];
+      // if (incoming && preview_hero.aggro) {
+      //   for (let ii = 0; ii < incoming.length; ++ii) {
+      //     if (incoming[ii][0] !== AttackType.ALL) {
+      //       aggro_top = true;
+      //     }
+      //   }
+      // }
+    }
+
     font.draw({
-      style: dead ? style_aggro_dead : style_aggro,
+      style: dead ? style_aggro_dead : aggro_top ? style_aggro_top : style_aggro,
       x: x0 + AGGRO_X,
       y: y + 1,
       z,
@@ -211,7 +256,6 @@ function drawHero(idx: number, hero_def: Hero, combat_hero: CombatHero | null, p
     });
   }
 
-  let combat_states = combatGetStates();
   let dice_avail = combat_states && combat_states.combat_state.getDiceAvail() || {};
   y = y0 + ABILITY_Y;
   let abil_y0 = y;
@@ -243,8 +287,7 @@ function drawHero(idx: number, hero_def: Hero, combat_hero: CombatHero | null, p
       base_name: 'abilitybutton',
       disabled,
     })) {
-      assert(combat_states);
-      combat_states.combat_state.activateAbility(idx, ability_idx);
+      combatAcitvateAbility(idx, ability_idx);
     } else if (buttonWasFocused()) {
       assert(combat_states);
       let new_state = combat_states.combat_state.clone();
@@ -303,6 +346,46 @@ function drawHero(idx: number, hero_def: Hero, combat_hero: CombatHero | null, p
       x += EFF_W + padmid;
     }
   }
+
+  // draw predicted incoming damage
+  // Disabled this: it's too noisy, not really clear anyway, maybe even removes the interesting aggro math
+  if (combat_hero && engine.defines.INCOMING) {
+    assert(combat_states);
+    let incoming = combat_states.enemy_preview_state.heroes_attacked[idx];
+    if (incoming) {
+      y = y0; // + floor((HERO_H - ICON_SIZE) / 2);
+      for (let ii = 0; ii < incoming.length; ++ii) {
+        let x = x0 + 204;
+        let [attack_type, amount] = incoming[ii];
+        let frame = AttackTypeToFrameEnemies[attack_type];
+        aspect = sprite_icons.uidata.aspect[frame];
+        let icon_w = ICON_SIZE * aspect;
+        x += 11 - icon_w;
+        sprite_icons.draw({
+          x, y, z,
+          w: icon_w, h: ICON_SIZE,
+          frame,
+          color: amount ? undefined : color_dead,
+        });
+        x += icon_w + 1;
+        x += 4 + font.drawSized(amount ? style_attack : style_attack_blocked, x, y + 1, z, 8, `${amount}`);
+        y += ICON_SIZE + 1;
+      }
+      if (!combat_states.enemy_preview_state.heroes[idx].hp) {
+        let x = x0 + 204;
+        let frame = FRAME_SKULL;
+        aspect = sprite_icons.uidata.aspect[frame];
+        let icon_w = ICON_SIZE * aspect;
+        x += 11 - icon_w;
+        sprite_icons.draw({
+          x, y, z,
+          w: icon_w, h: ICON_SIZE,
+          frame,
+        });
+        y += ICON_SIZE + 1;
+      }
+    }
+  }
 }
 
 export function heroesDraw(is_combat: boolean): void {
@@ -312,12 +395,9 @@ export function heroesDraw(is_combat: boolean): void {
   if (!heroes) {
     return;
   }
-  let combat_states = combatGetStates();
   dice_usable = {};
   for (let ii = 0; ii < heroes.length; ++ii) {
-    let combat_hero = combat_states && combat_states.combat_state.heroes[ii] || null;
-    let preview_hero = combat_states && combat_states.preview_state.heroes[ii] || null;
-    drawHero(ii, heroes[ii], combat_hero, preview_hero);
+    drawHero(ii, heroes[ii]);
   }
   if (is_combat) {
     combatReadyForEnemyTurn(dice_usable);
