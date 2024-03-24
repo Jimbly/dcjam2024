@@ -26,6 +26,7 @@ const {
   FRAME_HEALTHBAR_LEFT,
   FRAME_HEALTHBAR_RIGHT,
   FRAME_SHIELD_ON_BLACK,
+  FRAME_STAR,
   sprite_icons,
 } = spritesheet_icons;
 
@@ -103,6 +104,14 @@ function drawHero(idx: number, hero: Hero, is_combat: boolean): void {
     frame: spritesheet_faces[`FRAME_${face.toUpperCase()}`],
     color: dead ? color_dead_portrait : undefined,
   });
+  for (let ii = 0; ii < tier; ++ii) {
+    sprite_icons.draw({
+      x: x0 + 3 + ii * 9,
+      y: y0 + 30,
+      w: 9, h: 8,
+      frame: FRAME_STAR,
+    });
+  }
   if (hp) {
     let hp_w = max(1, floor(HP_W * hp));
     if (hp_w >= 5) {
@@ -212,9 +221,14 @@ function drawHero(idx: number, hero: Hero, is_combat: boolean): void {
     y = abil_y0;
     let ability_id = class_def.abilities[ability_idx];
     let ability = ABILITIES[ability_id]!;
+    let { icon, effects } = ability;
     let die = DICE_SLOTS[idx][ability_idx];
     let x = x0 + ABILITY_X[ability_idx];
     let disabled = !is_combat || !dice_avail[die] || !hero.hp;
+
+    if (effects.length === 0 && ability.aggro < 0 && !hero.aggro) {
+      disabled = true;
+    }
     if (!disabled) {
       any_ability_possible = true;
     }
@@ -250,7 +264,6 @@ function drawHero(idx: number, hero: Hero, is_combat: boolean): void {
     font.drawSizedAligned(dead ? style_aggro_dead : style_aggro,
       x + 61, y + 6 + 1, z, 8, ALIGN.HRIGHT, 0, 0, `${ability.aggro}`);
 
-    let { icon, effects } = ability;
     sprite_icons.draw({
       x: x + 4, y: y + 4, z,
       w: 24, h: 24,

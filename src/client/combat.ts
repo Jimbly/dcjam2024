@@ -9,6 +9,8 @@ import {
   getFrameTimestamp,
 } from 'glov/client/engine';
 import { ALIGN, Font, fontStyle } from 'glov/client/font';
+import { markdownAuto } from 'glov/client/markdown';
+import { markdownImageRegisterSpriteSheet } from 'glov/client/markdown_renderables';
 import { Sprite, spriteCreate } from 'glov/client/sprites';
 import { buttonText, drawRect, playUISound, uiGetFont, uiTextHeight } from 'glov/client/ui';
 import { randCreate } from 'glov/common/rand_alea';
@@ -44,6 +46,8 @@ type Entity = EntityDemoClient;
 
 class Enemy {
   hp: number;
+  poison: number = 0;
+  temp_shield: number = 0; // NOTE: not enough room in UI to actually use this on fixed-shield monsters
   constructor(public def: EnemyDef) {
     this.hp = def.hp;
   }
@@ -70,6 +74,8 @@ export class CombatState {
       rand.range(6) + 1,
       rand.range(6) + 1,
     ];
+    //this.dice = [1,2,3,4,5,6];
+    //this.dice[1] = 5;
     this.dice_used = this.dice.map((a) => false);
   }
   livingEnemies(): number[] {
@@ -85,11 +91,16 @@ export class CombatState {
   }
   damage(enemy_idx: number, hp: number): void {
     let enemy = this.enemies[enemy_idx];
-    enemy.hp -= max(0, hp - enemy.def.shield);
+    enemy.hp -= max(0, hp - enemy.def.shield - enemy.temp_shield);
+    enemy.temp_shield = 0;
     if (enemy.hp <= 0) {
       enemy.hp = 0;
       // TODO: died!
     }
+  }
+  poison(enemy_idx: number, amount: number): void {
+    let enemy = this.enemies[enemy_idx];
+    enemy.poison += amount;
   }
 }
 
@@ -161,6 +172,8 @@ export function combatActivateAbility(hero_idx: number, ability_idx: number): vo
   hero.aggro += ability.aggro;
   if (hero.aggro > MAX_AGGRO) {
     hero.aggro = MAX_AGGRO;
+  } else if (hero.aggro < 0) {
+    hero.aggro = 0;
   }
   let { effects } = ability;
   let living_enemies = combat_state.livingEnemies();
@@ -169,6 +182,9 @@ export function combatActivateAbility(hero_idx: number, ability_idx: number): vo
     switch (effect.type) {
       case AttackType.FRONT:
         combat_state.damage(living_enemies[0], effect.amount);
+        break;
+      case AttackType.POISON:
+        combat_state.poison(living_enemies[0], effect.amount);
         break;
       case AttackType.BACK:
         combat_state.damage(living_enemies[living_enemies.length - 1], effect.amount);
@@ -186,10 +202,54 @@ export function combatActivateAbility(hero_idx: number, ability_idx: number): vo
         break;
       case AttackType.SHIELD_ALL:
         for (let jj = 0; jj < heroes.length; ++jj) {
-          heroes[jj].temp_shield = (heroes[jj].temp_shield || 0) + effect.amount;
-          if (heroes[jj].temp_shield > MAX_SHIELD) {
-            heroes[jj].temp_shield = MAX_SHIELD;
+          let target_hero = heroes[jj];
+          if (!target_hero.hp) {
+            continue;
           }
+          target_hero.temp_shield = (target_hero.temp_shield || 0) + effect.amount;
+          if (target_hero.temp_shield > MAX_SHIELD) {
+            target_hero.temp_shield = MAX_SHIELD;
+          }
+        }
+        break;
+      case AttackType.HEAL: {
+        // TODO: smart target to prioritize anyone who would die this turn (aggro based, including predicted self)
+        let best = -1;
+        let best_missing_hp = 0;
+        let best_total_hp = 0;
+        for (let jj = 0; jj < heroes.length; ++jj) {
+          let target_hero = heroes[jj];
+          if (!target_hero.hp) {
+            continue;
+          }
+          let { class_id: target_class_id, tier: target_tier } = target_hero;
+          let target_class_def = CLASSES[target_class_id]!;
+          let target_class_tier = target_class_def.tier[target_tier];
+          let missing_hp = min(target_class_tier.hp - target_hero.hp, effect.amount);
+          if (missing_hp > best_missing_hp || missing_hp === best_missing_hp && target_hero.hp < best_total_hp) {
+            best = jj;
+            best_missing_hp = missing_hp;
+            best_total_hp = target_hero.hp;
+          }
+        }
+        if (best !== -1) {
+          let target_hero = heroes[best];
+          let { class_id: target_class_id, tier: target_tier } = target_hero;
+          let target_class_def = CLASSES[target_class_id]!;
+          let target_class_tier = target_class_def.tier[target_tier];
+          target_hero.hp = min(target_hero.hp + effect.amount, target_class_tier.hp);
+        }
+      } break;
+      case AttackType.HEAL_ALL:
+        for (let jj = 0; jj < heroes.length; ++jj) {
+          let target_hero = heroes[jj];
+          if (!target_hero.hp) {
+            continue;
+          }
+          let { class_id: target_class_id, tier: target_tier } = target_hero;
+          let target_class_def = CLASSES[target_class_id]!;
+          let target_class_tier = target_class_def.tier[target_tier];
+          target_hero.hp = min(target_hero.hp + effect.amount, target_class_tier.hp);
         }
         break;
       default:
@@ -234,7 +294,13 @@ function combatDoEnemyTurn(): void {
     if (!enemy.hp) {
       continue;
     }
-    let { def } = enemy;
+    let { def, poison } = enemy;
+    enemy.hp -= poison;
+    if (enemy.hp <= 0) {
+      enemy.hp = 0;
+      // TODO: died!
+      continue;
+    }
     for (let jj = 0; jj < def.effects.length; ++jj) {
       let effect = def.effects[jj];
       switch (effect.type) {
@@ -288,6 +354,7 @@ let last_combat_frame = -1;
 let last_combat_ent: Entity | null = null;
 let rolled_at: number;
 let temp_color = vec4(1, 1, 1, 1);
+let color_die_used = vec4(0.25, 0.25, 0.25, 1);
 export function doCombat(target: Entity, dt: number): void {
   let me = myEnt();
   assert(me);
@@ -330,6 +397,8 @@ export function doCombat(target: Entity, dt: number): void {
   const ENEMY_BAR_W = 56;
   const ENEMY_BAR_H = 11;
   const ICON_SIZE = 9;
+  const ENEMY_BAR_Y = ENEMY_SPRITE_Y - ENEMY_BAR_H - 2;
+  const ENEMY_STATUS_Y = ENEMY_BAR_Y - ICON_SIZE - 1;
   const ENEMY_ATTACK_Y = ENEMY_SPRITE_Y + ENEMY_SPRITE_H;
   let enemy_x0 = floor(x0 + (w - enemy_w * enemies.length - ENEMY_PAD * (enemies.length - 1)) / 2);
   for (let ii = 0; ii < enemies.length; ++ii) {
@@ -361,8 +430,35 @@ export function doCombat(target: Entity, dt: number): void {
       continue;
     }
     drawHealthBar(true,
-      x_mid - ENEMY_BAR_W/2, ENEMY_SPRITE_Y - ENEMY_BAR_H - 2,
+      x_mid - ENEMY_BAR_W/2, ENEMY_BAR_Y,
       Z.UI, ENEMY_BAR_W, ENEMY_BAR_H, enemy.hp, def.hp, true);
+
+    let status_text = [];
+    if (enemy.poison) {
+      status_text.push(`${enemy.poison}[img=poison]`);
+    }
+    if (enemy.temp_shield || def.shield) {
+      let text = '';
+      if (def.shield) {
+        text = `${def.shield}`;
+      }
+      if (enemy.temp_shield) {
+        text += `+${enemy.temp_shield}`;
+      }
+      status_text.push(`${text}[img=shield]`);
+    }
+    if (status_text.length) {
+      markdownAuto({
+        font_style: style_attack,
+        x: enemy_x,
+        y: ENEMY_STATUS_Y,
+        w: enemy_w,
+        h: ICON_SIZE,
+        align: ALIGN.HCENTER,
+        text: status_text.join(' '),
+      });
+    }
+
     let { effects } = def;
     assert.equal(effects.length, 1);
     let attack = effects[0];
@@ -401,7 +497,7 @@ export function doCombat(target: Entity, dt: number): void {
       y: DIE_Y,
       w: DIE_W, h: DIE_W,
       frame: spritesheet_icons[`FRAME_DIE${die}`],
-      alpha: used ? 0.5 : 1,
+      color: used ? color_die_used : undefined,
     });
     die_x += DIE_W + DIE_PAD;
   }
@@ -451,4 +547,5 @@ export function combatStartup(): void {
   //   name: 'particles/damage',
   // });
   font = uiGetFont();
+  markdownImageRegisterSpriteSheet(spritesheet_icons);
 }

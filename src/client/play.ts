@@ -41,6 +41,7 @@ import {
   Vec2,
   v2sub,
   vec2,
+  vec4,
 } from 'glov/common/vmath';
 import {
   crawlerLoadData, dirFromDelta,
@@ -85,6 +86,7 @@ import {
   crawlerPlayTopOfFrame,
   crawlerPlayWantMode,
   crawlerPrepAndRenderFrame,
+  crawlerRenderSetUIClearColor,
   crawlerSaveGame,
   crawlerScriptAPI,
   getScaledFrameDt,
@@ -149,6 +151,8 @@ const MENU_BUTTON_X = game_width - BUTTON_W - 2;
 const MENU_BUTTON_Y = 4;
 
 const PAUSE_MENU_W = 240;
+
+const color_myblack = vec4(20/255, 16/255, 19/255, 1);
 
 type Entity = EntityDemoClient;
 
@@ -803,7 +807,7 @@ export function playStartup(): void {
     w: render_width,
     h: render_height,
   });
-  // crawlerRenderSetUIClearColor(dawnbringer.colors[14]);
+  crawlerRenderSetUIClearColor(color_myblack);
 
   let button_param = {
     filter_min: gl.NEAREST,

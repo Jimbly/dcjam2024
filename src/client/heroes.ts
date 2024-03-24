@@ -94,7 +94,7 @@ export const CLASSES: TSMap<HeroClassDef> = {
       hp: 6,
       shield: 1,
     }],
-    abilities: ['heal_med', 'heal_light'],
+    abilities: ['heal_med', 'heal_all_light'],
     faces: ['catears'],
   },
   back2: {
@@ -147,13 +147,12 @@ export const ABILITIES: TSMap<AbilityDef> = {
     icon: 'ability_demo',
   },
   poison: {
-    // TODO!
     aggro: 1,
     effects: [{
-      type: AttackType.SHIELD_SELF,
-      amount: 3,
+      type: AttackType.POISON,
+      amount: 1,
     }],
-    icon: 'ability_demo',
+    icon: 'ability_poison2',
   },
   area_light: {
     aggro: 2,
@@ -171,21 +170,19 @@ export const ABILITIES: TSMap<AbilityDef> = {
     }],
     icon: 'ability_demo',
   },
-  heal_light: {
-    // TODO!
-    aggro: 2,
+  heal_all_light: {
+    aggro: 1,
     effects: [{
-      type: AttackType.ALL,
+      type: AttackType.HEAL_ALL,
       amount: 1,
     }],
     icon: 'ability_demo',
   },
   heal_med: {
-    // TODO!
-    aggro: 3,
+    aggro: 2,
     effects: [{
-      type: AttackType.ALL,
-      amount: 2,
+      type: AttackType.HEAL,
+      amount: 3,
     }],
     icon: 'ability_demo',
   },
@@ -203,6 +200,11 @@ export const ABILITIES: TSMap<AbilityDef> = {
       type: AttackType.SHIELD_ALL,
       amount: 2,
     }],
+    icon: 'ability_demo',
+  },
+  hide: {
+    aggro: -5,
+    effects: [],
     icon: 'ability_demo',
   },
 };

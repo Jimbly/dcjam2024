@@ -10,9 +10,9 @@ export enum AttackType {
   ALL,
   SHIELD_SELF,
   SHIELD_ALL,
-  // POISON,
-  // HEAL,
-  // HEAL_ALL,
+  POISON,
+  HEAL,
+  HEAL_ALL,
   // SHIELD_BREAK,
   // SANITY,
 }
@@ -24,6 +24,9 @@ export const AttackTypeToFrameHeroes: Record<AttackType, number> = {
   [AttackType.ALL]: icons.FRAME_ATTACK_ALL,
   [AttackType.SHIELD_SELF]: icons.FRAME_SHIELD,
   [AttackType.SHIELD_ALL]: icons.FRAME_SHIELD_ALL,
+  [AttackType.POISON]: icons.FRAME_POISON,
+  [AttackType.HEAL]: icons.FRAME_HEAL,
+  [AttackType.HEAL_ALL]: icons.FRAME_HEAL_ALL,
 };
 export const AttackTypeToFrameEnemies: Record<AttackType, number> = {
   ...AttackTypeToFrameHeroes,
@@ -49,7 +52,7 @@ export const ENEMIES: TSMap<EnemyDef> = {
     shield: 0,
     effects: [{
       type: AttackType.FRONT,
-      amount: 5,
+      amount: 3,
     }],
   },
   blob: {
@@ -58,7 +61,7 @@ export const ENEMIES: TSMap<EnemyDef> = {
     shield: 0,
     effects: [{
       type: AttackType.ALL,
-      amount: 2,
+      amount: 1,
     }],
   },
 };

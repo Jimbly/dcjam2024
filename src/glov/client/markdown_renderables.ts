@@ -113,6 +113,11 @@ class MDRImg implements MDLayoutBlock, MDDrawBlock, Box {
   h!: number;
   layout(param: MDLayoutCalcParam): MDDrawBlock[] {
     let { text_height } = param;
+    let offs = 0;
+    if (param.h && !(param.align & ALIGN.HWRAP) && this.scale === 1) {
+      text_height = param.h; // do line height
+      offs = -1;
+    }
     let h = this.h = text_height * this.scale;
     let img_data = getImageData(this.key);
     let { sprite, frame } = img_data;
@@ -138,6 +143,7 @@ class MDRImg implements MDLayoutBlock, MDDrawBlock, Box {
     // vertically center image
     // if scale is > 1.0, we perhaps want some line height logic instead
     this.y += (text_height - h) / 2;
+    this.y += offs; // DCJ24 HACK for centering larger icons next to smaller text
     return [this];
   }
   alpha_color_cache?: Vec4;
