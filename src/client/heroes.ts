@@ -136,7 +136,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
       type: AttackType.SHIELD_SELF,
       amount: 2,
     }],
-    icon: 'ability_demo',
+    icon: 'ability_shield2',
   },
   shield_slow: {
     aggro: 1,
@@ -144,7 +144,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
       type: AttackType.SHIELD_SELF,
       amount: 3,
     }],
-    icon: 'ability_demo',
+    icon: 'ability_shield',
   },
   poison: {
     aggro: 1,
@@ -160,7 +160,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
       type: AttackType.ALL,
       amount: 1,
     }],
-    icon: 'ability_demo',
+    icon: 'ability_ranged_all2',
   },
   area_med: {
     aggro: 3,
@@ -168,7 +168,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
       type: AttackType.ALL,
       amount: 2,
     }],
-    icon: 'ability_demo',
+    icon: 'ability_ranged_all',
   },
   heal_all_light: {
     aggro: 1,
@@ -176,7 +176,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
       type: AttackType.HEAL_ALL,
       amount: 1,
     }],
-    icon: 'ability_demo',
+    icon: 'ability_heal_all',
   },
   heal_med: {
     aggro: 2,
@@ -184,7 +184,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
       type: AttackType.HEAL,
       amount: 3,
     }],
-    icon: 'ability_demo',
+    icon: 'ability_heal',
   },
   shield_other1: {
     aggro: 3,
@@ -192,7 +192,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
       type: AttackType.SHIELD_ALL,
       amount: 1,
     }],
-    icon: 'ability_demo',
+    icon: 'ability_shield_all',
   },
   shield_other2: {
     aggro: 2,
@@ -200,7 +200,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
       type: AttackType.SHIELD_ALL,
       amount: 2,
     }],
-    icon: 'ability_demo',
+    icon: 'ability_shield_all',
   },
   hide: {
     aggro: -5,
