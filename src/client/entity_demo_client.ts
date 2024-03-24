@@ -21,6 +21,9 @@ import {
 } from './crawler_entity_client';
 
 import type { JSVec3 } from '../common/crawler_state';
+import type {
+  AttackDef,
+} from './encounters';
 import type { ROVec2 } from 'glov/common/vmath';
 
 const { random } = Math;
@@ -44,12 +47,42 @@ export type StatsData = {
   encounter: string;
 };
 
+export type HeroClassTier = {
+  hp: number;
+  shield: number;
+};
+
+export type AbilityDef = {
+  aggro: number;
+  effects: AttackDef[];
+  icon: string;
+};
+
+export type HeroClassDef = {
+  tier: [HeroClassTier, HeroClassTier, HeroClassTier];
+  abilities: [string, string];
+  faces: string[];
+};
+
+export type Hero = {
+  class_id: string;
+  tier: number;
+
+  hp: number;
+  temp_shield: number;
+  aggro: number;
+  face?: number;
+};
+
+
 export type EntityDataClient = {
   type: string;
   pos: JSVec3;
   state: string;
   floor: number;
   stats: StatsData;
+  // Player:
+  heroes: Hero[];
 } & EntityCrawlerDataCommon;
 
 

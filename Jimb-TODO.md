@@ -1,8 +1,8 @@
 Agenda
-* palette
 * visual style
-  * fonts
-  * pixel art
+  * fonts?
+  * pixel art?
+* realtime or turn based outside of combat?
 
 * prototype combat
 * UI mockup

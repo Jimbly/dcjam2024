@@ -6,7 +6,12 @@ import { Sprite, spriteCreate } from 'glov/client/sprites';
 import { buttonText, drawRect, playUISound, uiGetFont } from 'glov/client/ui';
 import { TSMap } from 'glov/common/types';
 import { vec4 } from 'glov/common/vmath';
-import { AttackType, ENCOUNTERS, ENEMIES, EnemyDef } from './encounters';
+import {
+  AttackTypeToFrameEnemies,
+  ENCOUNTERS,
+  ENEMIES,
+  EnemyDef,
+} from './encounters';
 import {
   EntityDemoClient,
   entityManager,
@@ -17,13 +22,10 @@ import {
   render_height,
   render_width,
 } from './globals';
+import { CLASSES } from './heroes';
 import { drawHealthBar, myEnt } from './play';
 
-const {
-  FRAME_ATTACK_FRONT_ENEMY,
-  FRAME_ATTACK_ALL,
-  sprite_icons,
-} = require('./img/icons');
+const { sprite_icons } = require('./img/icons');
 
 const { floor } = Math;
 
@@ -45,10 +47,28 @@ class CombatState {
 
 let combat_state: CombatState | null = null;
 
+function cleanupHeroes(): void {
+  let me = myEnt();
+  assert(me);
+  let { heroes } = me.data;
+  if (heroes) {
+    for (let ii = 0; ii < heroes.length; ++ii) {
+      let hero = heroes[ii];
+      let { class_id, tier } = hero;
+      let class_def = CLASSES[class_id]!;
+      let class_tier = class_def.tier[tier];
+      hero.hp = class_tier.hp;
+      hero.aggro = 0;
+    }
+  }
+}
+
 export function cleanupCombat(dt: number): void {
-  // if (!combat_state) {
-  //   return;
-  // }
+  if (!combat_state) {
+    return;
+  }
+  cleanupHeroes();
+  combat_state = null;
 }
 
 const color_combat_shade = vec4(0.15, 0.15, 0.15, 0.75);
@@ -78,6 +98,7 @@ export function doCombat(target: Entity, dt: number): void {
       assert(enemy_def);
       combat_state.enemies.push(new Enemy(enemy_def));
     }
+    cleanupHeroes();
   }
 
   let x0 = VIEWPORT_X0;
@@ -124,7 +145,10 @@ export function doCombat(target: Entity, dt: number): void {
     drawHealthBar(true,
       x_mid - ENEMY_BAR_W/2, ENEMY_SPRITE_Y - ENEMY_BAR_H - 2,
       Z.UI, ENEMY_BAR_W, ENEMY_BAR_H, enemy.hp, def.hp, true);
-    let frame = def.attack_type === AttackType.FRONT ? FRAME_ATTACK_FRONT_ENEMY : FRAME_ATTACK_ALL;
+    let { effects } = def;
+    assert.equal(effects.length, 1);
+    let attack = effects[0];
+    let frame = AttackTypeToFrameEnemies[attack.type];
     aspect = sprite_icons.uidata.aspect[frame];
     let icon_w = ICON_SIZE * aspect;
     sprite_icons.draw({
@@ -135,7 +159,7 @@ export function doCombat(target: Entity, dt: number): void {
       frame,
     });
     uiGetFont().drawSized(style_attack, x_mid + 1, ENEMY_ATTACK_Y + 1, Z.UI,
-      8, `${def.damage}`);
+      8, `${attack.amount}`);
   }
 
   let end_combat = false;

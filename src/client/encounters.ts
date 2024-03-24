@@ -8,30 +8,58 @@ export enum AttackType {
   FRONT,
   BACK,
   ALL,
+  SHIELD_SELF,
+  SHIELD_ALL,
+  // POISON,
+  // HEAL,
+  // HEAL_ALL,
+  // SHIELD_BREAK,
+  // SANITY,
 }
+
+const icons = require('./img/icons');
+export const AttackTypeToFrameHeroes: Record<AttackType, number> = {
+  [AttackType.FRONT]: icons.FRAME_ATTACK_FRONT,
+  [AttackType.BACK]: icons.FRAME_ATTACK_FRONT,
+  [AttackType.ALL]: icons.FRAME_ATTACK_ALL,
+  [AttackType.SHIELD_SELF]: icons.FRAME_SHIELD,
+  [AttackType.SHIELD_ALL]: icons.FRAME_SHIELD_ALL,
+};
+export const AttackTypeToFrameEnemies: Record<AttackType, number> = {
+  ...AttackTypeToFrameHeroes,
+  [AttackType.FRONT]: icons.FRAME_ATTACK_FRONT_ENEMY,
+};
+
+export type AttackDef = {
+  type: AttackType;
+  amount: number;
+};
 
 export type EnemyDef = {
   hp: number;
   shield: number;
-  damage: number;
-  attack_type: AttackType;
+  effects: AttackDef[];
   tex: string;
 };
 
 export const ENEMIES: TSMap<EnemyDef> = {
   eye: {
-    hp: 15,
-    damage: 5,
-    shield: 0,
-    attack_type: AttackType.FRONT,
     tex: 'AngryStar',
+    hp: 15,
+    shield: 0,
+    effects: [{
+      type: AttackType.FRONT,
+      amount: 5,
+    }],
   },
   blob: {
-    hp: 12,
-    damage: 2,
-    shield: 0,
-    attack_type: AttackType.ALL,
     tex: 'FlayerEvo4',
+    hp: 12,
+    shield: 0,
+    effects: [{
+      type: AttackType.ALL,
+      amount: 2,
+    }],
   },
 };
 

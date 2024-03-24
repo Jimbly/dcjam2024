@@ -109,6 +109,7 @@ import {
   render_height,
   render_width,
 } from './globals';
+import { heroesDraw } from './hero_draw';
 import { jamTraitsStartup } from './jam_events';
 import { levelGenTest } from './level_gen_test';
 import { renderAppStartup, renderResetFilter } from './render_app';
@@ -549,11 +550,16 @@ function playCrawl(): void {
   //   inventory_up = !inventory_up;
   // }
 
+
   if (frame_combat) {
     if (controller.queueLength() === 1) {
+      heroesDraw(true);
       doCombat(frame_combat, dt);
     }
   } else {
+    if (!build_mode) {
+      heroesDraw(false);
+    }
     cleanupCombat(dt);
   }
 
@@ -744,7 +750,28 @@ export function playStartup(): void {
         type: 'player',
         pos: [0, 0, 0],
         floor: 0,
-        stats: { hp: 10, hp_max: 10 },
+        stats: {
+          hp: 1, // set to 0 to trigger end of game
+        },
+        heroes: [{
+          class_id: 'demo',
+          tier: 2,
+        },{
+          class_id: 'demo',
+          tier: 1,
+        },{
+          class_id: 'demo',
+          tier: 0,
+        },{
+          class_id: 'demo',
+          tier: 0,
+        },{
+          class_id: 'demo',
+          tier: 0,
+        },{
+          class_id: 'demo',
+          tier: 0,
+        }],
       },
       loading_state: playOfflineLoading,
     },
@@ -847,6 +874,7 @@ export function playStartup(): void {
       hp: spriteCreate({
         name: 'crawler_healthbar_hp',
         ...bar_param,
+        ws: [5, 3, 2],
       }),
       empty: spriteCreate({
         name: 'crawler_healthbar_empty',

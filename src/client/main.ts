@@ -1,6 +1,6 @@
 /*eslint global-require:off, comma-spacing:error*/
 import * as local_storage from 'glov/client/local_storage.js'; // eslint-disable-line import/order
-local_storage.setStoragePrefix('crawler'); // Before requiring anything else that might load from this
+local_storage.setStoragePrefix('dcj24'); // Before requiring anything else that might load from this
 
 import assert from 'assert';
 import { chatUICreate } from 'glov/client/chat_ui';
@@ -22,6 +22,7 @@ import { crawlerBuildModeStartup } from './crawler_build_mode';
 // import { crawlerOnPixelyChange } from './crawler_play.js';
 import { crawlerRenderSetLODBiasRange } from './crawler_render';
 import { game_height, game_width } from './globals';
+import { heroesDrawStartup } from './hero_draw';
 import { playStartup } from './play';
 import { titleInit, titleStartup } from './title';
 
@@ -116,6 +117,7 @@ export function main(): void {
     settings.set('entity_split', 1);
   }
   const font_info_palanquin32 = require('./img/font/palanquin32.json');
+  const font_info_04b03 = require('./img/font/04b03_8x1.json');
   let pixely = settings.pixely === 2 ? 'strict' : settings.pixely ? 'on' : override_pixely ? 'on' : false;
   let font_info = require('./img/font/ibm8x8x1.json');
   let font = {
@@ -125,6 +127,10 @@ export function main(): void {
   settings.set('use_fbos', use_fbos); // Needed for our effects
 
   spritesheetTextureOpts('whitebox', { force_mipmaps: true });
+  // spritesheetTextureOpts('icons', {
+  //   filter_min: 9728,
+  //   filter_mag: 9728,
+  // });
 
   if (!engine.startup({
     game_width,
@@ -139,11 +145,15 @@ export function main(): void {
     show_fps: false,
     ui_sprites: {
       ...spriteSetGet('pixely'),
-      // color_set_shades: [1, 1, 1],
+      color_set_shades: [1, 1, 1],
       // button: { name: 'button', ws: [3, 20, 3], hs: [26] },
       // button_rollover: { name: 'button_rollover', ws: [3, 20, 3], hs: [26] },
       // button_down: { name: 'button_down', ws: [3, 20, 3], hs: [26] },
       // button_disabled: { name: 'button_disabled', ws: [3, 20, 3], hs: [26] },
+      abilitybutton: { name: 'abilitybutton', ws: [24, 16, 24], hs: [32] },
+      abilitybutton_rollover: { name: 'abilitybutton_rollover', ws: [24, 16, 24], hs: [32] },
+      abilitybutton_down: { name: 'abilitybutton_down', ws: [24, 16, 24], hs: [32] },
+      abilitybutton_disabled: { name: 'abilitybutton_disabled', ws: [24, 16, 24], hs: [32] },
       buttonselected_regular: { name: 'pixely/buttonselected', ws: [4, 5, 4], hs: [13] },
       buttonselected_down: { name: 'pixely/buttonselected_down', ws: [4, 5, 4], hs: [13] },
       buttonselected_rollover: { name: 'pixely/buttonselected', ws: [4, 5, 4], hs: [13] },
@@ -175,9 +185,11 @@ export function main(): void {
   if (!engine.webgl2 && need_dfdxy) {
     assert(gl.getExtension('OES_standard_derivatives'), 'GL_OES_standard_derivatives not supported!');
   }
+  let font_tiny = fontCreate(font_info_04b03, 'font/04b03_8x1');
   fonts = [
     fontCreate(font_info_palanquin32, 'font/palanquin32'),
     fontCreate(font_info, 'font/ibm8x8x1'),
+    font_tiny,
   ];
 
   let build_font = fonts[0];
@@ -218,6 +230,7 @@ export function main(): void {
     button_height: 11,
   });
   playStartup();
+  heroesDrawStartup(font_tiny);
   combatStartup();
   engine.setState(titleInit);
   titleStartup();
