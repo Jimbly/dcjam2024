@@ -9,6 +9,7 @@ import {
 import { vec4 } from 'glov/common/vmath';
 import {
   combatAcitvateAbility,
+  combatDrawFloaters,
   combatGetStates,
   combatReadyForEnemyTurn,
   combatSetPreviewState,
@@ -94,6 +95,7 @@ const AGGRO_X = 194;
 const ICON_SIZE = 9;
 const PORTRAIT_X = 8;
 const PORTRAIT_Y = 6;
+const PORTRAIT_SIZE = 32;
 const ABILITY_X = [48,126];
 const ABILITY_Y = 12;
 const ABILITY_W = 76;
@@ -128,9 +130,15 @@ function drawHero(idx: number, hero_def: Hero): void {
   sprite_faces.draw({
     x: PORTRAIT_X,
     y: y0 + PORTRAIT_Y,
-    w: 32, h: 32,
+    w: PORTRAIT_SIZE,
+    h: PORTRAIT_SIZE,
     frame: spritesheet_faces[`FRAME_${face.toUpperCase()}`],
     color: dead ? color_dead_portrait : undefined,
+  });
+  combatDrawFloaters({
+    x: PORTRAIT_X + PORTRAIT_SIZE/2,
+    y: y0 + PORTRAIT_Y + PORTRAIT_SIZE/2,
+    hero_idx: idx,
   });
   for (let ii = 0; ii < tier; ++ii) {
     sprite_icons.draw({

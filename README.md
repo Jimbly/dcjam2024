@@ -20,3 +20,6 @@ Credits for assets used (may not make it into final version)
 
 * Likely many textures from Dungeon Crawl Stone Soup - https://opengameart.org/content/dungeon-crawl-32x32-tiles-supplemental
 * Sci-Fi UI Pack - https://digital-mosaic-games.itch.io/sci-fi-ui-pack
+* Explosion.png - probably unused - https://opengameart.org/content/pixel-explosion-12-frames
+* Explosions pack - probably unused- https://opengameart.org/content/animated-explosions
+* cartoon explosion - https://opengameart.org/content/2d-bomb-and-explosion

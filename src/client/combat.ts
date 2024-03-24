@@ -8,16 +8,27 @@ import {
   getFrameIndex,
   getFrameTimestamp,
 } from 'glov/client/engine';
-import { ALIGN, Font, fontStyle } from 'glov/client/font';
+import {
+  ALIGN,
+  Font,
+  fontStyle,
+} from 'glov/client/font';
 import { markdownAuto } from 'glov/client/markdown';
 import { markdownImageRegisterSpriteSheet } from 'glov/client/markdown_renderables';
 import { Sprite, spriteCreate } from 'glov/client/sprites';
-import { buttonText, drawRect, playUISound, uiGetFont, uiTextHeight } from 'glov/client/ui';
+import {
+  buttonText,
+  drawRect,
+  playUISound,
+  suppressNewDOMElemWarnings,
+  uiGetFont,
+  uiTextHeight,
+} from 'glov/client/ui';
 import { randCreate } from 'glov/common/rand_alea';
 import { DataObject, TSMap } from 'glov/common/types';
-import { empty } from 'glov/common/util';
+import { easeOut, empty } from 'glov/common/util';
 import verify from 'glov/common/verify';
-import { vec4 } from 'glov/common/vmath';
+import { v3set, v4set, vec2, vec4 } from 'glov/common/vmath';
 import {
   AttackType,
   AttackTypeToFrameEnemies,
@@ -49,7 +60,18 @@ const { floor, max, min, random } = Math;
 
 let font: Font;
 
+let damage_sprite: Sprite;
+
 let rand = randCreate(1234);
+
+const style_attack = fontStyle(null, {
+  color: 0xFFFFFFff,
+  outline_width: 4,
+  outline_color: 0x201b25ff,
+});
+const style_hint = fontStyle(null, {
+  color: 0x6d758dff,
+});
 
 type Entity = EntityDemoClient;
 
@@ -87,6 +109,32 @@ function cloneCombatHero(hero: CombatHero): CombatHero {
   return ret;
 }
 
+type FloaterParamEnemy = {
+  enemy_idx: number;
+};
+type FloaterParamHero = {
+  hero_idx: number;
+};
+type FloaterTarget = FloaterParamEnemy | FloaterParamHero;
+type FloaterParam = FloaterTarget & {
+  attack_type: AttackType;
+  msg: string;
+};
+// function isFloaterEnemy(p: FloaterParam): p is FloaterParam & FloaterParamEnemy {
+//   return (p as FloaterParamEnemy).enemy_idx !== undefined;
+// }
+// function isFloaterHero(p: FloaterParam): p is FloaterParam & FloaterParamHero {
+//   return (p as FloaterParamHero).hero_idx !== undefined;
+// }
+type FloaterTargetLoose = Partial<FloaterParamEnemy & FloaterParamHero>;
+function sameFloaterTarget(p1: FloaterTarget, p2: FloaterTarget): boolean {
+  return (p1 as FloaterTargetLoose).enemy_idx === (p2 as FloaterTargetLoose).enemy_idx &&
+    (p1 as FloaterTargetLoose).hero_idx === (p2 as FloaterTargetLoose).hero_idx;
+}
+type Animatable = {
+  addFloater(f: FloaterParam): void;
+};
+
 class CombatState {
   enemies: Enemy[] = [];
   heroes: CombatHero[] = [];
@@ -106,18 +154,29 @@ class CombatState {
     return ret;
   }
 
-  damage(enemy_idx: number, hp: number): void {
+  damage(enemy_idx: number, attack_type: AttackType, hp: number, animator?: Animatable): void {
     let enemy = this.enemies[enemy_idx];
-    enemy.hp -= max(0, hp - enemy.def.shield - enemy.temp_shield);
+    let dhp = hp - enemy.def.shield - enemy.temp_shield;
+    animator?.addFloater({
+      enemy_idx,
+      attack_type,
+      msg: `${dhp}`,
+    });
+    enemy.hp -= max(0, dhp);
     enemy.temp_shield = 0;
     if (enemy.hp <= 0) {
       enemy.hp = 0;
       // TODO: died!
     }
   }
-  poison(enemy_idx: number, amount: number): void {
+  poison(enemy_idx: number, amount: number, animator?: Animatable): void {
     let enemy = this.enemies[enemy_idx];
     enemy.poison += amount;
+    animator?.addFloater({
+      enemy_idx,
+      attack_type: AttackType.POISON,
+      msg: `${amount}[img=poison]`,
+    });
   }
 
   clone(): CombatState {
@@ -130,7 +189,7 @@ class CombatState {
     return ret;
   }
 
-  activateAbility(hero_idx: number, ability_idx: number): void {
+  activateAbility(hero_idx: number, ability_idx: number, animator?: Animatable): void {
 
     let die = DICE_SLOTS[hero_idx][ability_idx];
     let found = -1;
@@ -160,21 +219,28 @@ class CombatState {
       let effect = effects[ii];
       switch (effect.type) {
         case AttackType.FRONT:
-          this.damage(living_enemies[0], effect.amount);
+          this.damage(living_enemies[0], effect.type, effect.amount, animator);
           break;
         case AttackType.POISON:
-          this.poison(living_enemies[0], effect.amount);
+          this.poison(living_enemies[0], effect.amount, animator);
           break;
         case AttackType.BACK:
-          this.damage(living_enemies[living_enemies.length - 1], effect.amount);
+          this.damage(living_enemies[living_enemies.length - 1], effect.type, effect.amount, animator);
           break;
         case AttackType.ALL:
           for (let jj = 0; jj < living_enemies.length; ++jj) {
-            this.damage(living_enemies[jj], effect.amount);
+            this.damage(living_enemies[jj], effect.type, effect.amount, animator);
           }
           break;
         case AttackType.SHIELD_SELF:
-          hero.temp_shield = (hero.temp_shield || 0) + effect.amount;
+          if (hero.temp_shield < MAX_SHIELD) {
+            animator?.addFloater({
+              hero_idx,
+              attack_type: effect.type,
+              msg: `${effect.amount}[img=shield]`,
+            });
+          }
+          hero.temp_shield += effect.amount;
           if (hero.temp_shield > MAX_SHIELD) {
             hero.temp_shield = MAX_SHIELD;
           }
@@ -185,7 +251,14 @@ class CombatState {
             if (!target_hero.hp) {
               continue;
             }
-            target_hero.temp_shield = (target_hero.temp_shield || 0) + effect.amount;
+            if (target_hero.temp_shield < MAX_SHIELD) {
+              animator?.addFloater({
+                hero_idx: jj,
+                attack_type: AttackType.SHIELD_SELF,
+                msg: `${effect.amount}[img=shield]`,
+              });
+            }
+            target_hero.temp_shield += effect.amount;
             if (target_hero.temp_shield > MAX_SHIELD) {
               target_hero.temp_shield = MAX_SHIELD;
             }
@@ -210,7 +283,13 @@ class CombatState {
           }
           if (best !== -1) {
             let target_hero = heroes[best];
-            target_hero.hp = min(target_hero.hp + effect.amount, target_hero.tier_ref.hp);
+            let dhp = min(effect.amount, target_hero.tier_ref.hp - target_hero.hp);
+            target_hero.hp += dhp;
+            animator?.addFloater({
+              hero_idx: best,
+              attack_type: AttackType.HEAL,
+              msg: `${dhp}[img=heal]`,
+            });
           }
         } break;
         case AttackType.HEAL_ALL:
@@ -219,7 +298,15 @@ class CombatState {
             if (!target_hero.hp) {
               continue;
             }
-            target_hero.hp = min(target_hero.hp + effect.amount, target_hero.tier_ref.hp);
+            let dhp = min(effect.amount, target_hero.tier_ref.hp - target_hero.hp);
+            if (dhp) {
+              animator?.addFloater({
+                hero_idx: jj,
+                attack_type: AttackType.HEAL,
+                msg: `${dhp}[img=heal]`,
+              });
+              target_hero.hp += dhp;
+            }
           }
           break;
         default:
@@ -246,10 +333,15 @@ class CombatState {
     }
   }
 
-  damageHero(attack_type: AttackType, idx: number, amount: number): void {
+  damageHero(attack_type: AttackType, idx: number, amount: number, animator?: Animatable): void {
     let hero = this.heroes[idx];
     let class_tier = hero.tier_ref;
     amount = max(0, amount - (hero.temp_shield || 0) - class_tier.shield);
+    animator?.addFloater({
+      hero_idx: idx,
+      attack_type: amount ? attack_type : AttackType.SHIELD_SELF,
+      msg: amount ? `${amount}` : '[img=shield]',
+    });
     hero.hp -= amount;
     if (hero.hp <= 0) {
       hero.hp = 0;
@@ -258,15 +350,22 @@ class CombatState {
     let arr = this.heroes_attacked[idx] = this.heroes_attacked[idx] || [];
     arr.push([attack_type, amount]);
   }
-  doEnemyAction(enemy_idx: number): void {
+  doEnemyAction(enemy_idx: number, animator?: Animatable): void {
     let { heroes, enemies } = this;
     let enemy = enemies[enemy_idx];
     let { def, poison } = enemy;
-    enemy.hp -= poison;
-    if (enemy.hp <= 0) {
-      enemy.hp = 0;
-      // TODO: died!
-      return;
+    if (poison) {
+      animator?.addFloater({
+        enemy_idx,
+        attack_type: AttackType.FRONT,
+        msg: `${poison}`,
+      });
+      enemy.hp -= poison;
+      if (enemy.hp <= 0) {
+        enemy.hp = 0;
+        // TODO: died!
+        return;
+      }
     }
     for (let jj = 0; jj < def.effects.length; ++jj) {
       let effect = def.effects[jj];
@@ -287,13 +386,13 @@ class CombatState {
           }
           for (let kk = 0; kk < best.length; ++kk) {
             this.aggro_targetted[best[kk]] = true;
-            this.damageHero(effect.type, best[kk], floor(effect.amount / best.length));
+            this.damageHero(effect.type, best[kk], floor(effect.amount / best.length), animator);
           }
         } break;
         case AttackType.ALL:
           for (let kk = 0; kk < heroes.length; ++kk) {
             if (heroes[kk].hp > 0) {
-              this.damageHero(effect.type, kk, effect.amount);
+              this.damageHero(effect.type, kk, effect.amount, animator);
             }
           }
           break;
@@ -302,7 +401,7 @@ class CombatState {
       }
     }
   }
-  doEnemyTurn(): void {
+  doEnemyTurn(animator?: Animatable): void {
     let { enemies } = this;
     this.heroes_attacked = {};
     this.aggro_targetted = {};
@@ -312,7 +411,7 @@ class CombatState {
       if (!enemy.hp) {
         continue;
       }
-      this.doEnemyAction(ii);
+      this.doEnemyAction(ii, animator);
     }
 
     this.decayAggro();
@@ -342,6 +441,15 @@ class CombatState {
     return dice_avail;
   }
 }
+
+type Floater = FloaterParam & {
+  start: number;
+};
+const FLOATER_TIME = 750; // not including fade
+const FLOATER_FADE = 250;
+const FLOATER_TIME_TOTAL = FLOATER_TIME + FLOATER_FADE;
+const BLINK_TIME = 250;
+let temp_color = vec4(1, 1, 1, 1);
 
 class CombatScene {
   combat_state: CombatState;
@@ -392,12 +500,101 @@ class CombatScene {
     this.enemy_preview_state.doEnemyTurn();
   }
 
+  animPaused(completely: boolean): boolean {
+    let expire = getFrameTimestamp() - (completely ? FLOATER_TIME_TOTAL : FLOATER_TIME);
+    let { floaters } = this;
+    for (let ii = 0; ii < floaters.length; ++ii) {
+      if (floaters[ii].start > expire) {
+        return true;
+      }
+    }
+    return false;
+  }
   needsRoll(): boolean {
     return !this.combat_state.dice_used.length;
+  }
+
+  floaters: Floater[] = [];
+  addFloater(f: FloaterParam): void {
+    let f2 = f as Floater;
+    f2.start = getFrameTimestamp();
+    this.floaters.push(f2);
+  }
+
+  tickFloaters(): void {
+    let expire = getFrameTimestamp() - FLOATER_TIME_TOTAL;
+    for (let ii = this.floaters.length - 1; ii >= 0; --ii) {
+      if (this.floaters[ii].start < expire) {
+        this.floaters.splice(ii, 1);
+      }
+    }
+  }
+
+  drawFloaters(param: FloaterTarget & {
+    x: number;
+    y: number;
+  }): number {
+    let { x, y } = param;
+    let { floaters } = this;
+    let blink = 1;
+    for (let ii = 0; ii < floaters.length; ++ii) {
+      let floater = floaters[ii];
+      if (!sameFloaterTarget(floater, param)) {
+        continue;
+      }
+      let elapsed = getFrameTimestamp() - floater.start;
+      let alpha = 1;
+      if (elapsed > FLOATER_TIME) {
+        alpha = 1 - (elapsed - FLOATER_TIME) / FLOATER_FADE;
+        if (alpha <= 0) {
+          continue;
+        }
+      }
+      if (elapsed < BLINK_TIME) {
+        blink = min(blink, elapsed / BLINK_TIME);
+      }
+      let float = easeOut(elapsed / (FLOATER_TIME + FLOATER_FADE), 2) * 20;
+      suppressNewDOMElemWarnings();
+      markdownAuto({
+        alpha,
+        font_style: style_attack,
+        x: x - 50 + 1,
+        y: y - float - uiTextHeight()/2,
+        z: Z.FLOATERS,
+        w: 100,
+        align: ALIGN.HCENTER,
+        text: floater.msg,
+      });
+      let damage_size = 40;
+      v4set(temp_color, 1, 1, 1, alpha);
+      if (floater.attack_type === AttackType.FRONT ||
+        floater.attack_type === AttackType.BACK ||
+        floater.attack_type === AttackType.ALL
+      ) {
+        damage_sprite.draw({
+          x,
+          y: y - float,
+          z: Z.FLOATERS - 1,
+          w: damage_size, h: damage_size,
+          color: temp_color,
+        });
+      }
+    }
+    return blink < 1 ? easeOut(blink, 2) : 1;
   }
 }
 
 let combat_scene: CombatScene | null = null;
+
+export function combatDrawFloaters(param: FloaterTarget & {
+  x: number;
+  y: number;
+}): number {
+  if (!combat_scene) {
+    return 1;
+  }
+  return combat_scene.drawFloaters(param);
+}
 
 export function combatSetPreviewState(state: CombatState): void {
   assert(combat_scene);
@@ -406,7 +603,7 @@ export function combatSetPreviewState(state: CombatState): void {
 
 export function combatAcitvateAbility(hero_idx: number, ability_idx: number): void {
   assert(combat_scene);
-  combat_scene.combat_state.activateAbility(hero_idx, ability_idx);
+  combat_scene.combat_state.activateAbility(hero_idx, ability_idx, combat_scene);
   combat_scene.updateEnemyPreview();
 }
 
@@ -436,15 +633,6 @@ const color_combat_shade = vec4(0.15, 0.15, 0.15, 0.75);
 
 let enemy_sprites: TSMap<Sprite> = {};
 
-const style_attack = fontStyle(null, {
-  color: 0xFFFFFFff,
-  outline_width: 4,
-  outline_color: 0x201b25ff,
-});
-const style_hint = fontStyle(null, {
-  color: 0x6d758dff,
-});
-
 export function combatReadyForEnemyTurn(usable_dice: Partial<Record<number, true>>): void {
   if (!combat_scene) {
     return;
@@ -458,7 +646,7 @@ export function combatReadyForEnemyTurn(usable_dice: Partial<Record<number, true
 function combatDoEnemyTurn(): void {
   assert(combat_scene);
   let new_state = combat_scene.combat_state.clone();
-  new_state.doEnemyTurn();
+  new_state.doEnemyTurn(combat_scene);
   combat_scene.combat_state = new_state;
 
   // Apply deaths back to entity data
@@ -476,7 +664,6 @@ function combatDoEnemyTurn(): void {
 let last_combat_frame = -1;
 let last_combat_ent: Entity | null = null;
 let rolled_at: number;
-let temp_color = vec4(1, 1, 1, 1);
 let color_die_used = vec4(0.25, 0.25, 0.25, 1);
 let color_die_revenge = vec4(1, 0, 0, 1);
 let color_die_revenge_used = vec4(0.25, 0, 0, 1);
@@ -498,7 +685,10 @@ export function doCombat(target: Entity, dt: number): void {
     }
   }
 
-  if (combat_scene.needsRoll()) {
+  combat_scene.tickFloaters();
+  if (combat_scene.animPaused(false)) {
+    // no state updates
+  } else if (combat_scene.needsRoll()) {
     rolled_at = getFrameTimestamp();
     combat_scene.combat_state.roll();
   } else if (combat_scene.player_is_done) {
@@ -531,11 +721,18 @@ export function doCombat(target: Entity, dt: number): void {
   for (let ii = 0; ii < enemies.length; ++ii) {
     let enemy = enemies[ii];
     let enemy_x = enemy_x0 + ii * (enemy_w + ENEMY_PAD);
+    let x_mid = floor(enemy_x + enemy_w/2);
+    let blink = combat_scene.drawFloaters({
+      enemy_idx: ii,
+      x: x_mid,
+      y: ENEMY_SPRITE_Y + ENEMY_SPRITE_H * 0.25,
+    });
     let { def } = enemy;
     let { tex } = def;
     let sprite = enemy_sprites[tex];
     let alpha = enemy.hp ? 1 : 0.25;
     temp_color[3] = alpha;
+    v3set(temp_color, blink, blink, blink);
     if (!sprite) {
       sprite = enemy_sprites[tex] = spriteCreate({
         name: `enemies/${tex}`,
@@ -544,7 +741,6 @@ export function doCombat(target: Entity, dt: number): void {
       });
     }
     let aspect = sprite.getAspect();
-    let x_mid = floor(enemy_x + enemy_w/2);
     sprite.draw({
       x: x_mid,
       y: ENEMY_SPRITE_Y,
@@ -652,6 +848,9 @@ export function doCombat(target: Entity, dt: number): void {
   }
 
   let end_combat = true;
+  if (combat_scene.animPaused(true)) {
+    end_combat = false;
+  }
   enemies = combat_state.enemies;
   for (let ii = 0; ii < enemies.length; ++ii) {
     let enemy = enemies[ii];
@@ -660,7 +859,7 @@ export function doCombat(target: Entity, dt: number): void {
     }
   }
 
-  if (engine.defines.DEBUG && buttonText({
+  if (engine.DEBUG && buttonText({
     x: VIEWPORT_X0 + 4,
     y: VIEWPORT_Y0 + 4,
     text: 'WIN',
@@ -680,9 +879,10 @@ export function doCombat(target: Entity, dt: number): void {
 
 export function combatStartup(): void {
   // tiny_font = tiny_font_in;
-  // damage_sprite = spriteCreate({
-  //   name: 'particles/damage',
-  // });
+  damage_sprite = spriteCreate({
+    name: 'bang',
+    origin: vec2(0.5, 0.5),
+  });
   font = uiGetFont();
   markdownImageRegisterSpriteSheet(spritesheet_icons);
 }

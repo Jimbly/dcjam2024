@@ -9,6 +9,7 @@ TODO
   * do bam! floater with damage upon click, floaters for armor, hp, etc
   * put placeholder sounds
   * show everything
+* add a BACK type attack
 * Combat should trigger when you're on the same tile, not adjacent (otherwise door problems!)?
 * replace heroes after combat
 * insanity
