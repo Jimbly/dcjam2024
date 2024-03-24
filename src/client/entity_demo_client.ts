@@ -67,11 +67,8 @@ export type HeroClassDef = {
 export type Hero = {
   class_id: string;
   tier: number;
-
-  hp: number;
-  temp_shield: number;
-  aggro: number;
   face?: number;
+  dead?: boolean;
 };
 
 

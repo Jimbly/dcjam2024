@@ -14,7 +14,7 @@ import { markdownImageRegisterSpriteSheet } from 'glov/client/markdown_renderabl
 import { Sprite, spriteCreate } from 'glov/client/sprites';
 import { buttonText, drawRect, playUISound, uiGetFont, uiTextHeight } from 'glov/client/ui';
 import { randCreate } from 'glov/common/rand_alea';
-import { TSMap } from 'glov/common/types';
+import { DataObject, TSMap } from 'glov/common/types';
 import { empty } from 'glov/common/util';
 import verify from 'glov/common/verify';
 import { vec4 } from 'glov/common/vmath';
@@ -23,10 +23,14 @@ import {
   AttackTypeToFrameEnemies,
   ENCOUNTERS,
   ENEMIES,
+  Encounter,
   EnemyDef,
 } from './encounters';
 import {
+  AbilityDef,
   EntityDemoClient,
+  HeroClassDef,
+  HeroClassTier,
   entityManager,
 } from './entity_demo_client';
 import {
@@ -53,37 +57,37 @@ class Enemy {
     this.hp = def.hp;
   }
 }
+function cloneEnemy(enemy: Enemy): Enemy {
+  let ret = new Enemy(enemy.def);
+  let key: keyof Enemy;
+  for (key in enemy) {
+    (ret as unknown as DataObject)[key] = enemy[key];
+  }
+  return ret;
+}
 
-let font: Font;
+export class CombatHero {
+  hp!: number;
+  temp_shield: number = 0;
+  aggro: number = 0;
+  class_ref!: HeroClassDef;
+  tier_ref!: HeroClassTier;
+  ability_refs!: [AbilityDef, AbilityDef];
+}
+function cloneCombatHero(hero: CombatHero): CombatHero {
+  let ret = new CombatHero();
+  let key: keyof CombatHero;
+  for (key in hero) {
+    (ret as unknown as DataObject)[key] = hero[key];
+  }
+  return ret;
+}
 
-let rand = randCreate(1234);
-
-export class CombatState {
+class CombatState {
   enemies: Enemy[] = [];
-  anims: AnimationSequencer[] = [];
-  did_death = false;
-  did_victory = false;
-  dice: number[] = [0, 0];
-  dice_used: boolean[] = [];
-  player_is_done = false;
+  heroes: CombatHero[] = [];
   deaths = 0;
-  usable_dice: Partial<Record<number, true>> = {};
 
-  needsRoll(): boolean {
-    return !this.dice_used.length;
-  }
-  roll(): void {
-    this.dice = [
-      rand.range(6) + 1,
-      rand.range(6) + 1,
-    ];
-    for (let ii = 0; ii < this.deaths; ++ii) {
-      this.dice.push(rand.range(6) + 1);
-    }
-    //this.dice = [1,2,3,4,5,6];
-    //this.dice[1] = 5;
-    this.dice_used = this.dice.map((a) => false);
-  }
   livingEnemies(): number[] {
     let ret = [];
     for (let ii = 0; ii < this.enemies.length; ++ii) {
@@ -95,6 +99,7 @@ export class CombatState {
     assert(ret.length);
     return ret;
   }
+
   damage(enemy_idx: number, hp: number): void {
     let enemy = this.enemies[enemy_idx];
     enemy.hp -= max(0, hp - enemy.def.shield - enemy.temp_shield);
@@ -108,211 +113,139 @@ export class CombatState {
     let enemy = this.enemies[enemy_idx];
     enemy.poison += amount;
   }
-}
 
-let combat_state: CombatState | null = null;
+  clone(): CombatState {
+    let ret = new CombatState();
+    ret.enemies = this.enemies.map(cloneEnemy);
+    ret.heroes = this.heroes.map(cloneCombatHero);
+    ret.deaths = this.deaths;
+    return ret;
+  }
 
-export function combatGetState(): CombatState | null {
-  return combat_state;
-}
+  activateAbility(hero_idx: number, ability_idx: number): void {
+    let { heroes } = this;
+    let hero = heroes[hero_idx];
+    let { ability_refs } = hero;
+    let ability = ability_refs[ability_idx];
 
-function cleanupHeroes(): void {
-  let me = myEnt();
-  assert(me);
-  let { heroes } = me.data;
-  if (heroes) {
-    for (let ii = 0; ii < heroes.length; ++ii) {
-      let hero = heroes[ii];
-      if (hero.hp === 0) { // NOT undefined
-        continue;
-      }
-      let { class_id, tier } = hero;
-      let class_def = CLASSES[class_id]!;
-      let class_tier = class_def.tier[tier];
-      hero.hp = class_tier.hp;
+    hero.aggro += ability.aggro;
+    if (hero.aggro > MAX_AGGRO) {
+      hero.aggro = MAX_AGGRO;
+    } else if (hero.aggro < 0) {
       hero.aggro = 0;
     }
-  }
-}
-
-export function cleanupCombat(dt: number): void {
-  cleanupHeroes();
-  if (!combat_state) {
-    return;
-  }
-  combat_state = null;
-}
-
-const color_combat_shade = vec4(0.15, 0.15, 0.15, 0.75);
-
-let enemy_sprites: TSMap<Sprite> = {};
-
-const style_attack = fontStyle(null, {
-  color: 0xFFFFFFff,
-  outline_width: 4,
-  outline_color: 0x201b25ff,
-});
-const style_hint = fontStyle(null, {
-  color: 0x6d758dff,
-});
-
-export function combatActivateAbility(hero_idx: number, ability_idx: number): void {
-  let me = myEnt();
-  assert(me);
-  assert(combat_state);
-
-  let { heroes } = me.data;
-  let hero = heroes[hero_idx];
-  let { class_id/*, tier*/ } = hero;
-  let class_def = CLASSES[class_id]!;
-  // let class_tier = class_def.tier[tier];
-  let ability_id = class_def.abilities[ability_idx];
-  let ability = ABILITIES[ability_id]!;
-  let die = DICE_SLOTS[hero_idx][ability_idx];
-  let found = -1;
-  for (let ii = 0; ii < combat_state.dice.length; ++ii) {
-    if (combat_state.dice[ii] === die && !combat_state.dice_used[ii]) {
-      found = ii;
-      break;
+    let { effects } = ability;
+    let living_enemies = this.livingEnemies();
+    for (let ii = 0; ii < effects.length; ++ii) {
+      let effect = effects[ii];
+      switch (effect.type) {
+        case AttackType.FRONT:
+          this.damage(living_enemies[0], effect.amount);
+          break;
+        case AttackType.POISON:
+          this.poison(living_enemies[0], effect.amount);
+          break;
+        case AttackType.BACK:
+          this.damage(living_enemies[living_enemies.length - 1], effect.amount);
+          break;
+        case AttackType.ALL:
+          for (let jj = 0; jj < living_enemies.length; ++jj) {
+            this.damage(living_enemies[jj], effect.amount);
+          }
+          break;
+        case AttackType.SHIELD_SELF:
+          hero.temp_shield = (hero.temp_shield || 0) + effect.amount;
+          if (hero.temp_shield > MAX_SHIELD) {
+            hero.temp_shield = MAX_SHIELD;
+          }
+          break;
+        case AttackType.SHIELD_ALL:
+          for (let jj = 0; jj < heroes.length; ++jj) {
+            let target_hero = heroes[jj];
+            if (!target_hero.hp) {
+              continue;
+            }
+            target_hero.temp_shield = (target_hero.temp_shield || 0) + effect.amount;
+            if (target_hero.temp_shield > MAX_SHIELD) {
+              target_hero.temp_shield = MAX_SHIELD;
+            }
+          }
+          break;
+        case AttackType.HEAL: {
+          // TODO: smart target to prioritize anyone who would die this turn (aggro based, including predicted self)
+          let best = -1;
+          let best_missing_hp = 0;
+          let best_total_hp = 0;
+          for (let jj = 0; jj < heroes.length; ++jj) {
+            let target_hero = heroes[jj];
+            if (!target_hero.hp) {
+              continue;
+            }
+            let missing_hp = min(target_hero.tier_ref.hp - target_hero.hp, effect.amount);
+            if (missing_hp > best_missing_hp || missing_hp === best_missing_hp && target_hero.hp < best_total_hp) {
+              best = jj;
+              best_missing_hp = missing_hp;
+              best_total_hp = target_hero.hp;
+            }
+          }
+          if (best !== -1) {
+            let target_hero = heroes[best];
+            target_hero.hp = min(target_hero.hp + effect.amount, target_hero.tier_ref.hp);
+          }
+        } break;
+        case AttackType.HEAL_ALL:
+          for (let jj = 0; jj < heroes.length; ++jj) {
+            let target_hero = heroes[jj];
+            if (!target_hero.hp) {
+              continue;
+            }
+            target_hero.hp = min(target_hero.hp + effect.amount, target_hero.tier_ref.hp);
+          }
+          break;
+        default:
+          verify.unreachable(effect.type);
+      }
     }
   }
-  assert(found !== -1);
-  combat_state.dice_used[found] = true;
-  hero.aggro += ability.aggro;
-  if (hero.aggro > MAX_AGGRO) {
-    hero.aggro = MAX_AGGRO;
-  } else if (hero.aggro < 0) {
-    hero.aggro = 0;
-  }
-  let { effects } = ability;
-  let living_enemies = combat_state.livingEnemies();
-  for (let ii = 0; ii < effects.length; ++ii) {
-    let effect = effects[ii];
-    switch (effect.type) {
-      case AttackType.FRONT:
-        combat_state.damage(living_enemies[0], effect.amount);
-        break;
-      case AttackType.POISON:
-        combat_state.poison(living_enemies[0], effect.amount);
-        break;
-      case AttackType.BACK:
-        combat_state.damage(living_enemies[living_enemies.length - 1], effect.amount);
-        break;
-      case AttackType.ALL:
-        for (let jj = 0; jj < living_enemies.length; ++jj) {
-          combat_state.damage(living_enemies[jj], effect.amount);
-        }
-        break;
-      case AttackType.SHIELD_SELF:
-        hero.temp_shield = (hero.temp_shield || 0) + effect.amount;
-        if (hero.temp_shield > MAX_SHIELD) {
-          hero.temp_shield = MAX_SHIELD;
-        }
-        break;
-      case AttackType.SHIELD_ALL:
-        for (let jj = 0; jj < heroes.length; ++jj) {
-          let target_hero = heroes[jj];
-          if (!target_hero.hp) {
-            continue;
-          }
-          target_hero.temp_shield = (target_hero.temp_shield || 0) + effect.amount;
-          if (target_hero.temp_shield > MAX_SHIELD) {
-            target_hero.temp_shield = MAX_SHIELD;
-          }
-        }
-        break;
-      case AttackType.HEAL: {
-        // TODO: smart target to prioritize anyone who would die this turn (aggro based, including predicted self)
-        let best = -1;
-        let best_missing_hp = 0;
-        let best_total_hp = 0;
-        for (let jj = 0; jj < heroes.length; ++jj) {
-          let target_hero = heroes[jj];
-          if (!target_hero.hp) {
-            continue;
-          }
-          let { class_id: target_class_id, tier: target_tier } = target_hero;
-          let target_class_def = CLASSES[target_class_id]!;
-          let target_class_tier = target_class_def.tier[target_tier];
-          let missing_hp = min(target_class_tier.hp - target_hero.hp, effect.amount);
-          if (missing_hp > best_missing_hp || missing_hp === best_missing_hp && target_hero.hp < best_total_hp) {
-            best = jj;
-            best_missing_hp = missing_hp;
-            best_total_hp = target_hero.hp;
-          }
-        }
-        if (best !== -1) {
-          let target_hero = heroes[best];
-          let { class_id: target_class_id, tier: target_tier } = target_hero;
-          let target_class_def = CLASSES[target_class_id]!;
-          let target_class_tier = target_class_def.tier[target_tier];
-          target_hero.hp = min(target_hero.hp + effect.amount, target_class_tier.hp);
-        }
-      } break;
-      case AttackType.HEAL_ALL:
-        for (let jj = 0; jj < heroes.length; ++jj) {
-          let target_hero = heroes[jj];
-          if (!target_hero.hp) {
-            continue;
-          }
-          let { class_id: target_class_id, tier: target_tier } = target_hero;
-          let target_class_def = CLASSES[target_class_id]!;
-          let target_class_tier = target_class_def.tier[target_tier];
-          target_hero.hp = min(target_hero.hp + effect.amount, target_class_tier.hp);
-        }
-        break;
-      default:
-        verify.unreachable(effect.type);
+
+  heroes_attacked!: Partial<Record<number, true>>;
+  aggro_targetted!: Partial<Record<number, true>>;
+  decayAggro(): void {
+    let { heroes } = this;
+    for (let hero_idx in this.heroes_attacked) {
+      heroes[hero_idx].temp_shield = 0;
+    }
+
+    for (let ii = 0; ii < heroes.length; ++ii) {
+      let hero = heroes[ii];
+      if (!hero.hp) {
+        hero.aggro = 0;
+      } else if (this.aggro_targetted[ii]) {
+        hero.aggro = max(0, min(hero.aggro - 1, floor(hero.aggro / 2)));
+      }
     }
   }
-}
 
-export function combatReadyForEnemyTurn(usable_dice: Partial<Record<number, true>>): void {
-  if (!combat_state) {
-    return;
-  }
-  combat_state.usable_dice = usable_dice;
-  if (empty(usable_dice)) {
-    combat_state.player_is_done = true;
-  }
-}
-
-function combatDoEnemyTurn(): void {
-  let me = myEnt();
-  assert(me);
-  assert(combat_state);
-
-  let { heroes } = me.data;
-  combat_state.dice_used = [];
-  let { enemies } = combat_state;
-  let attacked: Partial<Record<number, true>> = {};
-  let aggro_targetted: Partial<Record<number, true>> = {};
-  function damageHero(idx: number, amount: number): void {
-    let hero = heroes[idx];
-    let { class_id, tier } = hero;
-    let class_def = CLASSES[class_id]!;
-    let class_tier = class_def.tier[tier];
+  damageHero(idx: number, amount: number): void {
+    let hero = this.heroes[idx];
+    let class_tier = hero.tier_ref;
     hero.hp -= max(0, amount - (hero.temp_shield || 0) - class_tier.shield);
     if (hero.hp <= 0) {
       // TODO: died!
       hero.hp = 0;
-      combat_state!.deaths++;
+      this.deaths++;
     }
-    attacked[idx] = true;
+    this.heroes_attacked[idx] = true;
   }
-
-
-  for (let ii = 0; ii < enemies.length; ++ii) {
-    let enemy = enemies[ii];
-    if (!enemy.hp) {
-      continue;
-    }
+  doEnemyAction(enemy_idx: number): void {
+    let { heroes, enemies } = this;
+    let enemy = enemies[enemy_idx];
     let { def, poison } = enemy;
     enemy.hp -= poison;
     if (enemy.hp <= 0) {
       enemy.hp = 0;
       // TODO: died!
-      continue;
+      return;
     }
     for (let jj = 0; jj < def.effects.length; ++jj) {
       let effect = def.effects[jj];
@@ -332,14 +265,14 @@ function combatDoEnemyTurn(): void {
             }
           }
           for (let kk = 0; kk < best.length; ++kk) {
-            aggro_targetted[best[kk]] = true;
-            damageHero(best[kk], floor(effect.amount / best.length));
+            this.aggro_targetted[best[kk]] = true;
+            this.damageHero(best[kk], floor(effect.amount / best.length));
           }
         } break;
         case AttackType.ALL:
           for (let kk = 0; kk < heroes.length; ++kk) {
             if (heroes[kk].hp > 0) {
-              damageHero(kk, effect.amount);
+              this.damageHero(kk, effect.amount);
             }
           }
           break;
@@ -348,17 +281,163 @@ function combatDoEnemyTurn(): void {
       }
     }
   }
+  doEnemyTurn(): void {
+    let { enemies } = this;
+    this.heroes_attacked = {};
+    this.aggro_targetted = {};
 
-  for (let hero_idx in attacked) {
-    heroes[hero_idx].temp_shield = 0;
+    for (let ii = 0; ii < enemies.length; ++ii) {
+      let enemy = enemies[ii];
+      if (!enemy.hp) {
+        continue;
+      }
+      this.doEnemyAction(ii);
+    }
+
+    this.decayAggro();
+  }
+}
+
+let font: Font;
+
+let rand = randCreate(1234);
+
+class CombatScene {
+  combat_state: CombatState;
+  anims: AnimationSequencer[] = [];
+  did_death = false;
+  did_victory = false;
+  dice: number[] = [0, 0];
+  dice_used: boolean[] = [];
+  player_is_done = false;
+  usable_dice: Partial<Record<number, true>> = {};
+
+  constructor(me: Entity, encounter: Encounter) {
+    let combat_state = this.combat_state = new CombatState();
+    for (let ii = 0; ii < encounter.enemies.length; ++ii) {
+      let enemy_def = ENEMIES[encounter.enemies[ii]];
+      assert(enemy_def);
+      combat_state.enemies.push(new Enemy(enemy_def));
+    }
+    let { heroes } = me.data;
+    for (let ii = 0; ii < heroes.length; ++ii) {
+      let hero_ref = heroes[ii];
+      let { class_id, tier } = hero_ref;
+      let class_def = CLASSES[class_id]!;
+      let { abilities } = class_def;
+      let class_tier = class_def.tier[tier];
+      let hero = new CombatHero();
+      hero.class_ref = class_def;
+      hero.tier_ref = class_tier;
+      let a0 = ABILITIES[abilities[0]];
+      assert(a0);
+      let a1 = ABILITIES[abilities[1]];
+      assert(a1);
+      hero.ability_refs = [a0, a1];
+      hero.hp = hero_ref.dead ? 0 : class_tier.hp;
+      combat_state.heroes.push(hero);
+    }
   }
 
+  needsRoll(): boolean {
+    return !this.dice_used.length;
+  }
+  roll(): void {
+    this.dice = [
+      rand.range(6) + 1,
+      rand.range(6) + 1,
+    ];
+    for (let ii = 0; ii < this.combat_state.deaths; ++ii) {
+      this.dice.push(rand.range(6) + 1);
+    }
+    //this.dice = [1,2,3,4,5,6];
+    //this.dice[1] = 5;
+    this.dice_used = this.dice.map((a) => false);
+  }
+}
+
+let combat_scene: CombatScene | null = null;
+
+export function combatGetDiceAvail(): Partial<Record<number, true>> {
+  let dice_avail: Partial<Record<number, true>> = {};
+  if (combat_scene) {
+    for (let ii = 0; ii < combat_scene.dice_used.length; ++ii) {
+      if (!combat_scene.dice_used[ii]) {
+        dice_avail[combat_scene.dice[ii]] = true;
+      }
+    }
+  }
+  return dice_avail;
+}
+
+export function combatGetState(): CombatState | null {
+  return combat_scene && combat_scene.combat_state || null;
+}
+
+export function cleanupCombat(dt: number): void {
+  if (!combat_scene) {
+    return;
+  }
+  combat_scene = null;
+}
+
+const color_combat_shade = vec4(0.15, 0.15, 0.15, 0.75);
+
+let enemy_sprites: TSMap<Sprite> = {};
+
+const style_attack = fontStyle(null, {
+  color: 0xFFFFFFff,
+  outline_width: 4,
+  outline_color: 0x201b25ff,
+});
+const style_hint = fontStyle(null, {
+  color: 0x6d758dff,
+});
+
+export function combatActivateAbility(hero_idx: number, ability_idx: number): void {
+  assert(combat_scene);
+
+  let die = DICE_SLOTS[hero_idx][ability_idx];
+  let found = -1;
+  for (let ii = 0; ii < combat_scene.dice.length; ++ii) {
+    if (combat_scene.dice[ii] === die && !combat_scene.dice_used[ii]) {
+      found = ii;
+      break;
+    }
+  }
+  assert(found !== -1);
+  combat_scene.dice_used[found] = true;
+
+  let new_state = combat_scene.combat_state.clone();
+  new_state.activateAbility(hero_idx, ability_idx);
+  combat_scene.combat_state = new_state;
+}
+
+export function combatReadyForEnemyTurn(usable_dice: Partial<Record<number, true>>): void {
+  if (!combat_scene) {
+    return;
+  }
+  combat_scene.usable_dice = usable_dice;
+  if (empty(usable_dice)) {
+    combat_scene.player_is_done = true;
+  }
+}
+
+function combatDoEnemyTurn(): void {
+  assert(combat_scene);
+  combat_scene.dice_used = [];
+  let new_state = combat_scene.combat_state.clone();
+  new_state.doEnemyTurn();
+  combat_scene.combat_state = new_state;
+
+  // Apply deaths back to entity data
+  let me = myEnt();
+  assert(me);
+  let ent_heroes = me.data.heroes;
+  let { heroes } = new_state;
   for (let ii = 0; ii < heroes.length; ++ii) {
-    let hero = heroes[ii];
-    if (!hero.hp) {
-      hero.aggro = 0;
-    } else if (aggro_targetted[ii]) {
-      hero.aggro = max(0, min(hero.aggro - 1, floor(hero.aggro / 2)));
+    if (!heroes[ii].hp) {
+      ent_heroes[ii].dead = true;
     }
   }
 }
@@ -376,22 +455,16 @@ export function doCombat(target: Entity, dt: number): void {
   let reset = last_combat_frame !== getFrameIndex() - 1 || target !== last_combat_ent;
   last_combat_frame = getFrameIndex();
   last_combat_ent = target;
-  if (reset || !combat_state) {
-    combat_state = new CombatState();
+  if (reset || !combat_scene) {
     let encounter = ENCOUNTERS[target.data.stats.encounter];
     assert(encounter);
-    for (let ii = 0; ii < encounter.enemies.length; ++ii) {
-      let enemy_def = ENEMIES[encounter.enemies[ii]];
-      assert(enemy_def);
-      combat_state.enemies.push(new Enemy(enemy_def));
-    }
-    cleanupHeroes();
+    combat_scene = new CombatScene(me, encounter);
   }
 
-  if (combat_state.needsRoll()) {
+  if (combat_scene.needsRoll()) {
     rolled_at = getFrameTimestamp();
-    combat_state.roll();
-  } else if (combat_state.player_is_done) {
+    combat_scene.roll();
+  } else if (combat_scene.player_is_done) {
     combatDoEnemyTurn();
   }
 
@@ -403,6 +476,7 @@ export function doCombat(target: Entity, dt: number): void {
 
   drawRect(x0, y0, x1, y1, Z.COMBAT_SHADE, color_combat_shade);
 
+  let { combat_state } = combat_scene;
   let { enemies } = combat_state;
 
   let enemy_w = 56;
@@ -495,16 +569,16 @@ export function doCombat(target: Entity, dt: number): void {
   const DIE_W = 20;
   const DIE_PAD = 8;
   const DIE_Y = VIEWPORT_Y0 + render_height + DIE_PAD;
-  let num_dice = combat_state.dice.length;
+  let num_dice = combat_scene.dice.length;
   let die_x = floor(VIEWPORT_X0 + (render_width - (DIE_W * num_dice + DIE_PAD * (num_dice - 1))) / 2);
   let num_left = 0;
   for (let ii = 0; ii < num_dice; ++ii) {
-    let die = combat_state.dice[ii];
-    let used = combat_state.dice_used[ii];
+    let die = combat_scene.dice[ii];
+    let used = combat_scene.dice_used[ii];
     if (rolled_at > getFrameTimestamp() - 250) {
       die = floor(random() * 6) + 1;
     } else {
-      if (!combat_state.usable_dice[die]) {
+      if (!combat_scene.usable_dice[die]) {
         used = true;
       }
     }
@@ -512,7 +586,7 @@ export function doCombat(target: Entity, dt: number): void {
     if (!used) {
       num_left++;
     }
-    let revenge = ii >= num_dice - combat_state.deaths;
+    let revenge = ii >= num_dice - combat_scene.combat_state.deaths;
     sprite_icons.draw({
       x: die_x,
       y: DIE_Y,
@@ -552,14 +626,14 @@ export function doCombat(target: Entity, dt: number): void {
     end_combat = true;
   }
 
-  if (end_combat && !combat_state.did_victory) {
+  if (end_combat && !combat_scene.did_victory) {
     // victory!
-    combat_state.did_victory = true;
+    combat_scene.did_victory = true;
     playUISound('victory');
     entityManager().deleteEntity(target.id, 'killed');
     // TODO: give loot
   }
-  combat_state.player_is_done = false;
+  combat_scene.player_is_done = false;
 }
 
 export function combatStartup(): void {

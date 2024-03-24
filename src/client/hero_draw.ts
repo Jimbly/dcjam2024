@@ -6,14 +6,20 @@ import {
 } from 'glov/client/ui';
 import { vec4 } from 'glov/common/vmath';
 import {
+  CombatHero,
   combatActivateAbility,
+  combatGetDiceAvail,
   combatGetState,
   combatReadyForEnemyTurn,
 } from './combat';
 import { AttackTypeToFrameHeroes } from './encounters';
 import { Hero } from './entity_demo_client';
 import { game_height } from './globals';
-import { ABILITIES, CLASSES, DICE_SLOTS } from './heroes';
+import {
+  ABILITIES,
+  CLASSES,
+  DICE_SLOTS,
+} from './heroes';
 import { myEnt } from './play';
 
 const spritesheet_faces = require('./img/faces');
@@ -77,15 +83,16 @@ const ABILITY_H = 32;
 let dice_usable: Partial<Record<number, true>>;
 const color_dead = vec4(1, 1, 1, DEAD_ALPHA);
 const color_dead_portrait = vec4(0, 0, 0, 1);
-function drawHero(idx: number, hero: Hero, is_combat: boolean): void {
+function drawHero(idx: number, hero_def: Hero, hero: CombatHero | null, is_combat: boolean): void {
   let x0 = 0;
   let y0 = idx * HERO_H;
   let aspect = sprite_icons.uidata.aspect[FRAME_HERO_BG];
-  let { class_id, tier } = hero;
-  let class_def = CLASSES[class_id]!;
+  let { tier, class_id } = hero_def;
+  let class_def = CLASSES[class_id];
+  assert(class_def);
   let class_tier = class_def.tier[tier];
-  let hp = hero.hp / class_tier.hp;
-  let dead = !hp;
+  let hp = hero ? hero.hp / class_tier.hp : 1;
+  let dead = hero ? !hp : hero_def.dead;
   let z = Z.UI;
   sprite_icons.draw({
     x: x0,
@@ -96,7 +103,7 @@ function drawHero(idx: number, hero: Hero, is_combat: boolean): void {
     frame: hp ? FRAME_HERO_BG : FRAME_HERO_BG_EMPTY
   });
   z++;
-  let face = class_def.faces[hero.face || 0] || class_def.faces[0];
+  let face = class_def.faces[hero_def.face || 0] || class_def.faces[0];
   sprite_faces.draw({
     x: PORTRAIT_X,
     y: y0 + PORTRAIT_Y,
@@ -153,7 +160,7 @@ function drawHero(idx: number, hero: Hero, is_combat: boolean): void {
     z,
     w: HP_W,
     align: ALIGN.HCENTER,
-    text: is_combat ? `${hero.hp} / ${class_tier.hp}` : `${hero.hp}`,
+    text: hero ? `${hero.hp} / ${class_tier.hp}` : `${class_tier.hp}`,
   });
 
   let y = y0 + 2;
@@ -161,7 +168,7 @@ function drawHero(idx: number, hero: Hero, is_combat: boolean): void {
   if (class_tier.shield) {
     shield_text = `${class_tier.shield}`;
   }
-  if (hero.temp_shield && is_combat) {
+  if (hero && hero.temp_shield) {
     shield_text += `+${hero.temp_shield}`;
   }
   if (shield_text) {
@@ -184,7 +191,7 @@ function drawHero(idx: number, hero: Hero, is_combat: boolean): void {
     });
   }
 
-  if (is_combat) {
+  if (hero) {
     sprite_icons.draw({
       x: x0 + AGGRO_X,
       y, z,
@@ -204,15 +211,7 @@ function drawHero(idx: number, hero: Hero, is_combat: boolean): void {
     });
   }
 
-  let combat_state = combatGetState();
-  let dice_avail: Partial<Record<number, true>> = {};
-  if (combat_state) {
-    for (let ii = 0; ii < combat_state.dice_used.length; ++ii) {
-      if (!combat_state.dice_used[ii]) {
-        dice_avail[combat_state.dice[ii]] = true;
-      }
-    }
-  }
+  let dice_avail = combatGetDiceAvail();
   y = y0 + ABILITY_Y;
   let abil_y0 = y;
   let zabil = z;
@@ -224,7 +223,7 @@ function drawHero(idx: number, hero: Hero, is_combat: boolean): void {
     let { icon, effects } = ability;
     let die = DICE_SLOTS[idx][ability_idx];
     let x = x0 + ABILITY_X[ability_idx];
-    let disabled = !is_combat || !dice_avail[die] || !hero.hp;
+    let disabled = Boolean(!is_combat || !dice_avail[die] || hero_def.dead || hero && !hero.hp);
 
     // Don't do this, force them to use each die, they may want to _not_ generate aggro on another ability
     // if (effects.length === 0 && ability.aggro < 0 && !hero.aggro) {
@@ -305,10 +304,11 @@ export function heroesDraw(is_combat: boolean): void {
   if (!heroes) {
     return;
   }
+  let combat_state = combatGetState();
   dice_usable = {};
   for (let ii = 0; ii < heroes.length; ++ii) {
-    let hero = heroes[ii];
-    drawHero(ii, hero, is_combat);
+    let combat_hero = combat_state && combat_state.heroes[ii] || null;
+    drawHero(ii, heroes[ii], combat_hero, is_combat);
   }
   if (is_combat) {
     combatReadyForEnemyTurn(dice_usable);
