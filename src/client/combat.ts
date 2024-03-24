@@ -116,10 +116,10 @@ function cleanupHeroes(): void {
 }
 
 export function cleanupCombat(dt: number): void {
+  cleanupHeroes();
   if (!combat_state) {
     return;
   }
-  cleanupHeroes();
   combat_state = null;
 }
 

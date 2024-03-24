@@ -18,29 +18,29 @@ Health: 15
 
 Characters / Abilities
 Front Line #1; HP 8; Shield 1
-###1 Attack 3  R6
-   2 Attack 2  R5
+###1 Attack 3  R3
+   2 Attack 2  R2
 
 Front Line #2; HP 8; Shield 1
 ###2 Shield 3 self R6
-   1 Shield 2 self R6
-   2 Shield 3 self R4 - sticks around until we get hit, show "Shield 1+3"
+   1 Shield 2 self R3
+   2 Shield 3 self R2 - sticks around until we get hit, show "Shield 1+3"
 
 Mid #1; HP 6
-   3 Attack 2 R3
-###4 Poison 1 R5
+   3 Attack 2 R2
+###4 Poison 1 R3
 
 Mid #2; HP 6
-   3 Damage All 1 R3
-###4 Damage All 2 R4
+   3 Damage All 1 R2
+###4 Damage All 2 R3
 
 Back #1; HP 5
-###5 Heal 3 R3
+###5 Heal 3 R2
    6 Heal 2 R1
 
 Back #2; HP 5
-   5 Shield 1 others R5
-###6 Shield 2 others R4
+   5 Shield 1 others R3
+###6 Shield 2 others R2
 
 
 Option 1:

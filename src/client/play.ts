@@ -756,22 +756,22 @@ export function playStartup(): void {
           hp: 1, // set to 0 to trigger end of game
         },
         heroes: [{
-          class_id: 'demo',
+          class_id: 'front1',
           tier: 2,
         },{
-          class_id: 'demo',
+          class_id: 'front2',
           tier: 1,
         },{
-          class_id: 'demo',
+          class_id: 'mid1',
           tier: 0,
         },{
-          class_id: 'demo',
+          class_id: 'mid2',
           tier: 0,
         },{
-          class_id: 'demo',
+          class_id: 'back1',
           tier: 0,
         },{
-          class_id: 'demo',
+          class_id: 'back2',
           tier: 0,
         }],
       },
