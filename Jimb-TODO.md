@@ -6,8 +6,6 @@ Agenda
 
 TODO
 * combat
-  * finish base mechanics
-  * extra dice upon ally death
   * show everything
   * preview results upon mouseover
 * Combat should trigger when you're on the same tile, not adjacent (otherwise door problems!)?

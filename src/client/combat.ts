@@ -15,6 +15,7 @@ import { Sprite, spriteCreate } from 'glov/client/sprites';
 import { buttonText, drawRect, playUISound, uiGetFont, uiTextHeight } from 'glov/client/ui';
 import { randCreate } from 'glov/common/rand_alea';
 import { TSMap } from 'glov/common/types';
+import { empty } from 'glov/common/util';
 import verify from 'glov/common/verify';
 import { vec4 } from 'glov/common/vmath';
 import {
@@ -65,6 +66,8 @@ export class CombatState {
   dice: number[] = [0, 0];
   dice_used: boolean[] = [];
   player_is_done = false;
+  deaths = 0;
+  usable_dice: Partial<Record<number, true>> = {};
 
   needsRoll(): boolean {
     return !this.dice_used.length;
@@ -74,6 +77,9 @@ export class CombatState {
       rand.range(6) + 1,
       rand.range(6) + 1,
     ];
+    for (let ii = 0; ii < this.deaths; ++ii) {
+      this.dice.push(rand.range(6) + 1);
+    }
     //this.dice = [1,2,3,4,5,6];
     //this.dice[1] = 5;
     this.dice_used = this.dice.map((a) => false);
@@ -117,6 +123,9 @@ function cleanupHeroes(): void {
   if (heroes) {
     for (let ii = 0; ii < heroes.length; ++ii) {
       let hero = heroes[ii];
+      if (hero.hp === 0) { // NOT undefined
+        continue;
+      }
       let { class_id, tier } = hero;
       let class_def = CLASSES[class_id]!;
       let class_tier = class_def.tier[tier];
@@ -258,11 +267,14 @@ export function combatActivateAbility(hero_idx: number, ability_idx: number): vo
   }
 }
 
-export function combatReadyForEnemyTurn(): void {
+export function combatReadyForEnemyTurn(usable_dice: Partial<Record<number, true>>): void {
   if (!combat_state) {
     return;
   }
-  combat_state.player_is_done = true;
+  combat_state.usable_dice = usable_dice;
+  if (empty(usable_dice)) {
+    combat_state.player_is_done = true;
+  }
 }
 
 function combatDoEnemyTurn(): void {
@@ -284,6 +296,7 @@ function combatDoEnemyTurn(): void {
     if (hero.hp <= 0) {
       // TODO: died!
       hero.hp = 0;
+      combat_state!.deaths++;
     }
     attacked[idx] = true;
   }
@@ -345,7 +358,7 @@ function combatDoEnemyTurn(): void {
     if (!hero.hp) {
       hero.aggro = 0;
     } else if (aggro_targetted[ii]) {
-      hero.aggro = min(hero.aggro - 1, floor(hero.aggro / 2));
+      hero.aggro = max(0, min(hero.aggro - 1, floor(hero.aggro / 2)));
     }
   }
 }
@@ -355,6 +368,8 @@ let last_combat_ent: Entity | null = null;
 let rolled_at: number;
 let temp_color = vec4(1, 1, 1, 1);
 let color_die_used = vec4(0.25, 0.25, 0.25, 1);
+let color_die_revenge = vec4(1, 0, 0, 1);
+let color_die_revenge_used = vec4(0.25, 0, 0, 1);
 export function doCombat(target: Entity, dt: number): void {
   let me = myEnt();
   assert(me);
@@ -485,19 +500,25 @@ export function doCombat(target: Entity, dt: number): void {
   let num_left = 0;
   for (let ii = 0; ii < num_dice; ++ii) {
     let die = combat_state.dice[ii];
+    let used = combat_state.dice_used[ii];
     if (rolled_at > getFrameTimestamp() - 250) {
       die = floor(random() * 6) + 1;
+    } else {
+      if (!combat_state.usable_dice[die]) {
+        used = true;
+      }
     }
-    let used = combat_state.dice_used[ii];
+
     if (!used) {
       num_left++;
     }
+    let revenge = ii >= num_dice - combat_state.deaths;
     sprite_icons.draw({
       x: die_x,
       y: DIE_Y,
       w: DIE_W, h: DIE_W,
       frame: spritesheet_icons[`FRAME_DIE${die}`],
-      color: used ? color_die_used : undefined,
+      color: revenge ? used ? color_die_revenge_used : color_die_revenge : used ? color_die_used : undefined,
     });
     die_x += DIE_W + DIE_PAD;
   }

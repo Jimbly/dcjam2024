@@ -74,7 +74,7 @@ const ABILITY_X = [48,126];
 const ABILITY_Y = 12;
 const ABILITY_W = 76;
 const ABILITY_H = 32;
-let any_ability_possible = false;
+let dice_usable: Partial<Record<number, true>>;
 const color_dead = vec4(1, 1, 1, DEAD_ALPHA);
 const color_dead_portrait = vec4(0, 0, 0, 1);
 function drawHero(idx: number, hero: Hero, is_combat: boolean): void {
@@ -226,11 +226,12 @@ function drawHero(idx: number, hero: Hero, is_combat: boolean): void {
     let x = x0 + ABILITY_X[ability_idx];
     let disabled = !is_combat || !dice_avail[die] || !hero.hp;
 
-    if (effects.length === 0 && ability.aggro < 0 && !hero.aggro) {
-      disabled = true;
-    }
+    // Don't do this, force them to use each die, they may want to _not_ generate aggro on another ability
+    // if (effects.length === 0 && ability.aggro < 0 && !hero.aggro) {
+    //   disabled = true;
+    // }
     if (!disabled) {
-      any_ability_possible = true;
+      dice_usable[die] = true;
     }
     if (buttonText({
       x,
@@ -304,12 +305,12 @@ export function heroesDraw(is_combat: boolean): void {
   if (!heroes) {
     return;
   }
-  any_ability_possible = false;
+  dice_usable = {};
   for (let ii = 0; ii < heroes.length; ++ii) {
     let hero = heroes[ii];
     drawHero(ii, hero, is_combat);
   }
-  if (is_combat && !any_ability_possible) {
-    combatReadyForEnemyTurn();
+  if (is_combat) {
+    combatReadyForEnemyTurn(dice_usable);
   }
 }
