@@ -45,7 +45,7 @@ export type EnemyDef = {
 export const ENEMIES: TSMap<EnemyDef> = {
   eye: {
     tex: 'AngryStar',
-    hp: 15,
+    hp: 5,
     shield: 0,
     effects: [{
       type: AttackType.FRONT,
@@ -54,7 +54,7 @@ export const ENEMIES: TSMap<EnemyDef> = {
   },
   blob: {
     tex: 'FlayerEvo4',
-    hp: 12,
+    hp: 4,
     shield: 0,
     effects: [{
       type: AttackType.ALL,

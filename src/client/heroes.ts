@@ -39,7 +39,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
       type: AttackType.SHIELD_SELF,
       amount: 1,
     }],
-    icon: 'ability_demo',
+    icon: 'ability_gun1',
   },
   attack_heavy: {
     aggro: 3,
@@ -47,6 +47,6 @@ export const ABILITIES: TSMap<AbilityDef> = {
       type: AttackType.FRONT,
       amount: 3,
     }],
-    icon: 'ability_demo',
+    icon: 'ability_gun2',
   },
 };

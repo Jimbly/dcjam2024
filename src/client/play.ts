@@ -555,6 +555,8 @@ function playCrawl(): void {
     if (controller.queueLength() === 1) {
       heroesDraw(true);
       doCombat(frame_combat, dt);
+    } else {
+      heroesDraw(false);
     }
   } else {
     if (!build_mode) {
