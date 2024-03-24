@@ -47,6 +47,10 @@ const { sprite_icons } = spritesheet_icons;
 
 const { floor, max, min, random } = Math;
 
+let font: Font;
+
+let rand = randCreate(1234);
+
 type Entity = EntityDemoClient;
 
 class Enemy {
@@ -87,6 +91,8 @@ class CombatState {
   enemies: Enemy[] = [];
   heroes: CombatHero[] = [];
   deaths = 0;
+  dice: number[] = [];
+  dice_used: boolean[] = [];
 
   livingEnemies(): number[] {
     let ret = [];
@@ -119,10 +125,24 @@ class CombatState {
     ret.enemies = this.enemies.map(cloneEnemy);
     ret.heroes = this.heroes.map(cloneCombatHero);
     ret.deaths = this.deaths;
+    ret.dice = this.dice.slice(0);
+    ret.dice_used = this.dice_used.slice(0);
     return ret;
   }
 
   activateAbility(hero_idx: number, ability_idx: number): void {
+
+    let die = DICE_SLOTS[hero_idx][ability_idx];
+    let found = -1;
+    for (let ii = 0; ii < this.dice.length; ++ii) {
+      if (this.dice[ii] === die && !this.dice_used[ii]) {
+        found = ii;
+        break;
+      }
+    }
+    assert(found !== -1);
+    this.dice_used[found] = true;
+
     let { heroes } = this;
     let hero = heroes[hero_idx];
     let { ability_refs } = hero;
@@ -295,20 +315,40 @@ class CombatState {
     }
 
     this.decayAggro();
+    this.dice_used = [];
+  }
+
+  roll(): void {
+    this.dice = [
+      rand.range(6) + 1,
+      rand.range(6) + 1,
+    ];
+    for (let ii = 0; ii < this.deaths; ++ii) {
+      this.dice.push(rand.range(6) + 1);
+    }
+    //this.dice = [1,2,3,4,5,6];
+    //this.dice[1] = 5;
+    this.dice_used = this.dice.map((a) => false);
+  }
+
+  getDiceAvail(): Partial<Record<number, true>> {
+    let dice_avail: Partial<Record<number, true>> = {};
+    for (let ii = 0; ii < this.dice_used.length; ++ii) {
+      if (!this.dice_used[ii]) {
+        dice_avail[this.dice[ii]] = true;
+      }
+    }
+    return dice_avail;
   }
 }
 
-let font: Font;
-
-let rand = randCreate(1234);
-
 class CombatScene {
   combat_state: CombatState;
+  preview_state: CombatState;
+  preview_state_frame: number;
   anims: AnimationSequencer[] = [];
   did_death = false;
   did_victory = false;
-  dice: number[] = [0, 0];
-  dice_used: boolean[] = [];
   player_is_done = false;
   usable_dice: Partial<Record<number, true>> = {};
 
@@ -337,41 +377,34 @@ class CombatScene {
       hero.hp = hero_ref.dead ? 0 : class_tier.hp;
       combat_state.heroes.push(hero);
     }
+    this.preview_state = combat_state;
+    this.preview_state_frame = getFrameIndex();
   }
 
   needsRoll(): boolean {
-    return !this.dice_used.length;
-  }
-  roll(): void {
-    this.dice = [
-      rand.range(6) + 1,
-      rand.range(6) + 1,
-    ];
-    for (let ii = 0; ii < this.combat_state.deaths; ++ii) {
-      this.dice.push(rand.range(6) + 1);
-    }
-    //this.dice = [1,2,3,4,5,6];
-    //this.dice[1] = 5;
-    this.dice_used = this.dice.map((a) => false);
+    return !this.combat_state.dice_used.length;
   }
 }
 
 let combat_scene: CombatScene | null = null;
 
-export function combatGetDiceAvail(): Partial<Record<number, true>> {
-  let dice_avail: Partial<Record<number, true>> = {};
-  if (combat_scene) {
-    for (let ii = 0; ii < combat_scene.dice_used.length; ++ii) {
-      if (!combat_scene.dice_used[ii]) {
-        dice_avail[combat_scene.dice[ii]] = true;
-      }
-    }
-  }
-  return dice_avail;
+export function combatSetPreviewState(state: CombatState): void {
+  assert(combat_scene);
+  combat_scene.preview_state = state;
+  combat_scene.preview_state_frame = getFrameIndex();
 }
 
-export function combatGetState(): CombatState | null {
-  return combat_scene && combat_scene.combat_state || null;
+export function combatGetStates(): {
+  combat_state: CombatState;
+  preview_state: CombatState;
+} | null {
+  if (combat_scene) {
+    return {
+      combat_state: combat_scene.combat_state,
+      preview_state: combat_scene.preview_state,
+    };
+  }
+  return null;
 }
 
 export function cleanupCombat(dt: number): void {
@@ -394,25 +427,6 @@ const style_hint = fontStyle(null, {
   color: 0x6d758dff,
 });
 
-export function combatActivateAbility(hero_idx: number, ability_idx: number): void {
-  assert(combat_scene);
-
-  let die = DICE_SLOTS[hero_idx][ability_idx];
-  let found = -1;
-  for (let ii = 0; ii < combat_scene.dice.length; ++ii) {
-    if (combat_scene.dice[ii] === die && !combat_scene.dice_used[ii]) {
-      found = ii;
-      break;
-    }
-  }
-  assert(found !== -1);
-  combat_scene.dice_used[found] = true;
-
-  let new_state = combat_scene.combat_state.clone();
-  new_state.activateAbility(hero_idx, ability_idx);
-  combat_scene.combat_state = new_state;
-}
-
 export function combatReadyForEnemyTurn(usable_dice: Partial<Record<number, true>>): void {
   if (!combat_scene) {
     return;
@@ -425,7 +439,6 @@ export function combatReadyForEnemyTurn(usable_dice: Partial<Record<number, true
 
 function combatDoEnemyTurn(): void {
   assert(combat_scene);
-  combat_scene.dice_used = [];
   let new_state = combat_scene.combat_state.clone();
   new_state.doEnemyTurn();
   combat_scene.combat_state = new_state;
@@ -459,11 +472,17 @@ export function doCombat(target: Entity, dt: number): void {
     let encounter = ENCOUNTERS[target.data.stats.encounter];
     assert(encounter);
     combat_scene = new CombatScene(me, encounter);
+  } else {
+    if (combat_scene.preview_state !== combat_scene.combat_state) {
+      if (combat_scene.preview_state_frame !== getFrameIndex()) {
+        combat_scene.preview_state = combat_scene.combat_state;
+      }
+    }
   }
 
   if (combat_scene.needsRoll()) {
     rolled_at = getFrameTimestamp();
-    combat_scene.roll();
+    combat_scene.combat_state.roll();
   } else if (combat_scene.player_is_done) {
     combatDoEnemyTurn();
   }
@@ -476,8 +495,8 @@ export function doCombat(target: Entity, dt: number): void {
 
   drawRect(x0, y0, x1, y1, Z.COMBAT_SHADE, color_combat_shade);
 
-  let { combat_state } = combat_scene;
-  let { enemies } = combat_state;
+  let { combat_state, preview_state } = combat_scene;
+  let { enemies } = preview_state;
 
   let enemy_w = 56;
   const ENEMY_PAD = 2;
@@ -569,12 +588,11 @@ export function doCombat(target: Entity, dt: number): void {
   const DIE_W = 20;
   const DIE_PAD = 8;
   const DIE_Y = VIEWPORT_Y0 + render_height + DIE_PAD;
-  let num_dice = combat_scene.dice.length;
+  let num_dice = preview_state.dice.length;
   let die_x = floor(VIEWPORT_X0 + (render_width - (DIE_W * num_dice + DIE_PAD * (num_dice - 1))) / 2);
-  let num_left = 0;
   for (let ii = 0; ii < num_dice; ++ii) {
-    let die = combat_scene.dice[ii];
-    let used = combat_scene.dice_used[ii];
+    let die = preview_state.dice[ii];
+    let used = preview_state.dice_used[ii];
     if (rolled_at > getFrameTimestamp() - 250) {
       die = floor(random() * 6) + 1;
     } else {
@@ -583,9 +601,6 @@ export function doCombat(target: Entity, dt: number): void {
       }
     }
 
-    if (!used) {
-      num_left++;
-    }
     let revenge = ii >= num_dice - combat_scene.combat_state.deaths;
     sprite_icons.draw({
       x: die_x,
@@ -599,6 +614,13 @@ export function doCombat(target: Entity, dt: number): void {
 
   // show hint
   let hint: string = '';
+  let num_left = 0;
+  for (let ii = 0; ii < combat_state.dice.length; ++ii) {
+    let used = combat_state.dice_used[ii];
+    if (!used) {
+      num_left++;
+    }
+  }
   if (num_left > 1) {
     hint = 'COMBAT: choose 2 abilities\nmatching your dice';
   } else if (num_left === 1) {
@@ -611,6 +633,7 @@ export function doCombat(target: Entity, dt: number): void {
   }
 
   let end_combat = true;
+  enemies = combat_state.enemies;
   for (let ii = 0; ii < enemies.length; ++ii) {
     let enemy = enemies[ii];
     if (enemy.hp) {

@@ -22,4 +22,5 @@ TODO
   * only in Rooms of Solitude
 
 Polish
+* long-press on ability is not focusing and showing preview
 * scrolling starfield

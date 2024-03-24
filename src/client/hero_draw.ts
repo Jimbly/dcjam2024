@@ -2,15 +2,15 @@ import assert from 'assert';
 import { ALIGN, Font, fontStyle, fontStyleAlpha } from 'glov/client/font';
 import {
   buttonText,
+  buttonWasFocused,
   uiGetFont,
 } from 'glov/client/ui';
 import { vec4 } from 'glov/common/vmath';
 import {
   CombatHero,
-  combatActivateAbility,
-  combatGetDiceAvail,
-  combatGetState,
+  combatGetStates,
   combatReadyForEnemyTurn,
+  combatSetPreviewState,
 } from './combat';
 import { AttackTypeToFrameHeroes } from './encounters';
 import { Hero } from './entity_demo_client';
@@ -83,7 +83,7 @@ const ABILITY_H = 32;
 let dice_usable: Partial<Record<number, true>>;
 const color_dead = vec4(1, 1, 1, DEAD_ALPHA);
 const color_dead_portrait = vec4(0, 0, 0, 1);
-function drawHero(idx: number, hero_def: Hero, hero: CombatHero | null, is_combat: boolean): void {
+function drawHero(idx: number, hero_def: Hero, combat_hero: CombatHero | null, preview_hero: CombatHero | null): void {
   let x0 = 0;
   let y0 = idx * HERO_H;
   let aspect = sprite_icons.uidata.aspect[FRAME_HERO_BG];
@@ -91,8 +91,8 @@ function drawHero(idx: number, hero_def: Hero, hero: CombatHero | null, is_comba
   let class_def = CLASSES[class_id];
   assert(class_def);
   let class_tier = class_def.tier[tier];
-  let hp = hero ? hero.hp / class_tier.hp : 1;
-  let dead = hero ? !hp : hero_def.dead;
+  let hp = preview_hero ? preview_hero.hp / class_tier.hp : 1;
+  let dead = preview_hero ? !hp : hero_def.dead;
   let z = Z.UI;
   sprite_icons.draw({
     x: x0,
@@ -160,7 +160,7 @@ function drawHero(idx: number, hero_def: Hero, hero: CombatHero | null, is_comba
     z,
     w: HP_W,
     align: ALIGN.HCENTER,
-    text: hero ? `${hero.hp} / ${class_tier.hp}` : `${class_tier.hp}`,
+    text: preview_hero ? `${preview_hero.hp} / ${class_tier.hp}` : `${class_tier.hp}`,
   });
 
   let y = y0 + 2;
@@ -168,8 +168,8 @@ function drawHero(idx: number, hero_def: Hero, hero: CombatHero | null, is_comba
   if (class_tier.shield) {
     shield_text = `${class_tier.shield}`;
   }
-  if (hero && hero.temp_shield) {
-    shield_text += `+${hero.temp_shield}`;
+  if (preview_hero && preview_hero.temp_shield) {
+    shield_text += `+${preview_hero.temp_shield}`;
   }
   if (shield_text) {
     sprite_icons.draw({
@@ -191,7 +191,7 @@ function drawHero(idx: number, hero_def: Hero, hero: CombatHero | null, is_comba
     });
   }
 
-  if (hero) {
+  if (preview_hero) {
     sprite_icons.draw({
       x: x0 + AGGRO_X,
       y, z,
@@ -207,11 +207,12 @@ function drawHero(idx: number, hero_def: Hero, hero: CombatHero | null, is_comba
       z,
       size: 8,
       align: ALIGN.HRIGHT,
-      text: `${hero.aggro}`,
+      text: `${preview_hero.aggro}`,
     });
   }
 
-  let dice_avail = combatGetDiceAvail();
+  let combat_states = combatGetStates();
+  let dice_avail = combat_states && combat_states.combat_state.getDiceAvail() || {};
   y = y0 + ABILITY_Y;
   let abil_y0 = y;
   let zabil = z;
@@ -223,7 +224,7 @@ function drawHero(idx: number, hero_def: Hero, hero: CombatHero | null, is_comba
     let { icon, effects } = ability;
     let die = DICE_SLOTS[idx][ability_idx];
     let x = x0 + ABILITY_X[ability_idx];
-    let disabled = Boolean(!is_combat || !dice_avail[die] || hero_def.dead || hero && !hero.hp);
+    let disabled = Boolean(!combat_hero || !dice_avail[die] || hero_def.dead || dead);
 
     // Don't do this, force them to use each die, they may want to _not_ generate aggro on another ability
     // if (effects.length === 0 && ability.aggro < 0 && !hero.aggro) {
@@ -242,8 +243,15 @@ function drawHero(idx: number, hero_def: Hero, hero: CombatHero | null, is_comba
       base_name: 'abilitybutton',
       disabled,
     })) {
-      combatActivateAbility(idx, ability_idx);
+      assert(combat_states);
+      combat_states.combat_state.activateAbility(idx, ability_idx);
+    } else if (buttonWasFocused()) {
+      assert(combat_states);
+      let new_state = combat_states.combat_state.clone();
+      new_state.activateAbility(idx, ability_idx);
+      combatSetPreviewState(new_state);
     }
+
     z++;
     sprite_icons.draw({
       x: x + 31,
@@ -304,11 +312,12 @@ export function heroesDraw(is_combat: boolean): void {
   if (!heroes) {
     return;
   }
-  let combat_state = combatGetState();
+  let combat_states = combatGetStates();
   dice_usable = {};
   for (let ii = 0; ii < heroes.length; ++ii) {
-    let combat_hero = combat_state && combat_state.heroes[ii] || null;
-    drawHero(ii, heroes[ii], combat_hero, is_combat);
+    let combat_hero = combat_states && combat_states.combat_state.heroes[ii] || null;
+    let preview_hero = combat_states && combat_states.preview_state.heroes[ii] || null;
+    drawHero(ii, heroes[ii], combat_hero, preview_hero);
   }
   if (is_combat) {
     combatReadyForEnemyTurn(dice_usable);
