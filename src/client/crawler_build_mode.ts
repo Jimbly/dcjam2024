@@ -802,8 +802,8 @@ type PaletteConfigTab = 'all' | 'wall' | 'cell' | 'spawn';
 let palette_config_tab: PaletteConfigTab = (localStorageGet('pal_tab') as PaletteConfigTab) || 'all';
 
 function showPaintPaletteConfig(level: CrawlerLevel, x1: number): void {
-  x1 = engine.game_width - 2; // DCJ24
-  const x0 = 274; // VIEWPORT_X0 //  camera2d.x0() + 2;
+  x1 = camera2d.x1() - 2; // DCJ24
+  const x0 = 204; // VIEWPORT_X0 //  camera2d.x0() + 2;
   const y0 = camera2d.y0() + 2;
   const w = x1 - x0;
   const y1 = camera2d.y1() - 2;
