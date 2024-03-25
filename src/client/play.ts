@@ -153,7 +153,7 @@ declare module 'glov/client/ui' {
 // const ATTACK_WINDUP_TIME = 1000;
 const BOTTOM_UI_Y = 200;
 const MINIMAP_RADIUS = 3;
-const MINIMAP_X = 390;
+const MINIMAP_X = 385;
 const MINIMAP_Y = BOTTOM_UI_Y;
 const MINIMAP_W = 5+7*(MINIMAP_RADIUS*2 + 1);
 const COMPASS_X = MINIMAP_X;
@@ -455,7 +455,7 @@ function useNoText(): boolean {
 
 const SANITY_H = 38;
 const SANITY_X = game_width - SANITY_W;
-const SANITY_Y = game_height - SANITY_H;
+const SANITY_Y = game_height - SANITY_H - 1;
 const style_sanity = fontStyle(null, {
   color: 0xbc4a9bff,
   glow_color: 0x242234ff,

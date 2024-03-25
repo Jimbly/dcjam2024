@@ -10,12 +10,12 @@ traits:
 - id: drawable_sprite
   anim_data:
     idle:
-      frames: [1]
+      frames: [3]
       times: 10000
   sprite_data:
-    name: sprites/tyler_420
-    ws: [680,680]
-    hs: [680]
+    name: sprites/tyler_140
+    ws: [220,220,220,220]
+    hs: [220]
     filter_min: LINEAR_MIPMAP_LINEAR
     filter_mag: LINEAR
     origin: [0.5, 1]

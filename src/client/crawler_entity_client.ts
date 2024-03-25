@@ -268,7 +268,7 @@ function crawlerTraitsInit(ent_factory: TraitFactory<Entity, DataObject>): void 
       draw: drawableDraw,
     },
     default_opts: {
-      lod_bias: [-4, 0],
+      lod_bias: [-2, 0], // DCJAM24
       biasL: [-0.2, 0.25],
       biasF: [-0.25, 0],
       biasR: [-0.3, 0.4],

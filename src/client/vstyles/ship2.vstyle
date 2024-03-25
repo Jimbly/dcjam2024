@@ -23,3 +23,11 @@ wall_swaps:
   stairs_in: ship2_stairs_in
   stairs_out: ship2_stairs_out
   floorswitch: demo_floorswitch
+  ship1_solid1: ship2_solid1
+  ship1_solid2: ship2_solid2
+  ship1_solid3: ship2_solid3
+  ship1_solid4: ship2_solid1
+  ship1_solid5: ship2_solid2
+  ship1_window1: ship2_window1
+  ship1_window2: ship2_window1
+  ship1_window3: ship2_window1

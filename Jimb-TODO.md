@@ -1,24 +1,33 @@
 Agenda
 * visual style
   * fonts?
-  * pixel art?
 * realtime or turn based outside of combat?
 
 TODO
 * insanity
-  * add meter (full height, to be able to show permanent damage?  Or `75/97`?)
-  * game over condition
   * permanent damage (1 per death)
   * temp damage (10 per death, 1 per attack that damages?)
+  * game over condition
 * Rooms of Solitude
   * auto-save (also disable manual saving) upon enter and exit
   * restore sanity
 * spend XP to level up skills or heroes
   * only in Rooms of Solitude
+* monsters move around
 * combat - maybe add log for enemy turn explaining what happened, press button to Roll! when done reading
   * probably don't need as much help text then?
 * add a BACK type attack
 * start balancing combat encounters
+* medicine cabinet
+  * restores max sanity after a choice
+  * flavor text
+* placeholder journal entries on a computer
+* Get in-world monsters and battle sprites using the same source images (make this use a spritesheet!)
+* Insanity view
+  * party portraits to change to monsters - silhouettes
+  * ghosts moving through the level
+  * dark/postprocess - 16-bit color crunch?
+* combat: unwinnable/losable combat: scale up damage of monsters / everyone every X turns?
 
 Polish
 * Add a [help] button on the combat screen that explains the basic mechanics

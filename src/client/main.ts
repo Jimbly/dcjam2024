@@ -71,7 +71,7 @@ export function main(): void {
   let use_fbos = 1;
   let need_dfdxy = false;
   let override_pixely = false;
-  if ('AA hires') { // !!!!1
+  if (!'AA hires') {
     need_dfdxy = true;
     antialias = true; // antialiases 3D geometry edges only
     use_fbos = 0;
@@ -83,11 +83,12 @@ export function main(): void {
     settings.set('filter', 0);
     settings.set('entity_split', 0);
     settings.set('entity_nosplit_use_near', 1);
-  } else if (!'simple lowres') { // !!!!2
+  } else if (!'simple lowres') {
     settings.set('pixely', 1);
     settings.set('filter', 0);
     settings.set('entity_split', 0);
-    settings.set('entity_nosplit_use_near', 1);
+    settings.set('entity_nosplit_use_near', 0);
+    crawlerRenderSetLODBiasRange(-2, -1.5);
   } else if (!'lowres with mipmapping') {
     // also antilias=true & use_fbos=0 is potentially useful
     crawlerRenderSetLODBiasRange(-3, -1.5);
@@ -95,7 +96,7 @@ export function main(): void {
     settings.set('filter', 2);
     settings.set('entity_split', 0);
     settings.set('entity_nosplit_use_near', 1);
-  } else if (!'simple AA lowres') { // !!!!3
+  } else if (!'simple AA lowres') {
     need_dfdxy = true;
     antialias = true;
     use_fbos = 0;
@@ -106,13 +107,18 @@ export function main(): void {
     settings.set('filter', 0);
     settings.set('entity_split', 0);
     settings.set('entity_nosplit_use_near', 1);
-  } else if ('CRT filter') { // !!!!4/5
-    settings.set('pixely', 3);
-    settings.set('hybrid', 1);
-    settings.set('filter', 0);
+  } else if ('CRT filter') {
+    // need_dfdxy = true;
+    // shadersSetInternalDefines({
+    //   SSAA4X: true,
+    // });
+    settings.set('pixely', 2);
+    settings.set('hybrid', 0);
+    settings.set('filter', 2);
     settings.set('entity_split', 0);
-    settings.set('entity_nosplit_use_near', 1);
-  } else if ('split logic') { // !!!!6
+    settings.set('entity_nosplit_use_near', 0);
+    crawlerRenderSetLODBiasRange(-2, -1); // walls only
+  } else if (!'split logic') {
     settings.set('pixely', 1);
     settings.set('filter', 0);
     settings.set('entity_split', 1);
@@ -208,7 +214,7 @@ export function main(): void {
   ui.setFontHeight(8);
   ui.setPanelPixelScale(1);
   ui.setButtonHeight(16);
-  ui.buttonSetDefaultYOffs({ down: 1 });
+  ui.buttonSetDefaultYOffs({ down: 1, disabled: 1 });
   ui.setFontStyles(null, null, style_modal, null);
   uiSetPanelColor([1, 1, 1, 1]);
   // ui.uiSetFontStyleFocused(fontStyle(ui.uiGetFontStyleFocused(), {

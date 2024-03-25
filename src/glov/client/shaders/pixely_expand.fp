@@ -16,16 +16,16 @@ float Gaus(float pos, float scale) {
   return exp2(scale*pos*pos);
 }
 
-const float SHADE = 0.75;
-const float EASING = 1.25;
+const float SHADE = 0.80;
+const float EASING = 1.75;
 
 #define DO_WARP
 #ifdef DO_WARP
-const float VIGNETTE = 0.5;
+const float VIGNETTE = 0.65;
 // Display warp.
 // 0.0 = none
 // 1.0/8.0 = extreme
-const vec2 WARP=vec2(1.0/32.0,1.0/24.0);
+const vec2 WARP=vec2(1.0/48.0,1.0/32.0);
 
 // Distortion of scanlines, and end of screen alpha.
 vec2 Warp(vec2 pos){
