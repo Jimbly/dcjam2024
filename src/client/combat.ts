@@ -352,8 +352,8 @@ class CombatState {
       this.dice.push(6);
       this.dice_used.push(true);
       // Died!
-      // animator?.playSound('player_death');
-      sound = 'player_death';
+      // animator?.playSound('hero_death');
+      sound = 'hero_death';
     }
     animator?.addFloater({
       hero_idx: idx,

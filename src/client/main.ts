@@ -24,6 +24,7 @@ import { crawlerRenderSetLODBiasRange } from './crawler_render';
 import { game_height, game_width } from './globals';
 import { heroesDrawStartup } from './hero_draw';
 import { playStartup } from './play';
+import { SOUND_DATA } from './sound_data';
 import { titleInit, titleStartup } from './title';
 
 const crawlertest = require('./img/crawlertest');
@@ -169,33 +170,7 @@ export function main(): void {
       // scrollbar_handle_grabber: { name: 'scrollbar_handle_grabber', ws: [11], hs: [11] },
       // scrollbar_handle: { name: 'scrollbar_handle', ws: [11], hs: [3, 5, 3] },
     },
-    ui_sounds: {
-      button_click: 'button_click',
-      rollover: { file: 'rollover', volume: 0.25 },
-      user_join: 'user_join',
-      user_leave: 'user_leave',
-      msg_in: 'msg_in',
-      msg_err: 'msg_err',
-      msg_out_err: 'msg_out_err',
-      msg_out: 'msg_out',
-
-      ability_gun1: { file: 'ability_gun1', volume: 0.25 },
-      ability_gun2: { file: 'ability_gun2', volume: 0.25 },
-      ability_shield2: { file: 'ability_shield2', volume: 0.25 },
-      ability_shield: { file: 'ability_shield', volume: 0.25 },
-      ability_poison2: { file: 'ability_poison2', volume: 0.25 },
-      ability_ranged_all2: { file: 'ability_ranged_all2', volume: 0.25 },
-      ability_ranged_all: { file: 'ability_ranged_all', volume: 0.25 },
-      ability_heal_all: { file: 'ability_heal_all', volume: 0.25 },
-      ability_heal: { file: 'ability_heal', volume: 0.25 },
-      ability_shield_all: { file: 'ability_shield_all', volume: 0.25 },
-
-      player_death: { file: 'player_death', volume: 0.25 },
-      monster_death: { file: 'monster_death', volume: 0.25 },
-      shield_block: { file: 'shield_block', volume: 0.25 },
-      monster_attack: { file: 'monster_attack', volume: 0.25 },
-      monster_attack_all: { file: 'monster_attack_all', volume: 0.25 },
-    },
+    ui_sounds: SOUND_DATA,
   })) {
     return;
   }

@@ -144,7 +144,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
       type: AttackType.SHIELD_SELF,
       amount: 3,
     }],
-    icon: 'ability_shield',
+    icon: 'ability_shield1',
   },
   poison: {
     aggro: 1,
@@ -168,7 +168,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
       type: AttackType.ALL,
       amount: 2,
     }],
-    icon: 'ability_ranged_all',
+    icon: 'ability_ranged_all1',
   },
   heal_all_light: {
     aggro: 1,
