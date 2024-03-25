@@ -29,6 +29,7 @@ import { DataObject, TSMap } from 'glov/common/types';
 import { easeIn, easeOut, empty, lerp } from 'glov/common/util';
 import verify from 'glov/common/verify';
 import { v3set, v4set, vec2, vec4 } from 'glov/common/vmath';
+import { bamfCheck } from './bamf';
 import {
   AttackType,
   AttackTypeToFrameEnemies,
@@ -1047,6 +1048,7 @@ export function doCombat(target: Entity, dt: number): void {
     playUISound('victory');
     entityManager().deleteEntity(target.id, 'killed');
     // TODO: give loot
+    bamfCheck();
   }
   combat_scene.player_is_done = false;
 }

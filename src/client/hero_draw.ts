@@ -1,3 +1,8 @@
+export const HERO_W = 204;
+// eslint-disable-next-line import/order
+import { game_height } from './globals';
+export const HERO_H = Math.floor(game_height / 6);
+
 import assert from 'assert';
 import * as engine from 'glov/client/engine';
 import { ALIGN, Font, fontStyle, fontStyleAlpha } from 'glov/client/font';
@@ -21,7 +26,6 @@ import {
   AttackTypeToFrameHeroes,
 } from './encounters';
 import { Hero } from './entity_demo_client';
-import { game_height } from './globals';
 import {
   ABILITIES,
   CLASSES,
@@ -86,8 +90,12 @@ const style_attack = fontStyle(null, {
 });
 const style_attack_blocked = fontStyleAlpha(style_attack, 0.25);
 
+const style_name = fontStyle(null, {
+  color: 0x141013ff,
+  outline_width: 4,
+  outline_color: 0x4a546255,
+});
 
-const HERO_H = floor(game_height / 6);
 const HP_W = 91;
 const HP_X = 50;
 const HP_Y = 4;
@@ -109,12 +117,10 @@ const color_temp = vec4();
 export function heroDrawPos(hero_idx: number): [number, number] {
   return [0 + PORTRAIT_X + PORTRAIT_SIZE / 2, hero_idx * HERO_H + PORTRAIT_Y + PORTRAIT_SIZE/2];
 }
-function drawHero(idx: number, hero_def: Hero): void {
+export function drawHero(idx: number, x0: number, y0: number, hero_def: Hero): void {
   let combat_states = combatGetStates();
   let combat_hero = combat_states && combat_states.combat_state.heroes[idx] || null;
   let preview_hero = combat_states && combat_states.preview_state.heroes[idx] || null;
-  let x0 = 0;
-  let y0 = idx * HERO_H;
   let aspect = sprite_icons.uidata.aspect[FRAME_HERO_BG];
   let { tier, class_id } = hero_def;
   let class_def = CLASSES[class_id];
@@ -122,9 +128,12 @@ function drawHero(idx: number, hero_def: Hero): void {
   let class_tier = class_def.tier[tier];
   let hp = preview_hero ? preview_hero.hp / class_tier.hp : 1;
   let dead = preview_hero ? !hp : hero_def.dead;
+  if (dead) {
+    hp = 0;
+  }
   let z = Z.UI;
   let blink = combatDrawFloaters({
-    x: PORTRAIT_X + PORTRAIT_SIZE/2,
+    x: x0 + PORTRAIT_X + PORTRAIT_SIZE/2,
     y: y0 + PORTRAIT_Y + PORTRAIT_SIZE/2,
     hero_idx: idx,
   });
@@ -156,17 +165,29 @@ function drawHero(idx: number, hero_def: Hero): void {
     v4set(color_temp, blink, blink, blink, 1);
   }
   sprite_faces.draw({
-    x: PORTRAIT_X,
+    x: x0 + PORTRAIT_X,
     y: y0 + PORTRAIT_Y,
+    z,
     w: PORTRAIT_SIZE,
     h: PORTRAIT_SIZE,
     frame: spritesheet_faces[`FRAME_${face.toUpperCase()}`],
     color: color_temp,
   });
+  z++;
+  font_tiny.draw({
+    style: style_name,
+    x: x0 + PORTRAIT_X,
+    y: y0 + PORTRAIT_Y + PORTRAIT_SIZE,
+    z,
+    w: PORTRAIT_SIZE,
+    align: ALIGN.HCENTER,
+    text: hero_def.name || 'J. Doe',
+  });
   for (let ii = 0; ii < tier; ++ii) {
     sprite_icons.draw({
       x: x0 + 3 + ii * 9,
       y: y0 + 30,
+      z,
       w: 9, h: 8,
       frame: FRAME_STAR,
     });
@@ -212,7 +233,7 @@ function drawHero(idx: number, hero_def: Hero): void {
     z,
     w: HP_W,
     align: ALIGN.HCENTER,
-    text: preview_hero ? `${preview_hero.hp} / ${class_tier.hp}` : `${class_tier.hp}`,
+    text: dead ? 'DEAD' : preview_hero ? `${preview_hero.hp} / ${class_tier.hp}` : `${class_tier.hp}`,
   });
 
   let y = y0 + 2;
@@ -387,7 +408,7 @@ function drawHero(idx: number, hero_def: Hero): void {
     if (incoming) {
       y = y0; // + floor((HERO_H - ICON_SIZE) / 2);
       for (let ii = 0; ii < incoming.length; ++ii) {
-        let x = x0 + 204;
+        let x = x0 + HERO_W;
         let [attack_type, amount] = incoming[ii];
         let frame = AttackTypeToFrameEnemies[attack_type];
         aspect = sprite_icons.uidata.aspect[frame];
@@ -404,7 +425,7 @@ function drawHero(idx: number, hero_def: Hero): void {
         y += ICON_SIZE + 1;
       }
       if (!combat_states.enemy_preview_state.heroes[idx].hp) {
-        let x = x0 + 204;
+        let x = x0 + HERO_W;
         let frame = FRAME_SKULL;
         aspect = sprite_icons.uidata.aspect[frame];
         let icon_w = ICON_SIZE * aspect;
@@ -429,7 +450,9 @@ export function heroesDraw(is_combat: boolean): void {
   }
   dice_usable = {};
   for (let ii = 0; ii < heroes.length; ++ii) {
-    drawHero(ii, heroes[ii]);
+    let x0 = 0;
+    let y0 = ii * HERO_H;
+    drawHero(ii, x0, y0, heroes[ii]);
   }
   if (is_combat) {
     combatReadyForEnemyTurn(dice_usable);

@@ -101,13 +101,13 @@ export function main(): void {
     settings.set('filter', 0);
     settings.set('entity_split', 0);
     settings.set('entity_nosplit_use_near', 1);
-  } else if (!'CRT filter') { // !!!!4
+  } else if ('CRT filter') { // !!!!4/5
     settings.set('pixely', 3);
     settings.set('hybrid', 1);
     settings.set('filter', 0);
     settings.set('entity_split', 0);
     settings.set('entity_nosplit_use_near', 1);
-  } else if ('split logic') { // !!!!5
+  } else if ('split logic') { // !!!!6
     settings.set('pixely', 1);
     settings.set('filter', 0);
     settings.set('entity_split', 1);
@@ -146,10 +146,10 @@ export function main(): void {
     ui_sprites: {
       ...spriteSetGet('pixely'),
       color_set_shades: [1, 1, 1],
-      // button: { name: 'button', ws: [3, 20, 3], hs: [26] },
-      // button_rollover: { name: 'button_rollover', ws: [3, 20, 3], hs: [26] },
-      // button_down: { name: 'button_down', ws: [3, 20, 3], hs: [26] },
-      // button_disabled: { name: 'button_disabled', ws: [3, 20, 3], hs: [26] },
+      button: { name: 'button', ws: [16, 16, 16], hs: [16] },
+      button_rollover: { name: 'button_rollover', ws: [16, 16, 16], hs: [16] },
+      button_down: { name: 'button_down', ws: [16, 16, 16], hs: [16] },
+      button_disabled: { name: 'button_disabled', ws: [16, 16, 16], hs: [16] },
       abilitybutton: { name: 'abilitybutton', ws: [24, 16, 24], hs: [32] },
       abilitybutton_rollover: { name: 'abilitybutton_rollover', ws: [24, 16, 24], hs: [32] },
       abilitybutton_down: { name: 'abilitybutton_down', ws: [24, 16, 24], hs: [32] },
@@ -158,7 +158,7 @@ export function main(): void {
       buttonselected_down: { name: 'pixely/buttonselected_down', ws: [4, 5, 4], hs: [13] },
       buttonselected_rollover: { name: 'pixely/buttonselected', ws: [4, 5, 4], hs: [13] },
       buttonselected_disabled: { name: 'pixely/buttonselected_disabled', ws: [4, 5, 4], hs: [13] },
-      // panel: { name: 'panel', ws: [3, 2, 3], hs: [3, 10, 3] },
+      panel: { name: 'panel', ws: [24, 16, 24], hs: [5, 22, 5] },
       // menu_entry: { name: 'menu_entry', ws: [4, 5, 4], hs: [13] },
       // menu_selected: { name: 'menu_selected', ws: [4, 5, 4], hs: [13] },
       // menu_down: { name: 'menu_down', ws: [4, 5, 4], hs: [13] },
@@ -224,6 +224,8 @@ export function main(): void {
   ui.setModalSizes(0, round(game_width * 0.8), round(game_height * 0.23), 0, 0);
   ui.setFontHeight(8);
   ui.setPanelPixelScale(1);
+  ui.setButtonHeight(16);
+  ui.buttonSetDefaultYOffs({ down: 1 });
   uiSetPanelColor([1, 1, 1, 1]);
   // ui.uiSetFontStyleFocused(fontStyle(ui.uiGetFontStyleFocused(), {
   //   outline_width: 2.5,

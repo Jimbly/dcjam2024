@@ -48,6 +48,7 @@ import {
   aiDoFloor,
   aiTraitsClientStartup,
 } from './ai';
+import { bamfReset, bamfTick } from './bamf';
 import { cleanupCombat, doCombat } from './combat';
 // import './client_cmds';
 import {
@@ -101,6 +102,7 @@ import { crawlerOnScreenButton } from './crawler_ui';
 import { dialogMoveLocked, dialogRun, dialogStartup } from './dialog_system';
 import {
   EntityDemoClient,
+  Hero,
   entitiesAt,
   entityManager,
 } from './entity_demo_client';
@@ -198,6 +200,7 @@ export function myEntOptional(): Entity | undefined {
 //   return crawlerEntityManager() as ClientEntityManagerInterface<Entity>;
 // }
 
+const allow_manual_save = false;
 let pause_menu: SimpleMenu;
 function pauseMenu(): void {
   if (!pause_menu) {
@@ -231,7 +234,8 @@ function pauseMenu(): void {
       settings.set('turn_toggle', 1 - settings.turn_toggle);
     },
   }];
-  if (isLocal()) {
+  // TODO: add "load from last autosave / restart in Room of Solitude" option
+  if (isLocal() && allow_manual_save) {
     items.push({
       name: 'Save game',
       cb: function () {
@@ -241,23 +245,21 @@ function pauseMenu(): void {
       },
     });
   }
-  items.push({
-    name: isOnline() ? 'Return to Title' : 'Save and Exit',
-    cb: function () {
-      if (!isOnline()) {
-        crawlerSaveGame('manual');
-      }
-      urlhash.go('');
-    },
-  });
-  if (isLocal()) {
+  if (!isOnline() && allow_manual_save) {
     items.push({
-      name: 'Exit without saving',
+      name: 'Save and Exit',
       cb: function () {
+        crawlerSaveGame('manual');
         urlhash.go('');
       },
     });
   }
+  items.push({
+    name: isOnline() ? 'Return to Title' : 'Exit without saving',
+    cb: function () {
+      urlhash.go('');
+    },
+  });
 
   let volume_item = items[1];
   volume_item.value = settings.volume_sound;
@@ -441,7 +443,8 @@ function playCrawl(): void {
   dialogRun(dt, dialog_viewport);
 
   const build_mode = buildModeActive();
-  let frame_combat = engagedEnemy();
+  const need_bamf = !build_mode && bamfTick();
+  const frame_combat = !need_bamf && engagedEnemy();
   let locked_dialog = dialogMoveLocked();
   const overlay_menu_up = pause_menu_up; // || inventory_up
   let minimap_display_h = build_mode ? BUTTON_W : MINIMAP_W;
@@ -533,7 +536,7 @@ function playCrawl(): void {
     pauseMenu();
   }
 
-  // if (frame_combat && engagedEnemy() !== crawlerEntInFront()) {
+  // if (frame_combat && frame_combat !== crawlerEntInFront()) {
   //   // turn to face
   //   let me = crawlerMyEnt();
   //   let dir = dirFromDelta(v2sub(temp_delta, frame_combat.data.pos, me.data.pos));
@@ -570,6 +573,7 @@ function playCrawl(): void {
   }
 
 
+  let disable_player_impulse = Boolean(frame_combat || locked_dialog || need_bamf);
   controller.doPlayerMotion({
     dt,
     button_x0: MOVE_BUTTONS_X0,
@@ -578,8 +582,8 @@ function playCrawl(): void {
     button_w: build_mode ? 6 : BUTTON_W,
     button_sprites: useNoText() ? button_sprites_notext : button_sprites,
     disable_move: moveBlocked() || overlay_menu_up,
-    disable_player_impulse: Boolean(frame_combat || locked_dialog),
-    show_buttons: !frame_combat && !locked_dialog,
+    disable_player_impulse,
+    show_buttons: !disable_player_impulse,
     do_debug_move: engine.defines.LEVEL_GEN || build_mode,
     show_debug: settings.show_fps ? { x: VIEWPORT_X0, y: VIEWPORT_Y0 + (build_mode ? 3 : 0) } : null,
   });
@@ -639,7 +643,7 @@ function playCrawl(): void {
     crawlerMapViewDraw(game_state, 0, 0, game_width, game_height, 0, Z.MAP,
       engine.defines.LEVEL_GEN, script_api, overlay_menu_up,
       floor((game_width - MINIMAP_W)/2), 2); // note: compass ignored, compass_h = 0 above
-  } else if (!frame_combat) {
+  } else if (!frame_combat && !need_bamf) {
     crawlerMapViewDraw(game_state, MINIMAP_X, MINIMAP_Y, MINIMAP_W, minimap_display_h, compass_h, Z.MAP,
       false, script_api, overlay_menu_up,
       COMPASS_X, COMPASS_Y);
@@ -704,6 +708,9 @@ function playInitShared(online: boolean): void {
   // inventory_up = false;
 }
 
+function initLevel(): void {
+  bamfReset();
+}
 
 function playOfflineLoading(): void {
   // TODO
@@ -747,6 +754,37 @@ settings.register({
 export function playStartup(): void {
   font = uiGetFont();
   crawlerScriptAPIDummyServer(true); // No script API running on server
+  let heroes: Hero[] = [{
+    class_id: 'front1',
+    tier: 2,
+    name: 'Amano',
+    gender: 'm',
+  },{
+    class_id: 'front2',
+    tier: 1,
+    name: 'Barick',
+    gender: 'a',
+  },{
+    class_id: 'mid1',
+    tier: 0,
+    name: 'Takach',
+    gender: 'a',
+  },{
+    class_id: 'mid2',
+    tier: 0,
+    name: 'Jet',
+    gender: 'a',
+  },{
+    class_id: 'back1',
+    tier: 0,
+    name: 'Anton',
+    gender: 'm',
+  },{
+    class_id: 'back2',
+    tier: 0,
+    name: 'Greaves',
+    gender: 'a',
+  }];
   crawlerPlayStartup({
     // on_broadcast: onBroadcast,
     play_init_online: playInitEarly,
@@ -759,30 +797,12 @@ export function playStartup(): void {
         stats: {
           hp: 1, // set to 0 to trigger end of game
         },
-        heroes: [{
-          class_id: 'front1',
-          tier: 2,
-        },{
-          class_id: 'front2',
-          tier: 1,
-        },{
-          class_id: 'mid1',
-          tier: 0,
-        },{
-          class_id: 'mid2',
-          tier: 0,
-        },{
-          class_id: 'back1',
-          tier: 0,
-        },{
-          class_id: 'back2',
-          tier: 0,
-        }],
+        heroes,
       },
       loading_state: playOfflineLoading,
     },
     play_state: play,
-    // on_init_level_offline: initLevel,
+    on_init_level_offline: initLevel,
     default_vstyle: 'demo',
     allow_offline_console: engine.DEBUG,
     chat_ui_param: {

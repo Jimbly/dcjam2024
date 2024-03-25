@@ -5,7 +5,7 @@ Agenda
 * realtime or turn based outside of combat?
 
 TODO
-* replace heroes after combat
+* bug: after combat, before bamf, dice were animating as rolling
 * insanity
   * add meter (full height, to be able to show permanent damage?  Or `75/97`?)
   * game over condition
@@ -21,6 +21,7 @@ TODO
 
 Polish
 * Add a [help] button on the combat screen that explains the basic mechanics
+  * and/or just use the help area for "tooltips" during combat
   * explain hero ability icons: front/all/back
   * explain monster attack icons and aggro:
     * [img=attack_front_enemy] targets highest [img=aggro]AGGRO, divided by ties, rounded down
