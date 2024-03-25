@@ -120,6 +120,7 @@ type FloaterTarget = FloaterParamEnemy | FloaterParamHero;
 type FloaterParam = FloaterTarget & {
   attack_type: AttackType;
   msg: string;
+  sound?: string;
   from_attack_enemy?: number;
 };
 // function isFloaterEnemy(p: FloaterParam): p is FloaterParam & FloaterParamEnemy {
@@ -136,6 +137,7 @@ function sameFloaterTarget(p1: FloaterTarget, p2: FloaterTarget): boolean {
 type Animatable = {
   addFloater(f: FloaterParam): void;
   animateAttack(enemy_idx: number, hero_idx: number): void;
+  playSound(sound: string): void;
 };
 
 class CombatState {
@@ -170,6 +172,7 @@ class CombatState {
     if (enemy.hp <= 0) {
       enemy.hp = 0;
       // TODO: died!
+      animator?.playSound('monster_death');
     }
   }
   poison(enemy_idx: number, amount: number, animator?: Animatable): void {
@@ -340,17 +343,24 @@ class CombatState {
     let hero = this.heroes[idx];
     let class_tier = hero.tier_ref;
     amount = max(0, amount - (hero.temp_shield || 0) - class_tier.shield);
+    let sound = amount ? attack_type === AttackType.ALL ? 'monster_attack_all' : 'monster_attack' : 'shield_block';
+    hero.hp -= amount;
+    if (hero.hp <= 0) {
+      hero.hp = 0;
+      this.deaths++;
+      this.dice.push(6);
+      this.dice_used.push(true);
+      // Died!
+      // animator?.playSound('player_death');
+      sound = 'player_death';
+    }
     animator?.addFloater({
       hero_idx: idx,
       attack_type: amount ? attack_type : AttackType.SHIELD_SELF,
       msg: amount ? `${amount}` : '[img=shield]',
       from_attack_enemy: enemy_idx,
+      sound,
     });
-    hero.hp -= amount;
-    if (hero.hp <= 0) {
-      hero.hp = 0;
-      this.deaths++;
-    }
     let arr = this.heroes_attacked[idx] = this.heroes_attacked[idx] || [];
     arr.push([attack_type, amount]);
   }
@@ -369,6 +379,7 @@ class CombatState {
       if (enemy.hp <= 0) {
         enemy.hp = 0;
         // TODO: died!
+        animator?.playSound('monster_death');
         return;
       }
     }
@@ -585,6 +596,9 @@ class CombatScene {
       end: start + ATTACK_TIME,
     });
   }
+  playSound(sound: string): void {
+    playUISound(sound);
+  }
 
   tickFloaters(): void {
     let now = getFrameTimestamp();
@@ -617,6 +631,10 @@ class CombatScene {
       let elapsed = getFrameTimestamp() - floater.start;
       if (elapsed < 0) {
         continue;
+      }
+      if (floater.sound) {
+        playUISound(floater.sound);
+        delete floater.sound;
       }
       let alpha = 1;
       if (elapsed > FLOATER_TIME) {
@@ -693,7 +711,17 @@ export function combatAcitvateAbility(hero_idx: number, ability_idx: number): vo
 }
 
 export function combatIsPlayerTurn(): boolean {
-  return Boolean(combat_scene && combat_scene.state_id === CSID.PlayerTurn);
+  if (!(combat_scene && combat_scene.state_id === CSID.PlayerTurn)) {
+    return false;
+  }
+  // also return false if all enemies are dead, we're just playing animations
+  let { enemies } = combat_scene.combat_state;
+  for (let ii = 0; ii < enemies.length; ++ii) {
+    if (enemies[ii].hp) {
+      return true;
+    }
+  }
+  return false;
 }
 
 export function combatGetStates(): {
@@ -761,6 +789,10 @@ function combatTickEnemyTurn(): void {
     }
   }
   combat_scene.state_id = CSID.PlayerTurn;
+}
+
+export function combatAnimPaused(): boolean {
+  return combat_scene && combat_scene.animPaused(false) || false;
 }
 
 

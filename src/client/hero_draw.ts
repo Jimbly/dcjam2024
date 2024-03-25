@@ -9,6 +9,7 @@ import {
 import { v4copy, v4set, vec4 } from 'glov/common/vmath';
 import {
   combatAcitvateAbility,
+  combatAnimPaused,
   combatDrawFloaters,
   combatGetStates,
   combatIsPlayerTurn,
@@ -316,9 +317,10 @@ function drawHero(idx: number, hero_def: Hero): void {
       text: ' ',
       base_name: 'abilitybutton',
       disabled,
+      sound_button: icon,
     })) {
       combatAcitvateAbility(idx, ability_idx);
-    } else if (buttonWasFocused()) {
+    } else if (buttonWasFocused() && !combatAnimPaused()) {
       assert(combat_states);
       let new_state = combat_states.combat_state.clone();
       new_state.activateAbility(idx, ability_idx);

@@ -178,6 +178,23 @@ export function main(): void {
       msg_err: 'msg_err',
       msg_out_err: 'msg_out_err',
       msg_out: 'msg_out',
+
+      ability_gun1: { file: 'ability_gun1', volume: 0.25 },
+      ability_gun2: { file: 'ability_gun2', volume: 0.25 },
+      ability_shield2: { file: 'ability_shield2', volume: 0.25 },
+      ability_shield: { file: 'ability_shield', volume: 0.25 },
+      ability_poison2: { file: 'ability_poison2', volume: 0.25 },
+      ability_ranged_all2: { file: 'ability_ranged_all2', volume: 0.25 },
+      ability_ranged_all: { file: 'ability_ranged_all', volume: 0.25 },
+      ability_heal_all: { file: 'ability_heal_all', volume: 0.25 },
+      ability_heal: { file: 'ability_heal', volume: 0.25 },
+      ability_shield_all: { file: 'ability_shield_all', volume: 0.25 },
+
+      player_death: { file: 'player_death', volume: 0.25 },
+      monster_death: { file: 'monster_death', volume: 0.25 },
+      shield_block: { file: 'shield_block', volume: 0.25 },
+      monster_attack: { file: 'monster_attack', volume: 0.25 },
+      monster_attack_all: { file: 'monster_attack_all', volume: 0.25 },
     },
   })) {
     return;

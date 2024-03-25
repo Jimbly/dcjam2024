@@ -6,7 +6,6 @@ Agenda
 
 TODO
 * combat
-  * put placeholder sounds
   * show everything
 * add a BACK type attack
 * Combat should trigger when you're on the same tile, not adjacent (otherwise door problems!)?
