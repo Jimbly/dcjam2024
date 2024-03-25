@@ -644,6 +644,9 @@ class CombatScene {
         }
       }
       let float = easeOut(elapsed / (FLOATER_TIME + FLOATER_FADE), 2) * 20;
+      if (floater.msg === '[img=shield]') {
+        float = 0;
+      }
       suppressNewDOMElemWarnings();
       markdownAuto({
         alpha,

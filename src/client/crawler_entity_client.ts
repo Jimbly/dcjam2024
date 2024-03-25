@@ -111,6 +111,7 @@ export interface EntityCrawlerClient extends EntityBaseClient {
   do_split: boolean;
   is_player: boolean;
   is_enemy: boolean;
+  blocks_player: boolean;
 }
 
 type Entity = EntityCrawlerClient;
@@ -217,16 +218,15 @@ export function crawlerEntitiesAt(cem: ClientEntityManagerInterface<Entity>,
   return cem.entitiesFind((ent) => entSamePos(ent, pos) && ent.data.floor === floor_id, skip_fading_out);
 }
 
-function onlyEnemies(ent: Entity): boolean {
-  // TODO: Property assigned by trait "blocks_player"
-  return ent.isEnemy();
+function onlyPlayerBlockers(ent: Entity): boolean {
+  return ent.blocks_player;
 }
 export function entityBlocks(floor_id: number, pos: ROVec2, skip_fading_out: boolean): null | EntityID {
   // if (engine.DEBUG && keyDown(KEYS.ALT)) {
   //   return null;
   // }
   let ent_list = crawlerEntitiesAt(entity_manager, pos, floor_id, skip_fading_out);
-  ent_list = ent_list.filter(onlyEnemies);
+  ent_list = ent_list.filter(onlyPlayerBlockers);
   if (!ent_list.length) {
     return null;
   }

@@ -39,15 +39,14 @@ import {
 import { clamp } from 'glov/common/util';
 import {
   Vec2,
-  v2sub,
-  vec2,
   vec4,
 } from 'glov/common/vmath';
 import {
-  crawlerLoadData, dirFromDelta,
+  crawlerLoadData,
 } from '../common/crawler_state';
 import {
-  aiDoFloor, aiTraitsClientStartup, entitiesAdjacentTo,
+  aiDoFloor,
+  aiTraitsClientStartup,
 } from './ai';
 import { cleanupCombat, doCombat } from './combat';
 // import './client_cmds';
@@ -95,13 +94,16 @@ import {
   crawlerRenderViewportSet,
 } from './crawler_render';
 import {
-  crawlerEntInFront,
   crawlerRenderEntitiesStartup,
 } from './crawler_render_entities';
 import { crawlerScriptAPIDummyServer } from './crawler_script_api_client';
 import { crawlerOnScreenButton } from './crawler_ui';
 import { dialogMoveLocked, dialogRun, dialogStartup } from './dialog_system';
-import { EntityDemoClient, entityManager } from './entity_demo_client';
+import {
+  EntityDemoClient,
+  entitiesAt,
+  entityManager,
+} from './entity_demo_client';
 // import { EntityDemoClient } from './entity_demo_client';
 import {
   VIEWPORT_X0,
@@ -331,12 +333,11 @@ function engagedEnemy(): Entity | null {
   if (buildModeActive() || engine.defines.PEACE) {
     return null;
   }
-  let game_state = crawlerGameState();
   let me = crawlerMyEnt();
   // search, needs game_state, returns list of foes
-  let ents: Entity[] = entitiesAdjacentTo(game_state,
+  let ents: Entity[] = entitiesAt(
     entityManager(),
-    me.data.floor, me.data.pos, crawlerScriptAPI());
+    me.data.pos, me.data.floor, true);
   ents = ents.filter((ent: Entity) => {
     return ent.is_enemy && ent.isAlive();
   });
@@ -399,7 +400,6 @@ function useNoText(): boolean {
   return input.inputTouchMode() || input.inputPadMode() || settings.turn_toggle;
 }
 
-let temp_delta = vec2();
 function playCrawl(): void {
   profilerStartFunc();
 
@@ -533,14 +533,14 @@ function playCrawl(): void {
     pauseMenu();
   }
 
-  if (frame_combat && engagedEnemy() !== crawlerEntInFront()) {
-    // turn to face
-    let me = crawlerMyEnt();
-    let dir = dirFromDelta(v2sub(temp_delta, frame_combat.data.pos, me.data.pos));
-    controller.forceFaceDir(dir);
-  } else {
-    controller.forceFaceDir(null);
-  }
+  // if (frame_combat && engagedEnemy() !== crawlerEntInFront()) {
+  //   // turn to face
+  //   let me = crawlerMyEnt();
+  //   let dir = dirFromDelta(v2sub(temp_delta, frame_combat.data.pos, me.data.pos));
+  //   controller.forceFaceDir(dir);
+  // } else {
+  //   controller.forceFaceDir(null);
+  // }
 
   button_x0 = MOVE_BUTTONS_X0;
   button_y0 = MOVE_BUTTONS_Y0;

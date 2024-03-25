@@ -33,14 +33,14 @@ const { round } = Math;
 Z.BACKGROUND = 1;
 Z.SPRITES = 10;
 Z.PARTICLES = 20;
-Z.CHAT = 60;
 Z.UI = 100;
 Z.MAP = Z.UI + 5; // also minimap
 Z.COMBAT_SHADE = Z.UI - 1;
 Z.ENEMY = 120;
 Z.FLOATERS = 125;
 Z.STATUS = 140;
-Z.CHAT_FOCUSED = 100;
+Z.CHAT = 300;
+Z.CHAT_FOCUSED = 300;
 
 let fonts: Font[] | undefined;
 

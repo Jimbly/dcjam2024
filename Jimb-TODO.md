@@ -5,10 +5,6 @@ Agenda
 * realtime or turn based outside of combat?
 
 TODO
-* combat
-  * show everything
-* add a BACK type attack
-* Combat should trigger when you're on the same tile, not adjacent (otherwise door problems!)?
 * replace heroes after combat
 * insanity
   * add meter (full height, to be able to show permanent damage?  Or `75/97`?)
@@ -20,10 +16,15 @@ TODO
   * restore sanity
 * spend XP to level up skills or heroes
   * only in Rooms of Solitude
+* add a BACK type attack
+* start balancing combat encounters
 
 Polish
 * Add a [help] button on the combat screen that explains the basic mechanics
-  * [img=attack_front_enemy] targets highest [img=aggro]AGGRO, divided by ties, rounded down
+  * explain hero ability icons: front/all/back
+  * explain monster attack icons and aggro:
+    * [img=attack_front_enemy] targets highest [img=aggro]AGGRO, divided by ties, rounded down
   * shields, aggro decay
 * long-press on ability is not focusing and showing preview
+  * also, make sure it all works well with controller
 * scrolling starfield

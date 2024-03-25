@@ -101,6 +101,7 @@ export class EntityDemoClient extends EntityBaseClient implements EntityCrawlerC
   declare do_split: boolean;
   declare is_player: boolean;
   declare is_enemy: boolean;
+  declare blocks_player: boolean;
   declare ai_move_min_time: number;
   declare ai_move_rand_time: number;
 
