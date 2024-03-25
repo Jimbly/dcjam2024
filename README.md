@@ -23,3 +23,5 @@ Credits for assets used (may not make it into final version)
 * Explosion.png - probably unused - https://opengameart.org/content/pixel-explosion-12-frames
 * Explosions pack - probably unused- https://opengameart.org/content/animated-explosions
 * cartoon explosion - https://opengameart.org/content/2d-bomb-and-explosion
+* AAP-64 palette - https://twitter.com/AdigunPolack/status/917804769405792257 - https://lospec.com/palette-list/aap-64
+* Sanity icon derived from https://game-icons.net/

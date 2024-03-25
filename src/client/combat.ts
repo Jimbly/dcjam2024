@@ -54,6 +54,7 @@ import {
   entityManager,
 } from './entity_demo_client';
 import {
+  SANITY_W,
   VIEWPORT_X0,
   VIEWPORT_Y0,
   render_height,
@@ -1067,14 +1068,15 @@ export function doCombat(target: Entity, dt: number): void {
     }
   }
   if (num_left > 1) {
-    hint = 'COMBAT: choose 2 abilities\nmatching your dice';
+    hint = 'COMBAT: choose 2 abilities matching your dice';
   } else if (num_left === 1) {
-    hint = 'COMBAT: choose 1 more ability\nand then the enemy will attack';
+    hint = 'COMBAT: choose 1 more ability and then the enemy will attack';
   }
   if (hint) {
-    font.drawSizedAligned(style_hint, VIEWPORT_X0, DIE_Y + DIE_W + DIE_PAD, Z.UI, uiTextHeight(),
+    font.drawSizedAligned(style_hint,
+      VIEWPORT_X0 + SANITY_W, DIE_Y + DIE_W + DIE_PAD, Z.UI, uiTextHeight(),
       ALIGN.HCENTER|ALIGN.HWRAP,
-      render_width, 0, hint);
+      render_width - SANITY_W * 2, 0, hint);
   }
 
   let end_combat = true;

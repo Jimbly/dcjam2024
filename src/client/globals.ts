@@ -8,3 +8,5 @@ export const render_height = 192;
 
 export const VIEWPORT_X0 = 207;
 export const VIEWPORT_Y0 = 6;
+
+export const SANITY_W = 38;

@@ -173,6 +173,10 @@ export function main(): void {
       // scrollbar_top: { name: 'scrollbar_top', ws: [11], hs: [11] },
       // scrollbar_handle_grabber: { name: 'scrollbar_handle_grabber', ws: [11], hs: [11] },
       // scrollbar_handle: { name: 'scrollbar_handle', ws: [11], hs: [3, 5, 3] },
+      sanity_bar_blocked: { name: 'sanity_bar_blocked', ws: [3], hs: [34, 10, 50] },
+      sanity_bar_full: { name: 'sanity_bar_full', ws: [3], hs: [50, 10, 34] },
+      sanity_bar_bg: { name: 'sanity_bar_bg', ws: [5], hs: [201] },
+      sanity_bg: { name: 'sanity_bg', ws: [38], hs: [38] },
     },
     ui_sounds: SOUND_DATA,
   })) {
@@ -228,7 +232,7 @@ export function main(): void {
     font: build_font,
     button_height: 11,
   });
-  playStartup();
+  playStartup(font_tiny);
   heroesDrawStartup(font_tiny);
   combatStartup();
   engine.setState(titleInit);

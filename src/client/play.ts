@@ -19,6 +19,7 @@ import * as settings from 'glov/client/settings';
 import { SimpleMenu, simpleMenuCreate } from 'glov/client/simple_menu';
 import {
   Sprite,
+  SpriteDrawParams,
   spriteCreate,
 } from 'glov/client/sprites';
 import {
@@ -30,6 +31,7 @@ import {
   uiButtonWidth,
   uiGetFont,
   uiTextHeight,
+  sprites as ui_sprites,
 } from 'glov/client/ui';
 import * as urlhash from 'glov/client/urlhash';
 import { webFSAPI } from 'glov/client/webfs';
@@ -108,6 +110,7 @@ import {
 } from './entity_demo_client';
 // import { EntityDemoClient } from './entity_demo_client';
 import {
+  SANITY_W,
   VIEWPORT_X0,
   VIEWPORT_Y0,
   game_height,
@@ -124,6 +127,9 @@ import {
   statusTick,
 } from './status';
 
+const spritesheet_icons = require('./img/icons');
+const { FRAME_SANITY24 } = spritesheet_icons;
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const { abs, floor, max, min, round, sin } = Math;
 
@@ -133,6 +139,15 @@ declare module 'glov/client/settings' {
   export let volume_sound: number;
   export let volume_music: number;
   export let turn_toggle: 0 | 1;
+}
+
+declare module 'glov/client/ui' {
+  interface UISprites {
+    sanity_bar_blocked: Sprite;
+    sanity_bar_full: Sprite;
+    sanity_bar_bg: Sprite;
+    sanity_bg: Sprite;
+  }
 }
 
 // const ATTACK_WINDUP_TIME = 1000;
@@ -161,6 +176,7 @@ const color_myblack = vec4(20/255, 16/255, 19/255, 1);
 type Entity = EntityDemoClient;
 
 let font: Font;
+let font_tiny: Font;
 
 let loading_level = false;
 
@@ -433,10 +449,105 @@ function moveBlockDead(): boolean {
   return true;
 }
 
-
 function useNoText(): boolean {
   return input.inputTouchMode() || input.inputPadMode() || settings.turn_toggle;
 }
+
+const SANITY_H = 38;
+const SANITY_X = game_width - SANITY_W;
+const SANITY_Y = game_height - SANITY_H;
+const style_sanity = fontStyle(null, {
+  color: 0xbc4a9bff,
+  glow_color: 0x242234ff,
+  glow_outer: 2.5,
+});
+function doSanity(): void {
+  let me = myEnt();
+  if (!me) {
+    return;
+  }
+  if (me.data.sanity === undefined) { // REMOVEME
+    me.data.sanity = me.data.sanity_max = 100;
+  }
+  let { sanity, sanity_max } = me.data;
+  if (engine.defines.SANITY) {
+    sanity = round(100 * clamp(1 - input.mousePos()[1] / game_height, 0, 1));
+    sanity_max = min(100, sanity + 20);
+  }
+
+  let z = Z.UI;
+  ui_sprites.sanity_bg.draw({
+    x: SANITY_X,
+    y: SANITY_Y,
+    z,
+    w: SANITY_W,
+    h: SANITY_H,
+  });
+  z++;
+  spritesheet_icons.sprite.draw({
+    x: SANITY_X + 10,
+    y: SANITY_Y + 5,
+    z,
+    w: 24,
+    h: 24,
+    frame: FRAME_SANITY24,
+  });
+  z++;
+
+  font_tiny.draw({
+    style: style_sanity,
+    x: SANITY_X + 3,
+    y: SANITY_Y + SANITY_H - 9,
+    z,
+    w: SANITY_W - 3,
+    align: ALIGN.HCENTER,
+    text: `${sanity}/${sanity_max}`,
+  });
+
+  let bar_x = game_width - 5;
+  let bar_y = SANITY_Y - 198;
+  ui_sprites.sanity_bar_bg.draw({
+    x: bar_x,
+    y: bar_y,
+    z,
+    w: 5,
+    h: 200,
+  });
+  z++;
+  bar_y++;
+  bar_x++;
+
+  let bar_h = sanity * 2;
+  let draw_param: SpriteDrawParams = {
+    x: bar_x - 0.1,
+    y: bar_y + 200 - bar_h - 0.1,
+    z,
+    w: 3.2,
+    h: bar_h + 0.2,
+  };
+  if (bar_h) {
+    if (bar_h >= 94) {
+      ui_sprites.sanity_bar_full.draw(draw_param);
+    } else {
+      draw_param.uvs = [0, 0, 1, bar_h / 94];
+      ui_sprites.sanity_bar_full.draw(draw_param);
+    }
+  }
+
+  bar_h = (100 - sanity_max) * 2;
+  if (bar_h) {
+    draw_param.y = bar_y - 0.1;
+    draw_param.h = bar_h + 0.2;
+    if (bar_h >= 94) {
+      delete draw_param.uvs;
+      ui_sprites.sanity_bar_blocked.draw(draw_param);
+    } else {
+      draw_param.uvs = [0, 1 - bar_h / 94, 1, 1];
+      ui_sprites.sanity_bar_blocked.draw(draw_param);
+    }
+  }
+}
+
 
 function playCrawl(): void {
   profilerStartFunc();
@@ -593,6 +704,7 @@ function playCrawl(): void {
   //   inventory_up = !inventory_up;
   // }
 
+  doSanity();
 
   if (frame_combat) {
     if (controller.queueLength() === 1) {
@@ -787,7 +899,8 @@ settings.register({
   },
 });
 
-export function playStartup(): void {
+export function playStartup(font_tiny_in: Font): void {
+  font_tiny = font_tiny_in;
   font = uiGetFont();
   crawlerScriptAPIDummyServer(true); // No script API running on server
   let heroes: Hero[] = [{
@@ -833,6 +946,8 @@ export function playStartup(): void {
         stats: {
           hp: 1, // set to 0 to trigger end of game
         },
+        sanity: 100,
+        sanity_max: 100,
         heroes,
       },
       loading_state: playOfflineLoading,

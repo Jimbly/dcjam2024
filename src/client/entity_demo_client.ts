@@ -81,6 +81,8 @@ export type EntityDataClient = {
   floor: number;
   stats: StatsData;
   // Player:
+  sanity: number;
+  sanity_max: number;
   heroes: Hero[];
 } & EntityCrawlerDataCommon;
 

@@ -15,6 +15,8 @@ TODO
   * restore sanity
 * spend XP to level up skills or heroes
   * only in Rooms of Solitude
+* combat - maybe add log for enemy turn explaining what happened, press button to Roll! when done reading
+  * probably don't need as much help text then?
 * add a BACK type attack
 * start balancing combat encounters
 
