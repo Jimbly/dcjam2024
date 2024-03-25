@@ -48,7 +48,7 @@ const {
   sprite_icons,
 } = spritesheet_icons;
 
-const { floor, max } = Math;
+const { floor, max, round } = Math;
 let font_tiny: Font;
 let font: Font;
 
@@ -164,13 +164,16 @@ export function drawHero(idx: number, x0: number, y0: number, hero_def: Hero): v
   } else {
     v4set(color_temp, blink, blink, blink, 1);
   }
+  let face_frame = spritesheet_faces[`FRAME_${face.toUpperCase()}`];
+  let face_aspect = sprite_faces.uidata.aspect[face_frame] || 1;
+  let face_w = round(PORTRAIT_SIZE * face_aspect);
   sprite_faces.draw({
-    x: x0 + PORTRAIT_X,
+    x: x0 + PORTRAIT_X + floor((PORTRAIT_SIZE - face_w) / 2),
     y: y0 + PORTRAIT_Y,
     z,
-    w: PORTRAIT_SIZE,
+    w: face_w,
     h: PORTRAIT_SIZE,
-    frame: spritesheet_faces[`FRAME_${face.toUpperCase()}`],
+    frame: face_frame,
     color: color_temp,
   });
   z++;

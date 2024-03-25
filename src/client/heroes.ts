@@ -39,7 +39,7 @@ export const CLASSES: TSMap<HeroClassDef> = {
       shield: 3,
     }],
     abilities: ['attack_heavy', 'attack_light'],
-    faces: ['catears'],
+    faces: ['capedeagle'],
   },
   front2: {
     tier: [{
@@ -53,7 +53,7 @@ export const CLASSES: TSMap<HeroClassDef> = {
       shield: 3,
     }],
     abilities: ['shield_aggro', 'shield_slow'],
-    faces: ['catears'],
+    faces: ['ifrit'],
   },
   mid1: {
     tier: [{
@@ -67,7 +67,7 @@ export const CLASSES: TSMap<HeroClassDef> = {
       shield: 1,
     }],
     abilities: ['attack_light', 'poison'],
-    faces: ['catears'],
+    faces: ['brownkobold'],
   },
   mid2: {
     tier: [{
@@ -81,7 +81,7 @@ export const CLASSES: TSMap<HeroClassDef> = {
       shield: 1,
     }],
     abilities: ['area_light', 'area_med'],
-    faces: ['catears'],
+    faces: ['icelady'],
   },
   back1: {
     tier: [{
@@ -95,7 +95,7 @@ export const CLASSES: TSMap<HeroClassDef> = {
       shield: 1,
     }],
     abilities: ['heal_med', 'heal_all_light'],
-    faces: ['catears'],
+    faces: ['healer2'],
   },
   back2: {
     tier: [{
@@ -109,7 +109,7 @@ export const CLASSES: TSMap<HeroClassDef> = {
       shield: 1,
     }],
     abilities: ['shield_other1', 'shield_other2'],
-    faces: ['catears'],
+    faces: ['calm'],
   },
 };
 
