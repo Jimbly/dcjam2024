@@ -6,7 +6,6 @@ Agenda
 
 TODO
 * combat
-  * do bam! floater with damage upon click, floaters for armor, hp, etc
   * put placeholder sounds
   * show everything
 * add a BACK type attack
@@ -24,5 +23,8 @@ TODO
   * only in Rooms of Solitude
 
 Polish
+* Add a [help] button on the combat screen that explains the basic mechanics
+  * [img=attack_front_enemy] targets highest [img=aggro]AGGRO, divided by ties, rounded down
+  * shields, aggro decay
 * long-press on ability is not focusing and showing preview
 * scrolling starfield

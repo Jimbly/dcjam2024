@@ -6,11 +6,12 @@ import {
   buttonWasFocused,
   uiGetFont,
 } from 'glov/client/ui';
-import { vec4 } from 'glov/common/vmath';
+import { v4copy, v4set, vec4 } from 'glov/common/vmath';
 import {
   combatAcitvateAbility,
   combatDrawFloaters,
   combatGetStates,
+  combatIsPlayerTurn,
   combatReadyForEnemyTurn,
   combatSetPreviewState,
 } from './combat';
@@ -103,6 +104,10 @@ const ABILITY_H = 32;
 let dice_usable: Partial<Record<number, true>>;
 const color_dead = vec4(1, 1, 1, DEAD_ALPHA);
 const color_dead_portrait = vec4(0, 0, 0, 1);
+const color_temp = vec4();
+export function heroDrawPos(hero_idx: number): [number, number] {
+  return [0 + PORTRAIT_X + PORTRAIT_SIZE / 2, hero_idx * HERO_H + PORTRAIT_Y + PORTRAIT_SIZE/2];
+}
 function drawHero(idx: number, hero_def: Hero): void {
   let combat_states = combatGetStates();
   let combat_hero = combat_states && combat_states.combat_state.heroes[idx] || null;
@@ -117,6 +122,11 @@ function drawHero(idx: number, hero_def: Hero): void {
   let hp = preview_hero ? preview_hero.hp / class_tier.hp : 1;
   let dead = preview_hero ? !hp : hero_def.dead;
   let z = Z.UI;
+  let blink = combatDrawFloaters({
+    x: PORTRAIT_X + PORTRAIT_SIZE/2,
+    y: y0 + PORTRAIT_Y + PORTRAIT_SIZE/2,
+    hero_idx: idx,
+  });
   sprite_icons.draw({
     x: x0,
     y: y0,
@@ -125,20 +135,32 @@ function drawHero(idx: number, hero_def: Hero): void {
     w: aspect * HERO_H,
     frame: hp ? FRAME_HERO_BG : FRAME_HERO_BG_EMPTY
   });
+  if (hp && blink < 1) {
+    v4set(color_temp, 1, 1, 1, 1 - blink);
+    sprite_icons.draw({
+      x: x0,
+      y: y0,
+      z: z + 0.1,
+      h: HERO_H,
+      w: aspect * HERO_H,
+      frame: FRAME_HERO_BG_EMPTY,
+      color: color_temp,
+    });
+  }
   z++;
   let face = class_def.faces[hero_def.face || 0] || class_def.faces[0];
+  if (dead) {
+    v4copy(color_temp, color_dead_portrait);
+  } else {
+    v4set(color_temp, blink, blink, blink, 1);
+  }
   sprite_faces.draw({
     x: PORTRAIT_X,
     y: y0 + PORTRAIT_Y,
     w: PORTRAIT_SIZE,
     h: PORTRAIT_SIZE,
     frame: spritesheet_faces[`FRAME_${face.toUpperCase()}`],
-    color: dead ? color_dead_portrait : undefined,
-  });
-  combatDrawFloaters({
-    x: PORTRAIT_X + PORTRAIT_SIZE/2,
-    y: y0 + PORTRAIT_Y + PORTRAIT_SIZE/2,
-    hero_idx: idx,
+    color: color_temp,
   });
   for (let ii = 0; ii < tier; ++ii) {
     sprite_icons.draw({
@@ -276,7 +298,7 @@ function drawHero(idx: number, hero_def: Hero): void {
     let { icon, effects } = ability;
     let die = DICE_SLOTS[idx][ability_idx];
     let x = x0 + ABILITY_X[ability_idx];
-    let disabled = Boolean(!combat_hero || !dice_avail[die] || hero_def.dead || dead);
+    let disabled = Boolean(!combat_hero || !dice_avail[die] || hero_def.dead || dead || !combatIsPlayerTurn());
 
     // Don't do this, force them to use each die, they may want to _not_ generate aggro on another ability
     // if (effects.length === 0 && ability.aggro < 0 && !hero.aggro) {

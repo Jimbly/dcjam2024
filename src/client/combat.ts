@@ -26,7 +26,7 @@ import {
 } from 'glov/client/ui';
 import { randCreate } from 'glov/common/rand_alea';
 import { DataObject, TSMap } from 'glov/common/types';
-import { easeOut, empty } from 'glov/common/util';
+import { easeIn, easeOut, empty, lerp } from 'glov/common/util';
 import verify from 'glov/common/verify';
 import { v3set, v4set, vec2, vec4 } from 'glov/common/vmath';
 import {
@@ -50,6 +50,7 @@ import {
   render_height,
   render_width,
 } from './globals';
+import { heroDrawPos } from './hero_draw';
 import { ABILITIES, CLASSES, DICE_SLOTS } from './heroes';
 import { drawHealthBar, myEnt } from './play';
 
@@ -119,6 +120,7 @@ type FloaterTarget = FloaterParamEnemy | FloaterParamHero;
 type FloaterParam = FloaterTarget & {
   attack_type: AttackType;
   msg: string;
+  from_attack_enemy?: number;
 };
 // function isFloaterEnemy(p: FloaterParam): p is FloaterParam & FloaterParamEnemy {
 //   return (p as FloaterParamEnemy).enemy_idx !== undefined;
@@ -133,6 +135,7 @@ function sameFloaterTarget(p1: FloaterTarget, p2: FloaterTarget): boolean {
 }
 type Animatable = {
   addFloater(f: FloaterParam): void;
+  animateAttack(enemy_idx: number, hero_idx: number): void;
 };
 
 class CombatState {
@@ -333,7 +336,7 @@ class CombatState {
     }
   }
 
-  damageHero(attack_type: AttackType, idx: number, amount: number, animator?: Animatable): void {
+  damageHero(enemy_idx: number, attack_type: AttackType, idx: number, amount: number, animator?: Animatable): void {
     let hero = this.heroes[idx];
     let class_tier = hero.tier_ref;
     amount = max(0, amount - (hero.temp_shield || 0) - class_tier.shield);
@@ -341,6 +344,7 @@ class CombatState {
       hero_idx: idx,
       attack_type: amount ? attack_type : AttackType.SHIELD_SELF,
       msg: amount ? `${amount}` : '[img=shield]',
+      from_attack_enemy: enemy_idx,
     });
     hero.hp -= amount;
     if (hero.hp <= 0) {
@@ -353,6 +357,7 @@ class CombatState {
   doEnemyAction(enemy_idx: number, animator?: Animatable): void {
     let { heroes, enemies } = this;
     let enemy = enemies[enemy_idx];
+    assert(enemy.hp);
     let { def, poison } = enemy;
     if (poison) {
       animator?.addFloater({
@@ -386,13 +391,15 @@ class CombatState {
           }
           for (let kk = 0; kk < best.length; ++kk) {
             this.aggro_targetted[best[kk]] = true;
-            this.damageHero(effect.type, best[kk], floor(effect.amount / best.length), animator);
+            animator?.animateAttack(enemy_idx, best[kk]);
+            this.damageHero(enemy_idx, effect.type, best[kk], floor(effect.amount / best.length), animator);
           }
         } break;
         case AttackType.ALL:
+          animator?.animateAttack(enemy_idx, -1);
           for (let kk = 0; kk < heroes.length; ++kk) {
             if (heroes[kk].hp > 0) {
-              this.damageHero(effect.type, kk, effect.amount, animator);
+              this.damageHero(enemy_idx, effect.type, kk, effect.amount, animator);
             }
           }
           break;
@@ -401,21 +408,37 @@ class CombatState {
       }
     }
   }
-  doEnemyTurn(animator?: Animatable): void {
-    let { enemies } = this;
+  enemy_tick_idx!: number;
+  doEnemyTurnStart(): void {
     this.heroes_attacked = {};
     this.aggro_targetted = {};
-
-    for (let ii = 0; ii < enemies.length; ++ii) {
-      let enemy = enemies[ii];
-      if (!enemy.hp) {
-        continue;
-      }
-      this.doEnemyAction(ii, animator);
+    this.enemy_tick_idx = 0;
+  }
+  doEnemyTurnTick(animator?: Animatable): boolean {
+    let { enemies } = this;
+    // skip dead instantly
+    while (this.enemy_tick_idx < enemies.length && !enemies[this.enemy_tick_idx].hp) {
+      this.enemy_tick_idx++;
     }
-
+    if (this.enemy_tick_idx >= enemies.length) {
+      return false;
+    }
+    this.doEnemyAction(this.enemy_tick_idx, animator);
+    this.enemy_tick_idx++;
+    return true;
+  }
+  doEnemyTurnFinish(): void {
     this.decayAggro();
     this.dice_used = [];
+  }
+  doEnemyTurn(animator?: Animatable): void {
+    this.doEnemyTurnStart();
+
+    while (this.doEnemyTurnTick(animator)) {
+      // repeat
+    }
+
+    this.doEnemyTurnFinish();
   }
 
   roll(): void {
@@ -445,13 +468,27 @@ class CombatState {
 type Floater = FloaterParam & {
   start: number;
 };
+const ATTACK_TIME = 500;
+const ATTACK_LAND_TIME = ATTACK_TIME / 2;
+type AttackAnim = {
+  enemy_idx: number;
+  hero_idx: number;
+  start: number;
+  end: number; // interrupts
+};
 const FLOATER_TIME = 750; // not including fade
 const FLOATER_FADE = 250;
 const FLOATER_TIME_TOTAL = FLOATER_TIME + FLOATER_FADE;
 const BLINK_TIME = 250;
 let temp_color = vec4(1, 1, 1, 1);
 
+enum CSID {
+  PlayerTurn,
+  EnemyTurn,
+}
+
 class CombatScene {
+  state_id: CSID = CSID.PlayerTurn;
   combat_state: CombatState;
   preview_state!: CombatState;
   preview_state_frame!: number;
@@ -502,30 +539,65 @@ class CombatScene {
 
   animPaused(completely: boolean): boolean {
     let expire = getFrameTimestamp() - (completely ? FLOATER_TIME_TOTAL : FLOATER_TIME);
-    let { floaters } = this;
+    let { attack_anims, floaters } = this;
     for (let ii = 0; ii < floaters.length; ++ii) {
       if (floaters[ii].start > expire) {
+        return true;
+      }
+    }
+    let attack_expire = getFrameTimestamp() + (completely ? 0 : ATTACK_LAND_TIME);
+    for (let ii = 0; ii < attack_anims.length; ++ii) {
+      if (attack_anims[ii].end > attack_expire) {
         return true;
       }
     }
     return false;
   }
   needsRoll(): boolean {
-    return !this.combat_state.dice_used.length;
+    return this.state_id === CSID.PlayerTurn && !this.combat_state.dice_used.length;
   }
 
+  last_attack_land_time!: number;
   floaters: Floater[] = [];
   addFloater(f: FloaterParam): void {
     let f2 = f as Floater;
-    f2.start = getFrameTimestamp();
+    f2.start = (f.from_attack_enemy === undefined) ? getFrameTimestamp() : this.last_attack_land_time;
     this.floaters.push(f2);
+  }
+  attack_anims: AttackAnim[] = [];
+  animateAttack(enemy_idx: number, hero_idx: number): void {
+    let tail_attack: AttackAnim | null = null;
+    for (let ii = 0; ii < this.attack_anims.length; ++ii) {
+      if (this.attack_anims[ii].enemy_idx === enemy_idx) {
+        tail_attack = this.attack_anims[ii];
+      }
+    }
+    let start = getFrameTimestamp();
+    if (tail_attack) {
+      start = tail_attack.start + ATTACK_TIME * 0.5;
+      tail_attack.end = tail_attack.start + ATTACK_TIME * 0.75;
+    }
+    this.last_attack_land_time = start + ATTACK_LAND_TIME;
+    this.attack_anims.push({
+      enemy_idx,
+      hero_idx,
+      start,
+      end: start + ATTACK_TIME,
+    });
   }
 
   tickFloaters(): void {
-    let expire = getFrameTimestamp() - FLOATER_TIME_TOTAL;
+    let now = getFrameTimestamp();
+    let expire = now - FLOATER_TIME_TOTAL;
     for (let ii = this.floaters.length - 1; ii >= 0; --ii) {
       if (this.floaters[ii].start < expire) {
         this.floaters.splice(ii, 1);
+      }
+    }
+    for (let ii = this.attack_anims.length - 1; ii >= 0; --ii) {
+      let anim = this.attack_anims[ii];
+      if (anim.end <= now) {
+        this.attack_anims.splice(ii, 1);
       }
     }
   }
@@ -543,15 +615,15 @@ class CombatScene {
         continue;
       }
       let elapsed = getFrameTimestamp() - floater.start;
+      if (elapsed < 0) {
+        continue;
+      }
       let alpha = 1;
       if (elapsed > FLOATER_TIME) {
         alpha = 1 - (elapsed - FLOATER_TIME) / FLOATER_FADE;
         if (alpha <= 0) {
           continue;
         }
-      }
-      if (elapsed < BLINK_TIME) {
-        blink = min(blink, elapsed / BLINK_TIME);
       }
       let float = easeOut(elapsed / (FLOATER_TIME + FLOATER_FADE), 2) * 20;
       suppressNewDOMElemWarnings();
@@ -571,6 +643,9 @@ class CombatScene {
         floater.attack_type === AttackType.BACK ||
         floater.attack_type === AttackType.ALL
       ) {
+        if (elapsed < BLINK_TIME) {
+          blink = min(blink, elapsed / BLINK_TIME);
+        }
         damage_sprite.draw({
           x,
           y: y - float,
@@ -581,6 +656,16 @@ class CombatScene {
       }
     }
     return blink < 1 ? easeOut(blink, 2) : 1;
+  }
+
+  getAttackAnim(enemy_idx: number): AttackAnim | null {
+    for (let ii = 0; ii < this.attack_anims.length; ++ii) {
+      let anim = this.attack_anims[ii];
+      if (anim.enemy_idx === enemy_idx) {
+        return anim;
+      }
+    }
+    return null;
   }
 }
 
@@ -605,6 +690,10 @@ export function combatAcitvateAbility(hero_idx: number, ability_idx: number): vo
   assert(combat_scene);
   combat_scene.combat_state.activateAbility(hero_idx, ability_idx, combat_scene);
   combat_scene.updateEnemyPreview();
+}
+
+export function combatIsPlayerTurn(): boolean {
+  return Boolean(combat_scene && combat_scene.state_id === CSID.PlayerTurn);
 }
 
 export function combatGetStates(): {
@@ -643,23 +732,37 @@ export function combatReadyForEnemyTurn(usable_dice: Partial<Record<number, true
   }
 }
 
-function combatDoEnemyTurn(): void {
+function combatStartEnemyTurn(): void {
   assert(combat_scene);
-  let new_state = combat_scene.combat_state.clone();
-  new_state.doEnemyTurn(combat_scene);
-  combat_scene.combat_state = new_state;
+  combat_scene.state_id = CSID.EnemyTurn;
+  let { combat_state } = combat_scene;
+  combat_state.doEnemyTurnStart();
+  combat_state.doEnemyTurnTick(combat_scene);
+}
+function combatTickEnemyTurn(): void {
+  assert(combat_scene);
+  let { combat_state } = combat_scene;
+  if (combat_state.doEnemyTurnTick(combat_scene)) {
+    return;
+  }
+
+  // enemies done, go back to players
+
+  combat_state.doEnemyTurnFinish();
 
   // Apply deaths back to entity data
   let me = myEnt();
   assert(me);
   let ent_heroes = me.data.heroes;
-  let { heroes } = new_state;
+  let { heroes } = combat_state;
   for (let ii = 0; ii < heroes.length; ++ii) {
     if (!heroes[ii].hp) {
       ent_heroes[ii].dead = true;
     }
   }
+  combat_scene.state_id = CSID.PlayerTurn;
 }
+
 
 let last_combat_frame = -1;
 let last_combat_ent: Entity | null = null;
@@ -688,11 +791,15 @@ export function doCombat(target: Entity, dt: number): void {
   combat_scene.tickFloaters();
   if (combat_scene.animPaused(false)) {
     // no state updates
-  } else if (combat_scene.needsRoll()) {
-    rolled_at = getFrameTimestamp();
-    combat_scene.combat_state.roll();
-  } else if (combat_scene.player_is_done) {
-    combatDoEnemyTurn();
+  } else {
+    if (combat_scene.needsRoll()) {
+      rolled_at = getFrameTimestamp();
+      combat_scene.combat_state.roll();
+    } else if (combat_scene.state_id === CSID.PlayerTurn && combat_scene.player_is_done) {
+      combatStartEnemyTurn();
+    } else if (combat_scene.state_id === CSID.EnemyTurn) {
+      combatTickEnemyTurn();
+    }
   }
 
   let x0 = VIEWPORT_X0;
@@ -715,17 +822,47 @@ export function doCombat(target: Entity, dt: number): void {
   const ENEMY_BAR_H = 11;
   const ICON_SIZE = 9;
   const ENEMY_BAR_Y = ENEMY_SPRITE_Y - ENEMY_BAR_H - 2;
+  const ENEMY_BAR_YOFFS = ENEMY_BAR_Y - ENEMY_SPRITE_Y;
   const ENEMY_STATUS_Y = ENEMY_BAR_Y - ICON_SIZE - 1;
+  const ENEMY_STATUS_YOFFS = ENEMY_STATUS_Y - ENEMY_SPRITE_Y;
   const ENEMY_ATTACK_Y = ENEMY_SPRITE_Y + ENEMY_SPRITE_H;
+  const ENEMY_ATTACK_YOFFS = ENEMY_ATTACK_Y - ENEMY_SPRITE_Y;
   let enemy_x0 = floor(x0 + (w - enemy_w * enemies.length - ENEMY_PAD * (enemies.length - 1)) / 2);
   for (let ii = 0; ii < enemies.length; ++ii) {
     let enemy = enemies[ii];
     let enemy_x = enemy_x0 + ii * (enemy_w + ENEMY_PAD);
+    let enemy_y = ENEMY_SPRITE_Y;
+    let z = Z.ENEMY;
+    let anim = combat_scene.getAttackAnim(ii);
+    if (anim) {
+      let p = (getFrameTimestamp() - anim.start) / ATTACK_TIME;
+      if (p < 0.5) {
+        z += 10;
+        p *= 2;
+      } else {
+        p = 1 - (p * 2 - 1);
+      }
+      if (anim.hero_idx === -1) {
+        // also grow?
+        enemy_x = lerp(easeIn(p, 2), enemy_x, enemy_x - 20);
+        let p2 = p * 2;
+        if (p2 > 1) {
+          p2 = 2 - p2;
+        }
+        enemy_y = lerp(easeOut(p2, 2), enemy_y, enemy_y - 40);
+      } else {
+        let hero_pos = heroDrawPos(anim.hero_idx);
+        enemy_x = lerp(easeIn(p, 2), enemy_x, hero_pos[0]);
+        if (p > 0.5) {
+          enemy_y = lerp(easeIn(p * 2 - 1, 2), enemy_y, hero_pos[1] - ENEMY_SPRITE_H / 2);
+        }
+      }
+    }
     let x_mid = floor(enemy_x + enemy_w/2);
     let blink = combat_scene.drawFloaters({
       enemy_idx: ii,
       x: x_mid,
-      y: ENEMY_SPRITE_Y + ENEMY_SPRITE_H * 0.25,
+      y: enemy_y + ENEMY_SPRITE_H * 0.25,
     });
     let { def } = enemy;
     let { tex } = def;
@@ -743,8 +880,8 @@ export function doCombat(target: Entity, dt: number): void {
     let aspect = sprite.getAspect();
     sprite.draw({
       x: x_mid,
-      y: ENEMY_SPRITE_Y,
-      z: Z.UI + 1 - ii * 0.1 + (enemy.hp ? 0 : -0.5),
+      y: enemy_y,
+      z: z + 1 - ii * 0.1 + (enemy.hp ? 0 : -0.5),
       w: -ENEMY_SPRITE_H * aspect,
       h: ENEMY_SPRITE_H,
       color: temp_color,
@@ -753,8 +890,8 @@ export function doCombat(target: Entity, dt: number): void {
       continue;
     }
     drawHealthBar(true,
-      x_mid - ENEMY_BAR_W/2, ENEMY_BAR_Y,
-      Z.UI, ENEMY_BAR_W, ENEMY_BAR_H, enemy.hp, def.hp, true);
+      x_mid - ENEMY_BAR_W/2, enemy_y + ENEMY_BAR_YOFFS,
+      z, ENEMY_BAR_W, ENEMY_BAR_H, enemy.hp, def.hp, true);
 
     let status_text = [];
     if (enemy.poison) {
@@ -774,7 +911,8 @@ export function doCombat(target: Entity, dt: number): void {
       markdownAuto({
         font_style: style_attack,
         x: enemy_x,
-        y: ENEMY_STATUS_Y,
+        y: enemy_y + ENEMY_STATUS_YOFFS,
+        z,
         w: enemy_w,
         h: ICON_SIZE,
         align: ALIGN.HCENTER,
@@ -790,12 +928,13 @@ export function doCombat(target: Entity, dt: number): void {
     let icon_w = ICON_SIZE * aspect;
     sprite_icons.draw({
       x: x_mid - icon_w - 1,
-      y: ENEMY_ATTACK_Y,
+      y: enemy_y + ENEMY_ATTACK_YOFFS,
+      z,
       w: icon_w,
       h: ICON_SIZE,
       frame,
     });
-    font.drawSized(style_attack, x_mid + 1, ENEMY_ATTACK_Y + 1, Z.UI,
+    font.drawSized(style_attack, x_mid + 1, enemy_y + ENEMY_ATTACK_YOFFS + 1, z,
       8, `${attack.amount}`);
   }
 
