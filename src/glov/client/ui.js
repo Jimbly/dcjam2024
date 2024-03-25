@@ -980,7 +980,6 @@ export function buttonShared(param) {
   profilerStopFunc();
   return spot_ret;
 }
-
 export let button_last_color;
 export function buttonBackgroundDraw(param, state) {
   profilerStartFunc();

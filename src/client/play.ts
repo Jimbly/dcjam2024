@@ -153,16 +153,16 @@ declare module 'glov/client/ui' {
 // const ATTACK_WINDUP_TIME = 1000;
 const BOTTOM_UI_Y = 200;
 const MINIMAP_RADIUS = 3;
-const MINIMAP_X = 385;
+const MINIMAP_X = VIEWPORT_X0 + 2;
 const MINIMAP_Y = BOTTOM_UI_Y;
 const MINIMAP_W = 5+7*(MINIMAP_RADIUS*2 + 1);
 const COMPASS_X = MINIMAP_X;
 const COMPASS_Y = MINIMAP_Y + MINIMAP_W;
 
-const MOVE_BUTTONS_X0 = 300;
+const MOVE_BUTTONS_X0 = 290;
 const MOVE_BUTTONS_Y0 = BOTTOM_UI_Y;
 
-const BUTTON_W = 26;
+const BUTTON_W = 32;
 
 // const MENU_BUTTON_X = VIEWPORT_X0;
 // const MENU_BUTTON_Y = BOTTOM_UI_Y;
@@ -983,8 +983,8 @@ export function playStartup(font_tiny_in: Font): void {
   let button_param = {
     filter_min: gl.NEAREST,
     filter_mag: gl.NEAREST,
-    ws: [26, 26, 26],
-    hs: [26, 26, 26, 26],
+    ws: [BUTTON_W, BUTTON_W, BUTTON_W],
+    hs: [BUTTON_W, BUTTON_W, BUTTON_W, BUTTON_W],
   };
   button_sprites = {
     regular: spriteCreate({
