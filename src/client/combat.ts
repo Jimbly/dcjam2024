@@ -12,6 +12,7 @@ import {
   ALIGN,
   Font,
   fontStyle,
+  fontStyleAlpha,
 } from 'glov/client/font';
 import { markdownAuto } from 'glov/client/markdown';
 import { markdownImageRegisterSpriteSheet } from 'glov/client/markdown_renderables';
@@ -28,7 +29,14 @@ import { randCreate } from 'glov/common/rand_alea';
 import { DataObject, TSMap } from 'glov/common/types';
 import { easeIn, easeOut, empty, lerp } from 'glov/common/util';
 import verify from 'glov/common/verify';
-import { v3set, v4set, vec2, vec4 } from 'glov/common/vmath';
+import {
+  Vec4,
+  v3set,
+  v4copy,
+  v4set,
+  vec2,
+  vec4,
+} from 'glov/common/vmath';
 import { bamfCheck } from './bamf';
 import {
   AttackType,
@@ -58,7 +66,8 @@ import { drawHealthBar, myEnt } from './play';
 const spritesheet_icons = require('./img/icons');
 const { sprite_icons } = spritesheet_icons;
 
-const { floor, max, min, random } = Math;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const { abs, floor, max, min, random, sin } = Math;
 
 let font: Font;
 
@@ -71,6 +80,7 @@ const style_attack = fontStyle(null, {
   outline_width: 4,
   outline_color: 0x201b25ff,
 });
+const style_attack_dead_preview = fontStyleAlpha(style_attack, 0.25);
 const style_hint = fontStyle(null, {
   color: 0x6d758dff,
 });
@@ -566,7 +576,18 @@ class CombatScene {
     return false;
   }
   needsRoll(): boolean {
-    return this.state_id === CSID.PlayerTurn && !this.combat_state.dice_used.length;
+    let needs = this.state_id === CSID.PlayerTurn && !this.combat_state.dice_used.length;
+    if (!needs) {
+      return false;
+    }
+    let { enemies } = this.combat_state;
+    for (let ii = 0; ii < enemies.length; ++ii) {
+      if (enemies[ii].hp) {
+        return true;
+      }
+    }
+    // all dead
+    return false;
   }
 
   last_attack_land_time!: number;
@@ -799,6 +820,10 @@ export function combatAnimPaused(): boolean {
   return combat_scene && combat_scene.animPaused(false) || false;
 }
 
+export function combatPreviewAlpha(): number {
+  return abs(sin(getFrameTimestamp() * 0.01));
+}
+
 
 let last_combat_frame = -1;
 let last_combat_ent: Entity | null = null;
@@ -806,6 +831,7 @@ let rolled_at: number;
 let color_die_used = vec4(0.25, 0.25, 0.25, 1);
 let color_die_revenge = vec4(1, 0, 0, 1);
 let color_die_revenge_used = vec4(0.25, 0, 0, 1);
+let color_white = vec4(1, 1, 1, 1);
 export function doCombat(target: Entity, dt: number): void {
   let me = myEnt();
   assert(me);
@@ -831,6 +857,7 @@ export function doCombat(target: Entity, dt: number): void {
     if (combat_scene.needsRoll()) {
       rolled_at = getFrameTimestamp();
       combat_scene.combat_state.roll();
+      playUISound('dice');
     } else if (combat_scene.state_id === CSID.PlayerTurn && combat_scene.player_is_done) {
       combatStartEnemyTurn();
     } else if (combat_scene.state_id === CSID.EnemyTurn) {
@@ -848,6 +875,7 @@ export function doCombat(target: Entity, dt: number): void {
 
   let { combat_state, preview_state } = combat_scene;
   let { enemies } = preview_state;
+  let { enemies: enemies_real } = combat_state;
 
   // draw enemies
   let enemy_w = 56;
@@ -866,6 +894,7 @@ export function doCombat(target: Entity, dt: number): void {
   let enemy_x0 = floor(x0 + (w - enemy_w * enemies.length - ENEMY_PAD * (enemies.length - 1)) / 2);
   for (let ii = 0; ii < enemies.length; ++ii) {
     let enemy = enemies[ii];
+    let enemy_real = enemies_real[ii];
     let enemy_x = enemy_x0 + ii * (enemy_w + ENEMY_PAD);
     let enemy_y = ENEMY_SPRITE_Y;
     let z = Z.ENEMY;
@@ -903,7 +932,9 @@ export function doCombat(target: Entity, dt: number): void {
     let { def } = enemy;
     let { tex } = def;
     let sprite = enemy_sprites[tex];
-    let alpha = enemy.hp ? 1 : 0.25;
+    let draw_as_dead = !enemy_real.hp;
+    let preview_as_dead = !enemy.hp;
+    let alpha = draw_as_dead ? 0.25 : 1;
     temp_color[3] = alpha;
     v3set(temp_color, blink, blink, blink);
     if (!sprite) {
@@ -917,21 +948,25 @@ export function doCombat(target: Entity, dt: number): void {
     sprite.draw({
       x: x_mid,
       y: enemy_y,
-      z: z + 1 - ii * 0.1 + (enemy.hp ? 0 : -0.5),
+      z: z + 1 - ii * 0.1 + (draw_as_dead ? -0.5 : 0),
       w: -ENEMY_SPRITE_H * aspect,
       h: ENEMY_SPRITE_H,
       color: temp_color,
     });
-    if (!enemy.hp) {
+    if (draw_as_dead) {
       continue;
     }
     drawHealthBar(true,
       x_mid - ENEMY_BAR_W/2, enemy_y + ENEMY_BAR_YOFFS,
-      z, ENEMY_BAR_W, ENEMY_BAR_H, enemy.hp, def.hp, true);
+      z, ENEMY_BAR_W, ENEMY_BAR_H, enemy.hp, enemy_real.hp, def.hp);
 
     let status_text = [];
-    if (enemy.poison) {
-      status_text.push(`${enemy.poison}[img=poison]`);
+    if (enemy.poison || enemy_real.poison) {
+      let text = `${enemy_real.poison || ''}`;
+      if (enemy.poison !== enemy_real.poison) {
+        text += `→${enemy.poison}`;
+      }
+      status_text.push(`${text}[img=poison]`);
     }
     if (enemy.temp_shield || def.shield) {
       let text = '';
@@ -962,6 +997,10 @@ export function doCombat(target: Entity, dt: number): void {
     let frame = AttackTypeToFrameEnemies[attack.type];
     aspect = sprite_icons.uidata.aspect[frame];
     let icon_w = ICON_SIZE * aspect;
+    let color: Vec4 | undefined;
+    if (preview_as_dead) {
+      color = v4set(temp_color, 1, 1, 1, 0.25);
+    }
     sprite_icons.draw({
       x: x_mid - icon_w - 1,
       y: enemy_y + ENEMY_ATTACK_YOFFS,
@@ -969,8 +1008,10 @@ export function doCombat(target: Entity, dt: number): void {
       w: icon_w,
       h: ICON_SIZE,
       frame,
+      color,
     });
-    font.drawSized(style_attack, x_mid + 1, enemy_y + ENEMY_ATTACK_YOFFS + 1, z,
+    font.drawSized(preview_as_dead ? style_attack_dead_preview : style_attack,
+      x_mid + 1, enemy_y + ENEMY_ATTACK_YOFFS + 1, z,
       8, `${attack.amount}`);
   }
 
@@ -983,6 +1024,7 @@ export function doCombat(target: Entity, dt: number): void {
   for (let ii = 0; ii < num_dice; ++ii) {
     let die = preview_state.dice[ii];
     let used = preview_state.dice_used[ii];
+    let preview_used = combat_state.dice_used[ii];
     if (rolled_at > getFrameTimestamp() - 250) {
       die = floor(random() * 6) + 1;
     } else {
@@ -992,13 +1034,26 @@ export function doCombat(target: Entity, dt: number): void {
     }
 
     let revenge = ii >= num_dice - combat_scene.combat_state.deaths;
+    v4copy(temp_color, revenge ? used ? color_die_revenge_used : color_die_revenge :
+      used ? color_die_used : color_white);
     sprite_icons.draw({
       x: die_x,
       y: DIE_Y,
       w: DIE_W, h: DIE_W,
       frame: spritesheet_icons[`FRAME_DIE${die}`],
-      color: revenge ? used ? color_die_revenge_used : color_die_revenge : used ? color_die_used : undefined,
+      color: temp_color,
     });
+    if (preview_used !== used) {
+      v4set(temp_color, 1, 1, 1, 0.5 + 0.5 * combatPreviewAlpha());
+      sprite_icons.draw({
+        x: die_x,
+        y: DIE_Y,
+        z: Z.UI + 1,
+        w: DIE_W, h: DIE_W,
+        frame: spritesheet_icons[`FRAME_DIE${die}`],
+        color: temp_color,
+      });
+    }
     die_x += DIE_W + DIE_PAD;
   }
 

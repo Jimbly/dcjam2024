@@ -6,7 +6,7 @@ import assert from 'assert';
 import { chatUICreate } from 'glov/client/chat_ui';
 import { cmd_parse } from 'glov/client/cmds';
 import * as engine from 'glov/client/engine';
-import { Font, fontCreate } from 'glov/client/font';
+import { Font, fontCreate, fontStyle } from 'glov/client/font';
 import { markdownImageRegisterSpriteSheet, markdown_default_renderables } from 'glov/client/markdown_renderables';
 import { netInit } from 'glov/client/net';
 import * as settings from 'glov/client/settings';
@@ -44,6 +44,10 @@ Z.CHAT = 300;
 Z.CHAT_FOCUSED = 300;
 
 let fonts: Font[] | undefined;
+
+const style_modal = fontStyle(null, {
+  color: 0xFFFFFFff,
+});
 
 // crawlerOnPixelyChange(function (new_value: number): void {
 //   assert(fonts);
@@ -201,6 +205,7 @@ export function main(): void {
   ui.setPanelPixelScale(1);
   ui.setButtonHeight(16);
   ui.buttonSetDefaultYOffs({ down: 1 });
+  ui.setFontStyles(null, null, style_modal, null);
   uiSetPanelColor([1, 1, 1, 1]);
   // ui.uiSetFontStyleFocused(fontStyle(ui.uiGetFontStyleFocused(), {
   //   outline_width: 2.5,

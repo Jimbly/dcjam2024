@@ -5,8 +5,6 @@ Agenda
 * realtime or turn based outside of combat?
 
 TODO
-* bug: after combat, before bamf, dice were animating as rolling
-* hook up dice rolling sounds
 * insanity
   * add meter (full height, to be able to show permanent damage?  Or `75/97`?)
   * game over condition

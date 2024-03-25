@@ -49,7 +49,7 @@ import {
   aiTraitsClientStartup,
 } from './ai';
 import { bamfReset, bamfTick } from './bamf';
-import { cleanupCombat, doCombat } from './combat';
+import { cleanupCombat, combatPreviewAlpha, doCombat } from './combat';
 // import './client_cmds';
 import {
   buildModeActive,
@@ -125,7 +125,7 @@ import {
 } from './status';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const { floor, max, min, round } = Math;
+const { abs, floor, max, min, round, sin } = Math;
 
 declare module 'glov/client/settings' {
   export let ai_pause: 0 | 1; // TODO: move to ai.ts
@@ -279,34 +279,67 @@ function pauseMenu(): void {
   menuUp();
 }
 
+let temp_color = vec4(1,1,1,1);
 function drawBar(
   bar: BarSprite,
   x: number, y: number, z: number,
   w: number, h: number,
-  p: number,
+  p: number, preal: number,
 ): void {
-  const MIN_VIS_W = 4;
-  let full_w = round(p * w);
-  if (p > 0 && p < 1) {
-    full_w = clamp(full_w, MIN_VIS_W, w - MIN_VIS_W/2);
-  }
-  let empty_w = w - full_w;
   drawBox({
     x, y, z,
     w, h,
   }, bar.bg, 1);
-  if (full_w) {
+  const MIN_VIS_W = 4;
+  let full_w_low = round(p * w);
+  if (p > 0 && p < 1) {
+    full_w_low = clamp(full_w_low, MIN_VIS_W, w - MIN_VIS_W/2);
+  }
+  let full_w_high = round(preal * w);
+  if (preal > 0 && preal < 1) {
+    full_w_high = clamp(full_w_high, MIN_VIS_W, w - MIN_VIS_W/2);
+  }
+  if (full_w_low > full_w_high) {
+    let t = full_w_high;
+    full_w_high = full_w_low;
+    full_w_low = t;
+  }
+
+  if (full_w_high !== full_w_low) {
+    temp_color[3] = combatPreviewAlpha();
     drawBox({
       x, y,
-      w: full_w, h,
+      w: full_w_high, h,
+      z: z + 0.5,
+    }, bar.hp, 1, temp_color);
+    let empty_w_high = w - full_w_high;
+    if (empty_w_high && full_w_high) {
+      let temp_x = x + full_w_high;
+      if (full_w_high) {
+        temp_x -= 1;
+        empty_w_high += 1;
+      }
+      drawBox({
+        x: temp_x, y,
+        w: empty_w_high, h,
+        z: z + 1,
+      }, bar.empty, 1, temp_color);
+    }
+  }
+
+  let empty_w = w - full_w_low;
+  if (full_w_low) {
+    drawBox({
+      x, y,
+      w: full_w_low, h,
       z: z + 1,
     }, bar.hp, 1);
   }
-  if (empty_w && full_w) {
-    let temp_x = x + full_w;
-    if (full_w) {
-      temp_x -= 2;
-      empty_w += 2;
+  if (empty_w && full_w_low) {
+    let temp_x = x + full_w_low;
+    if (full_w_low) {
+      temp_x -= 1;
+      empty_w += 1;
     }
     drawBox({
       x: temp_x, y,
@@ -320,14 +353,17 @@ export function drawHealthBar(
   enemy: boolean,
   x: number, y: number, z: number,
   w: number, h: number,
-  hp: number, hp_max: number,
-  show_text: boolean
+  hp_preview: number, hp_real: number, hp_max: number,
 ): void {
-  drawBar(bar_sprites[enemy ? 'enemy_healthbar' : 'healthbar'], x, y, z, w, h, hp / hp_max);
-  if (show_text) {
+  drawBar(bar_sprites[enemy ? 'enemy_healthbar' : 'healthbar'], x, y, z, w, h, hp_preview / hp_max, hp_real / hp_max);
+  let hp_text = `${hp_preview}`;
+  if (hp_preview !== hp_real) {
+    hp_text = `${hp_real}→${hp_preview}`;
+  }
+  if (hp_text) {
     font.drawSizedAligned(style_text, x, y + (settings.pixely > 1 ? 0.5 : 0), z+2,
       8, ALIGN.HVCENTERFIT,
-      w, h, `${hp}`);
+      w, h, hp_text);
   }
 }
 

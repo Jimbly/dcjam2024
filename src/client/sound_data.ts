@@ -1,7 +1,7 @@
 export const SOUND_DATA: Partial<Record<string, {
   file: string;
   volume: number;
-} | string>> = {
+} | string | string[]>> = {
   // online multiplayer sounds, ignore these
   user_join: 'user_join',
   user_leave: 'user_leave',
@@ -11,10 +11,12 @@ export const SOUND_DATA: Partial<Record<string, {
   msg_out: 'msg_out',
 
   // UI sounds
-  button_click: 'button_click',
+  button_click: 'button_click', // menus/general/etc
+  button_click2: 'button_click2', // movement controls
   rollover: { file: 'rollover', volume: 0.25 },
 
   // Game sounds
+  dice: ['dice1', 'dice2'],
   ability_gun1: { file: 'ability_gun1', volume: 1 },
   ability_gun2: { file: 'ability_gun2', volume: 1 },
   ability_shield2: { file: 'ability_shield2', volume: 1 },

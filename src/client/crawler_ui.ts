@@ -61,6 +61,7 @@ export function crawlerOnScreenButton(param: {
     frame,
     x, y, z, w, h,
     disabled,
+    sound_button: 'button_click2',
   };
   // Deal with down edge, down time, rollover ourself, combined with key and pad handling
   let state: SpotStateEnum = SPOT_STATE_REGULAR;

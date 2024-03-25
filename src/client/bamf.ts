@@ -16,7 +16,7 @@ import {
   HERO_W,
   drawHero,
 } from './hero_draw';
-import { myEnt } from './play';
+import { myEnt, myEntOptional } from './play';
 
 const { floor, random } = Math;
 
@@ -61,10 +61,15 @@ let bamf_state: {
 } | null = null;
 
 export function bamfCheck(): void {
-  let me = myEnt();
-  assert(me);
+  let me = myEntOptional();
+  if (!me) {
+    return;
+  }
   let ent_heroes = me.data.heroes;
   need_bamf = false;
+  if (!ent_heroes) {
+    return;
+  }
   for (let ii = 0; ii < ent_heroes.length; ++ii) {
     let hero = ent_heroes[ii];
     if (hero.dead) {
