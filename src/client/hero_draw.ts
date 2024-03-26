@@ -180,7 +180,7 @@ export function drawHero(idx: number, x0: number, y0: number, hero_def: Hero): v
   font_tiny.draw({
     style: style_name,
     x: x0 + PORTRAIT_X,
-    y: y0 + PORTRAIT_Y + PORTRAIT_SIZE,
+    y: y0 + PORTRAIT_Y + PORTRAIT_SIZE + 1,
     z,
     w: PORTRAIT_SIZE,
     align: ALIGN.HCENTER,

@@ -1,4 +1,6 @@
 TODO
+* solitude
+  * change sanity_restore to an event, attach it to a special tile with an altar or planter or something
 * monsters move around - realtime
 * take a look at some font options
 * combat - maybe add log for enemy turn explaining what happened, press button to Roll! when done reading
