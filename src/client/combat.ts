@@ -22,6 +22,7 @@ import {
   drawRect,
   playUISound,
   suppressNewDOMElemWarnings,
+  uiButtonWidth,
   uiGetFont,
   uiTextHeight,
 } from 'glov/client/ui';
@@ -68,7 +69,7 @@ const spritesheet_icons = require('./img/icons');
 const { sprite_icons } = spritesheet_icons;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const { abs, floor, max, min, random, sin } = Math;
+const { abs, floor, max, min, random, round, sin } = Math;
 
 let font: Font;
 
@@ -692,7 +693,7 @@ class CombatScene {
         }
         damage_sprite.draw({
           x,
-          y: y - float,
+          y: round(y - float),
           z: Z.FLOATERS - 1,
           w: damage_size, h: damage_size,
           color: temp_color,
@@ -1030,7 +1031,7 @@ export function doCombat(target: Entity, dt: number): void {
       die = floor(random() * 6) + 1;
     } else {
       if (!combat_scene.usable_dice[die]) {
-        used = true;
+        preview_used = used = true;
       }
     }
 
@@ -1079,6 +1080,31 @@ export function doCombat(target: Entity, dt: number): void {
       render_width - SANITY_W * 2, 0, hint);
   }
 
+  if (engine.DEBUG) {
+    if (buttonText({
+      x: VIEWPORT_X0 + 4,
+      y: VIEWPORT_Y0 + 4,
+      text: 'DBG:SKIP',
+    })) {
+      combat_scene.combat_state.doEnemyTurn(combat_scene);
+    }
+    if (buttonText({
+      x: VIEWPORT_X0 + 8 + uiButtonWidth(),
+      y: VIEWPORT_Y0 + 4,
+      text: 'DBG:KILL',
+      sound_button: 'ability_gun1',
+    })) {
+      for (let ii = 0; ii < enemies.length; ++ii) {
+        let enemy = enemies[ii];
+        if (enemy.hp) {
+          combat_scene.combat_state.damage(ii, AttackType.FRONT, 99, combat_scene);
+          break;
+        }
+      }
+    }
+  }
+
+
   let end_combat = true;
   if (combat_scene.animPaused(true)) {
     end_combat = false;
@@ -1089,14 +1115,6 @@ export function doCombat(target: Entity, dt: number): void {
     if (enemy.hp) {
       end_combat = false;
     }
-  }
-
-  if (engine.DEBUG && buttonText({
-    x: VIEWPORT_X0 + 4,
-    y: VIEWPORT_Y0 + 4,
-    text: 'WIN',
-  })) {
-    end_combat = true;
   }
 
   if (end_combat && !combat_scene.did_victory) {

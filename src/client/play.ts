@@ -166,8 +166,8 @@ const BUTTON_W = 32;
 
 // const MENU_BUTTON_X = VIEWPORT_X0;
 // const MENU_BUTTON_Y = BOTTOM_UI_Y;
-const MENU_BUTTON_X = game_width - BUTTON_W - 2;
-const MENU_BUTTON_Y = 4;
+const MENU_BUTTON_X = game_width - BUTTON_W - 1;
+const MENU_BUTTON_Y = 2;
 
 const PAUSE_MENU_W = 240;
 
@@ -455,7 +455,7 @@ function useNoText(): boolean {
 
 const SANITY_H = 38;
 const SANITY_X = game_width - SANITY_W;
-const SANITY_Y = game_height - SANITY_H - 1;
+const SANITY_Y = game_height - SANITY_H;
 const style_sanity = fontStyle(null, {
   color: 0xbc4a9bff,
   glow_color: 0x242234ff,
@@ -471,8 +471,8 @@ function doSanity(): void {
   }
   let { sanity, sanity_max } = me.data;
   if (engine.defines.SANITY) {
-    sanity = round(100 * clamp(1 - input.mousePos()[1] / game_height, 0, 1));
-    sanity_max = min(100, sanity + 20);
+    me.data.sanity = sanity = round(100 * clamp(1 - input.mousePos()[1] / game_height, 0, 1));
+    me.data.sanity_max = sanity_max = min(100, sanity + 20);
   }
 
   let z = Z.UI;
@@ -593,7 +593,7 @@ function playCrawl(): void {
   const need_bamf = !build_mode && bamfTick();
   const frame_combat = !need_bamf && engagedEnemy();
   let locked_dialog = dialogMoveLocked();
-  const overlay_menu_up = pause_menu_up; // || inventory_up
+  const overlay_menu_up = Boolean(pause_menu_up || frame_combat); // || inventory_up
   let minimap_display_h = build_mode ? BUTTON_W : MINIMAP_W;
   let show_compass = false; // !build_mode;
   let compass_h = show_compass ? 11 : 0;

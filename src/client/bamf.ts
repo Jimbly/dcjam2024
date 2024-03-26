@@ -1,9 +1,10 @@
 /* eslint max-len: off, prefer-template:off */
 import assert from 'assert';
+import { getFrameTimestamp } from 'glov/client/engine';
 import { ALIGN, fontStyle } from 'glov/client/font';
 import { inputClick } from 'glov/client/input';
 import { markdownAuto } from 'glov/client/markdown';
-import { buttonText, panel, playUISound, uiButtonHeight } from 'glov/client/ui';
+import { buttonText, drawRect, panel, playUISound, uiButtonHeight } from 'glov/client/ui';
 import { Hero } from './entity_demo_client';
 import {
   VIEWPORT_X0,
@@ -18,7 +19,7 @@ import {
 } from './hero_draw';
 import { myEnt, myEntOptional } from './play';
 
-const { floor, random } = Math;
+const { floor, min, random } = Math;
 
 const lines_m: string[] = [
   'NAME has died. His two cats are very hungry and unsure what to do about it.',
@@ -52,12 +53,12 @@ function randomLine(gender: 'm' | 'f' | 'a'): string {
 
 let need_bamf: boolean;
 let bamf_state: {
-  page: number;
   hero: Hero;
   hero_idx: number;
   line: string;
   summons: [string, string];
   replacements: [Hero, Hero];
+  start: number;
 } | null = null;
 
 export function bamfCheck(): void {
@@ -80,7 +81,6 @@ export function bamfCheck(): void {
           s[1] = ar(summons);
         }
         bamf_state = {
-          page: 0,
           hero_idx: ii,
           hero,
           line: randomLine(hero.gender),
@@ -96,6 +96,7 @@ export function bamfCheck(): void {
             name: 'Mags',
             gender: 'a',
           }],
+          start: getFrameTimestamp(),
         };
       }
       break;
@@ -139,27 +140,43 @@ export function bamfTick(): boolean {
   let y = y0 + PAD;
 
   assert(bamf_state);
-  let { page, hero } = bamf_state;
+  let { hero, start } = bamf_state;
+  let dt = getFrameTimestamp() - start;
 
-  if (page === 0) {
-    //y += 24;
-    markdownAuto({
-      font_style: style_death,
-      x, y, w, h: 104 - y,
-      align: ALIGN.HCENTER | ALIGN.HWRAP | ALIGN.VCENTER,
-      text: bamf_state.line.replace('NAME', `[c=2]${hero.name}[/c]`).replace('has died', 'has [c=1]died[/c]'),
-    });
+  let alpha_death = 1;
+  let alpha_choices = 0;
+  if (dt < 500) {
+    alpha_death = dt/500;
+  } else {
+    alpha_choices = min(1, (dt - 500) / 500);
+  }
 
+  //y += 24;
+  markdownAuto({
+    font_style: style_death,
+    x, y, w, h: 104 - y,
+    align: ALIGN.HCENTER | ALIGN.HWRAP | ALIGN.VCENTER,
+    text: bamf_state.line.replace('NAME', `[c=2]${hero.name}[/c]`).replace('has died', 'has [c=1]died[/c]'),
+    alpha: alpha_death,
+  });
+
+  let picked = -1;
+  if (alpha_choices) {
     y = 104;
     y += markdownAuto({
       font_style: style_label,
       x, y, w,
       align: ALIGN.HCENTER | ALIGN.HWRAP,
       text: 'You activate the [c=2]Bamf[/c] device and call in...',
+      alpha: alpha_choices,
     }).h + PAD;
 
+
     let hero_x = x + floor((w - HERO_W)/2);
-    let picked = -1;
+    if (alpha_choices < 1) {
+      drawRect(hero_x, y, hero_x + HERO_W, y + (HERO_H + uiButtonHeight()) * 2 + PAD, Z.UI + 100,
+        [32/255, 27/255, 37/255, 1 - alpha_choices]);
+    }
     for (let ii = 0; ii < bamf_state.replacements.length; ++ii) {
       if (inputClick({
         x: hero_x, y, w: HERO_W, h: HERO_H,
@@ -179,14 +196,14 @@ export function bamfTick(): boolean {
       }
       y += uiButtonHeight() + PAD;
     }
+  }
 
-    if (picked !== -1) {
-      let me = myEnt();
-      assert(me);
-      let ent_heroes = me.data.heroes;
-      ent_heroes[bamf_state.hero_idx] = bamf_state.replacements[picked];
-      bamf_state = null;
-    }
+  if (picked !== -1) {
+    let me = myEnt();
+    assert(me);
+    let ent_heroes = me.data.heroes;
+    ent_heroes[bamf_state.hero_idx] = bamf_state.replacements[picked];
+    bamf_state = null;
   }
 
   panel(panel_param);
