@@ -33,7 +33,7 @@ function statusReset(): void {
   ({ font } = ui);
 }
 
-let style_status = fontStyleColored(null, 0x000000ff);
+let style_status = fontStyleColored(null, 0xFFFFFFff);
 
 export function statusPush(text: string, style?: FontStyle): StatusMessage {
   let msg = new StatusMessage(text, style || style_status);

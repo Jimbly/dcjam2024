@@ -1,0 +1,13 @@
+---
+open_move: true
+open_vis: false
+advertise_other_side: false
+visuals:
+- type: simple_wall
+  opts:
+    spritesheet: solitude
+    tile: crystal_wall0
+- type: simple_wall
+  opts:
+    spritesheet: solitude
+    tile: gateway

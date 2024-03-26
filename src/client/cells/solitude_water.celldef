@@ -1,0 +1,18 @@
+---
+open_move: false
+open_vis: true
+default_wall: solitude_solid2
+map_view_detail_frame: 8
+visuals:
+- pass: bg
+  type: simple_floor
+  opts:
+    spritesheet: solitude
+    tile: [shoals_shallow_water00, shoals_shallow_water01, shoals_shallow_water02, shoals_shallow_water01]
+    times: 1000
+    do_blend: 1000
+# - pass: bg
+#   type: simple_ceiling
+#   opts:
+#     spritesheet: solitude
+#     tile: grey_dirt0

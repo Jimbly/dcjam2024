@@ -1,6 +1,14 @@
 import { clone } from 'glov/common/util';
+import {
+  CrawlerScriptAPI,
+  CrawlerScriptWhen,
+  crawlerScriptRegisterEvent,
+} from '../common/crawler_script';
+import { CrawlerCell } from '../common/crawler_state';
 import { crawlerEntFactory } from './crawler_entity_client';
+import { dialog } from './dialog_system';
 import { EntityDemoClient, StatsData } from './entity_demo_client';
+import { autosave } from './play';
 import { statusPush } from './status';
 
 export function statusShort(text: string): void {
@@ -8,6 +16,29 @@ export function statusShort(text: string): void {
 }
 
 type Entity = EntityDemoClient;
+
+let last_solitude: boolean | null = null;
+
+crawlerScriptRegisterEvent({
+  key: 'solitude',
+  when: CrawlerScriptWhen.POST,
+  func: (api: CrawlerScriptAPI, cell: CrawlerCell, param: string) => {
+    let is_solitude = cell.desc.id.startsWith('solitude');
+    if (last_solitude === null) {
+      last_solitude = is_solitude;
+    } else if (last_solitude !== is_solitude) {
+      last_solitude = is_solitude;
+      if (is_solitude) {
+        dialog('sanity_restore');
+      }
+      autosave();
+    }
+  },
+});
+
+export function jamTraitsReset(): void {
+  last_solitude = null;
+}
 
 export function jamTraitsStartup(): void {
   let ent_factory = crawlerEntFactory<Entity>();

@@ -58,15 +58,15 @@ module.exports = function (config) {
   config.server_fsdata.push('vstyles:**');
   config.fsdata_embed.push('.vstyle');
   let client_spritesheets = [];
-  ['crawlertest', 'whitebox', 'ship1', 'ship2', 'icons', 'faces'].forEach((name) => {
+  ['crawlertest', 'whitebox', 'ship1', 'ship2', 'icons', 'faces', 'solitude'].forEach((name) => {
     gb.task({
       name: `client_sprites_${name}`,
       input: `textures/spritesheets/${name}/*.png`,
       ...spritesheet({
         name: name,
         pad: 8,
-        tile_horiz_regex: /wall|door|exit/,
-        // clamp_regex: /./,
+        //tile_horiz_regex: /wall|door|exit/,
+        clamp_regex: /./,
       }),
     });
     config.client_js_files.push(`client_sprites_${name}:**/*.js`);

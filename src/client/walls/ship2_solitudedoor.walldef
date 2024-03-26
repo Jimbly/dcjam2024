@@ -1,0 +1,13 @@
+---
+open_move: true
+open_vis: false
+advertise_other_side: true
+visuals:
+- type: simple_wall
+  opts:
+    spritesheet: ship2
+    tile: solid1
+- type: simple_wall
+  opts:
+    spritesheet: solitude
+    tile: gateway

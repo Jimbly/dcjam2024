@@ -1,0 +1,35 @@
+---
+open_move: false
+open_vis: true
+visuals:
+- pass: bg
+  type: simple_floor
+  opts:
+    spritesheet: solitude
+    tile: [shoals_shallow_water00, shoals_shallow_water01, shoals_shallow_water02, shoals_shallow_water01]
+    times: 350
+    do_blend: 350
+- type: simple_billboard
+  opts:
+    spritesheet: solitude
+    tile:
+    - treeanim00
+    - treeanim01
+    - treeanim02
+    - treeanim03
+    - treeanim04
+    - treeanim05
+    - treeanim06
+    - treeanim07
+    - treeanim08
+    - treeanim09
+    - treeanim10
+    - treeanim11
+    times: 700
+    do_blend: 700
+    width: 2
+    height: 2
+    offs: [-0.2, 0, -0.1]
+    face_camera: false # Otherwise faces frustum
+    do_split: true
+    do_alpha: true

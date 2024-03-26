@@ -1,19 +1,12 @@
-Agenda
-* visual style
-  * fonts?
-* realtime or turn based outside of combat?
-
 TODO
-* Rooms of Solitude
-  * auto-save (also disable manual saving) upon enter and exit
-  * restore sanity
-* spend XP to level up skills or heroes
-  * only in Rooms of Solitude
-* monsters move around
+* monsters move around - realtime
+* take a look at some font options
 * combat - maybe add log for enemy turn explaining what happened, press button to Roll! when done reading
   * probably don't need as much help text then?
 * add a BACK type attack
 * start balancing combat encounters
+* spend XP to level up skills or heroes
+  * only in Rooms of Solitude
 * medicine cabinet
   * one-time
   * restores max sanity after a choice
@@ -24,7 +17,7 @@ TODO
 * Insanity view
   * party portraits to change to monsters - silhouettes
   * ghosts moving through the level
-  * dark/postprocess - 16-bit color crunch?
+  * dark/postprocess - 16-bit color crunch? - dither?
 * combat: unwinnable/losable combat: scale up damage of monsters / everyone every X turns?
 
 Polish

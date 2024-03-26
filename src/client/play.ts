@@ -7,6 +7,7 @@ import {
 import {
   ALIGN,
   Font,
+  FontStyle,
   fontStyle,
 } from 'glov/client/font';
 import * as input from 'glov/client/input';
@@ -107,7 +108,13 @@ import {
 } from './crawler_render_entities';
 import { crawlerScriptAPIDummyServer } from './crawler_script_api_client';
 import { crawlerOnScreenButton } from './crawler_ui';
-import { dialogMoveLocked, dialogRun, dialogStartup } from './dialog_system';
+import './dialog_data';
+import {
+  DialogParam,
+  dialogMoveLocked,
+  dialogRun,
+  dialogStartup,
+} from './dialog_system';
 import {
   EntityDemoClient,
   Hero,
@@ -125,7 +132,7 @@ import {
   render_width,
 } from './globals';
 import { heroesDraw } from './hero_draw';
-import { jamTraitsStartup } from './jam_events';
+import { jamTraitsReset, jamTraitsStartup } from './jam_events';
 import { levelGenTest } from './level_gen_test';
 import { renderAppStartup, renderResetFilter } from './render_app';
 import {
@@ -208,6 +215,10 @@ const style_text = fontStyle(null, {
   color: 0xFFFFFFff,
   outline_width: 4,
   outline_color: 0x000000ff,
+});
+
+const style_dialog = fontStyle(null, {
+  color: 0xFFFFFFff,
 });
 
 export function myEnt(): Entity {
@@ -626,8 +637,8 @@ function playCrawl(): void {
     y: VIEWPORT_Y0,
     h: render_height + 4,
     z: Z.STATUS,
-    pad_top: 2,
-    pad_bottom: 4,
+    pad_top: 5,
+    pad_bottom: 5,
   };
   if (is_fullscreen_ui || frame_map_view) {
     dialog_viewport.x = 0;
@@ -911,6 +922,7 @@ function playInitShared(online: boolean): void {
 
 function initLevel(): void {
   bamfReset();
+  jamTraitsReset();
 }
 
 function playOfflineLoading(): void {
@@ -951,6 +963,10 @@ settings.register({
     range: [0, 1],
   },
 });
+
+export function dialogTextStyle(dialog?: DialogParam): FontStyle {
+  return style_dialog;
+}
 
 export function playStartup(font_tiny_in: Font): void {
   font_tiny = font_tiny_in;
@@ -1136,7 +1152,7 @@ export function playStartup(font_tiny_in: Font): void {
   renderAppStartup();
   dialogStartup({
     font,
-    // text_style_cb: dialogTextStyle,
+    text_style_cb: dialogTextStyle,
   });
   crawlerLoadData(webFSAPI());
   crawlerMapViewStartup({

@@ -1380,16 +1380,7 @@
       "id": "solid",
       "walls": [
         "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
+        "solitude_solid1",
         "open",
         "open"
       ]
@@ -1398,16 +1389,7 @@
       "id": "solid",
       "walls": [
         "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
+        "solitude_solid1",
         "open",
         "open"
       ]
@@ -1416,7 +1398,25 @@
       "id": "solid",
       "walls": [
         "open",
+        "solitude_solid1",
         "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "solitude_solid1",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "solitude_solid1",
         "open",
         "open"
       ]
@@ -1514,63 +1514,68 @@
     {
       "id": "solid",
       "walls": [
-        "open",
+        "solitude_solid1",
         "solid",
         "open",
         "open"
       ]
     },
     {
-      "id": "solid",
+      "id": "solitude_open2",
       "walls": [
         "open",
-        "solid",
         "open",
-        "open"
-      ]
+        "solitude_solid7",
+        "solitude_solid1"
+      ],
+      "h": -0.1875
+    },
+    {
+      "id": "solitude_open3",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "solitude_solid4"
+      ],
+      "h": -0.1875
+    },
+    {
+      "id": "solitude_open2",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "solitude_solid2"
+      ],
+      "h": -0.1875
+    },
+    {
+      "id": "solitude_open2",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "solitude_solid2"
+      ],
+      "h": -0.1875
+    },
+    {
+      "id": "solitude_open3",
+      "walls": [
+        "solitude_solid9",
+        "open",
+        "open",
+        "solitude_solid9"
+      ],
+      "h": -0.1875
     },
     {
       "id": "solid",
       "walls": [
         "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
+        "solitude_solid1",
+        "solitude_solid1",
         "open"
       ]
     },
@@ -1640,96 +1645,115 @@
     {
       "id": "open",
       "walls": [
-        "door",
+        "ship2_solitudedoor",
         "open",
-        "open",
-        "solid"
-      ]
-    },
-    {
-      "id": "open",
-      "walls": [
-        "open",
-        "solid",
-        "door",
-        "solid"
-      ]
-    },
-    {
-      "id": "open",
-      "walls": [
-        "open",
-        "solid",
         "open",
         "solid"
       ],
       "events": [
         {
-          "id": "sign",
-          "param": "test"
+          "id": "solitude",
+          "param": ""
         }
       ]
     },
     {
-      "id": "open",
+      "id": "solitude_open1",
       "walls": [
-        "solid",
         "open",
-        "open",
-        "solid"
+        "solitude_solid1",
+        "solitude_exit",
+        "solitude_solid1"
+      ],
+      "events": [
+        {
+          "id": "solitude",
+          "param": ""
+        }
       ]
     },
     {
-      "id": "solid",
+      "id": "solitude_open1",
       "walls": [
         "open",
-        "solid",
-        "solid",
-        "open"
-      ]
+        "solitude_solid4",
+        "open",
+        "solitude_solid4"
+      ],
+      "h": -0.0625
     },
     {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
+      "id": "solitude_open2",
       "walls": [
         "open",
         "open",
         "open",
         "open"
-      ]
+      ],
+      "events": [
+        {
+          "id": "sign",
+          "param": "You feel an otherworldly sense of... solitude?"
+        }
+      ],
+      "h": -0.1875
     },
     {
-      "id": "solid",
+      "id": "solitude_water",
       "walls": [
         "open",
         "open",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.125
     },
     {
-      "id": "solid",
+      "id": "solitude_water",
       "walls": [
         "open",
         "open",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.125
+    },
+    {
+      "id": "solitude_water",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ],
+      "h": -0.125
+    },
+    {
+      "id": "solitude_open1",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ],
+      "h": -0.1875
+    },
+    {
+      "id": "solitude_open1",
+      "walls": [
+        "solitude_solid9",
+        "open",
+        "open",
+        "solitude_solid7"
+      ],
+      "h": -0.1875
     },
     {
       "id": "solid",
       "walls": [
         "open",
-        "open",
-        "open",
+        "solitude_solid1",
+        "solitude_solid1",
         "open"
       ]
     },
@@ -1815,21 +1839,82 @@
       ]
     },
     {
-      "id": "open",
+      "id": "solitude_open3",
       "walls": [
         "open",
         "open",
-        "solid",
+        "solitude_solid4",
         "open"
-      ]
+      ],
+      "h": -0.1875
     },
     {
-      "id": "open",
+      "id": "solitude_water",
       "walls": [
-        "solid",
-        "solid",
         "open",
-        "solid"
+        "open",
+        "open",
+        "open"
+      ],
+      "h": -0.125
+    },
+    {
+      "id": "solitude_tree",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ],
+      "h": -0.125
+    },
+    {
+      "id": "solitude_water",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ],
+      "h": -0.125
+    },
+    {
+      "id": "solitude_open3",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ],
+      "h": -0.1875
+    },
+    {
+      "id": "solitude_open3",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ],
+      "h": -0.1875
+    },
+    {
+      "id": "solitude_open2",
+      "walls": [
+        "solitude_solid9",
+        "solitude_solid1",
+        "open",
+        "solitude_solid1"
+      ],
+      "h": -0.1875
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "solitude_solid1",
+        "open"
       ]
     },
     {
@@ -1837,93 +1922,12 @@
       "walls": [
         "open",
         "open",
-        "solid",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
         "open",
         "open"
       ]
     },
     {
       "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "open",
-      "walls": [
-        "open",
-        "open",
-        "solid",
-        "solid"
-      ]
-    },
-    {
-      "id": "open",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "solid"
-      ]
-    },
-    {
-      "id": "open",
       "walls": [
         "open",
         "open",
@@ -1933,42 +1937,6 @@
     },
     {
       "id": "open",
-      "walls": [
-        "solid",
-        "solid",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "solid",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "solid",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "open",
-      "walls": [
-        "solid",
-        "solid",
-        "solid",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
       "walls": [
         "open",
         "open",
@@ -1977,114 +1945,129 @@
       ]
     },
     {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "open",
-      "walls": [
-        "open",
-        "open",
-        "solid",
-        "open"
-      ]
-    },
-    {
       "id": "open",
       "walls": [
         "open",
         "open",
         "open",
-        "open"
-      ]
-    },
-    {
-      "id": "open",
-      "walls": [
-        "solid",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "solid",
         "solid"
       ]
     },
     {
+      "id": "open",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "solid",
+        "solid",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solitude_open3",
+      "walls": [
+        "open",
+        "open",
+        "solitude_solid2",
+        "open"
+      ],
+      "h": -0.1875
+    },
+    {
+      "id": "solitude_water",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ],
+      "h": -0.125
+    },
+    {
+      "id": "solitude_water",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ],
+      "h": -0.125
+    },
+    {
+      "id": "solitude_water",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ],
+      "h": -0.125
+    },
+    {
+      "id": "solitude_open1",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ],
+      "h": -0.1875
+    },
+    {
+      "id": "solitude_open1",
+      "walls": [
+        "solitude_solid9",
+        "solitude_solid7",
+        "open",
+        "open"
+      ],
+      "h": -0.1875
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "solitude_solid1",
+        "solitude_solid1"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
       "id": "solid",
       "walls": [
         "open",
@@ -2103,11 +2086,38 @@
       ]
     },
     {
-      "id": "solid",
+      "id": "open",
+      "walls": [
+        "open",
+        "open",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "open",
       "walls": [
         "open",
         "open",
         "open",
+        "open"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "solid",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "solid",
         "solid"
       ]
     },
@@ -2123,37 +2133,69 @@
     {
       "id": "solid",
       "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
+        "solitude_solid1",
         "open",
         "open",
         "open"
       ]
     },
     {
-      "id": "solid",
+      "id": "solitude_open1",
       "walls": [
         "open",
+        "solitude_solid1",
+        "solitude_solid2",
+        "open"
+      ],
+      "h": -0.1875
+    },
+    {
+      "id": "solitude_open1",
+      "walls": [
         "open",
+        "solitude_solid9",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.1875
+    },
+    {
+      "id": "solitude_open3",
+      "walls": [
+        "open",
+        "solitude_solid1",
+        "open",
+        "open"
+      ],
+      "h": -0.1875
+    },
+    {
+      "id": "solitude_open2",
+      "walls": [
+        "open",
+        "solitude_solid2",
+        "open",
+        "open"
+      ],
+      "h": -0.1875
+    },
+    {
+      "id": "solitude_open1",
+      "walls": [
+        "solitude_solid7",
+        "solitude_solid9",
+        "open",
+        "open"
+      ],
+      "h": -0.1875
     },
     {
       "id": "solid",
       "walls": [
         "open",
         "open",
-        "open",
-        "open"
+        "solitude_solid1",
+        "solitude_solid1"
       ]
     },
     {
@@ -2252,7 +2294,7 @@
         "open",
         "open",
         "open",
-        "open"
+        "solitude_solid1"
       ]
     },
     {
@@ -2261,7 +2303,7 @@
         "open",
         "open",
         "open",
-        "open"
+        "solitude_solid1"
       ]
     },
     {
@@ -2270,7 +2312,7 @@
         "open",
         "open",
         "open",
-        "open"
+        "solitude_solid1"
       ]
     },
     {
@@ -2279,7 +2321,7 @@
         "open",
         "open",
         "open",
-        "open"
+        "solitude_solid1"
       ]
     },
     {
@@ -2288,7 +2330,7 @@
         "open",
         "open",
         "open",
-        "open"
+        "solitude_solid1"
       ]
     },
     {
@@ -2368,14 +2410,6 @@
         0,
         13,
         0
-      ]
-    },
-    {
-      "type": "demo_shopkeeper",
-      "pos": [
-        7,
-        12,
-        2
       ]
     }
   ],
