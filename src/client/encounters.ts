@@ -42,12 +42,12 @@ export type EnemyDef = {
   hp: number;
   shield: number;
   effects: AttackDef[];
-  tex: string;
+  enttype: string;
 };
 
 export const ENEMIES: TSMap<EnemyDef> = {
   eye: {
-    tex: 'AngryStar',
+    enttype: 'enemy2',
     hp: 5,
     shield: 0,
     effects: [{
@@ -56,7 +56,7 @@ export const ENEMIES: TSMap<EnemyDef> = {
     }],
   },
   blob: {
-    tex: 'FlayerEvo4',
+    enttype: 'enemy0',
     hp: 4,
     shield: 0,
     effects: [{

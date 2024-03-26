@@ -27,6 +27,7 @@ import {
   easeOut,
   lerp,
   ridx,
+  sign,
 } from 'glov/common/util';
 import {
   ROVec2,
@@ -186,15 +187,22 @@ export function drawableSpriteDraw2D(this: EntityDrawableSprite, param: EntityDr
   let aspect = sprite.uidata && sprite.uidata.aspect ? sprite.uidata.aspect[frame] : 1;
   let { w, h } = param;
   if (aspect < 1) {
-    w = h * aspect;
+    w = h * aspect * sign(w);
   } else {
-    h = w / aspect;
+    h = abs(w / aspect);
+  }
+  let y = param.y + param.h;
+  // Perfect centering within the rect - may want to put relative within the rect instead?
+  if (sprite.origin[1] > 1) {
+    y += h * (sprite.origin[1] - 1);
+  } else if (sprite.origin[1] < 1) {
+    y -= h * (1 - sprite.origin[1]);
   }
   sprite.draw({
     ...param,
     w, h,
     x: param.x + param.w * 0.5,
-    y: param.y + param.h,
+    y,
     frame,
   });
 }

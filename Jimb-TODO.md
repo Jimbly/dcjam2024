@@ -1,6 +1,4 @@
 TODO
-* get in-world monsters and battle sprites using the same source images (make this use a spritesheet!)
-  * maybe combat uses enemy defs to decide what to draw, since those have animations, will have insane versions, etc
 * add a BACK type attack
 * rework to have 5 level 1 encounters, appropriate starting characters, and start balancing these fights for a random party
 * monsters move around - realtime

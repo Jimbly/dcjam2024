@@ -39,6 +39,7 @@ import {
   vec4,
 } from 'glov/common/vmath';
 import { bamfCheck } from './bamf';
+import { crawlerEntFactory } from './crawler_entity_client';
 import {
   AttackType,
   AttackTypeToFrameEnemies,
@@ -801,7 +802,8 @@ export function cleanupCombat(dt: number): void {
 
 const color_combat_shade = vec4(0.15, 0.15, 0.15, 0.75);
 
-let enemy_sprites: TSMap<Sprite> = {};
+const example_ent_data = { pos: [0, 0, 0] };
+let enemy_draw_ents: TSMap<Entity> = {};
 
 export function combatReadyForEnemyTurn(usable_dice: Partial<Record<number, true>>): void {
   if (!combat_scene) {
@@ -960,29 +962,34 @@ export function doCombat(target: Entity, dt: number): void {
       y: enemy_y + ENEMY_SPRITE_H * 0.25,
     });
     let { def } = enemy;
-    let { tex } = def;
-    let sprite = enemy_sprites[tex];
+    let { enttype } = def;
+    let ent = enemy_draw_ents[enttype];
+    if (!ent) {
+      let ent_factory = crawlerEntFactory<Entity>();
+      ent = enemy_draw_ents[enttype] = ent_factory.allocate(enttype, example_ent_data);
+    }
     let draw_as_dead = !enemy_real.hp;
     let preview_as_dead = !enemy.hp;
     let alpha = draw_as_dead ? 0.25 : 1;
     temp_color[3] = alpha;
     v3set(temp_color, blink, blink, blink);
-    if (!sprite) {
-      sprite = enemy_sprites[tex] = spriteCreate({
-        name: `enemies/${tex}`,
-        lazy_load: true,
-        origin: [0.5, 0],
-      });
-    }
-    let aspect = sprite.getAspect();
-    sprite.draw({
-      x: x_mid,
+    ent.draw2D({
+      x: x_mid + ENEMY_SPRITE_H / 2,
       y: enemy_y,
       z: z + 1 - ii * 0.1 + (draw_as_dead ? -0.5 : 0),
-      w: -ENEMY_SPRITE_H * aspect,
+      w: -ENEMY_SPRITE_H,
       h: ENEMY_SPRITE_H,
       color: temp_color,
     });
+    // let aspect = sprite.getAspect();
+    // sprite.draw({
+    //   x: x_mid,
+    //   y: enemy_y,
+    //   z: z + 1 - ii * 0.1 + (draw_as_dead ? -0.5 : 0),
+    //   w: -ENEMY_SPRITE_H * aspect,
+    //   h: ENEMY_SPRITE_H,
+    //   color: temp_color,
+    // });
     if (draw_as_dead) {
       continue;
     }
@@ -1025,7 +1032,7 @@ export function doCombat(target: Entity, dt: number): void {
     assert.equal(effects.length, 1);
     let attack = effects[0];
     let frame = AttackTypeToFrameEnemies[attack.type];
-    aspect = sprite_icons.uidata.aspect[frame];
+    let aspect = sprite_icons.uidata.aspect[frame];
     let icon_w = ICON_SIZE * aspect;
     let color: Vec4 | undefined;
     if (preview_as_dead) {
