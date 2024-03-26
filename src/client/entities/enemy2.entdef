@@ -10,7 +10,7 @@ traits:
 - id: drawable_sprite
   anim_data:
     idle:
-      frames: [GlowBug5]
+      frames: [AngryStar]
       times: 10000
   sprite_data:
     spritesheet: enemies

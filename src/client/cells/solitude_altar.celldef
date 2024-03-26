@@ -1,0 +1,31 @@
+---
+open_move: true
+open_vis: true
+default_wall: solitude_solid9
+default_events:
+- dialog sanity_restore
+visuals:
+- pass: bg
+  type: simple_ceiling
+  opts:
+    spritesheet: solitude
+    tile: crystal_floor3
+- pass: bg
+  type: simple_floor
+  opts:
+    spritesheet: solitude
+    tile: marble4
+- type: simple_billboard
+  opts:
+    spritesheet: solitude
+    tile:
+    - altar0
+    - altar1
+    - altar2
+    - altar3
+    times: 300
+    do_blend: 60
+    offs: [0, 0, 0]
+    face_camera: false # Otherwise faces frustum
+    do_split: false
+    do_alpha: false

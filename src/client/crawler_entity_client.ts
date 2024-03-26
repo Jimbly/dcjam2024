@@ -47,6 +47,7 @@ import {
   entSamePos,
 } from '../common/crawler_entity_common';
 import { crawlerEntityTraitsCommonStartup } from '../common/crawler_entity_traits_common';
+import { renderGetSpriteSheet } from './crawler_render';
 import {
   DrawableOpts,
   DrawableSpineOpts,
@@ -252,9 +253,19 @@ function lookupGLDefine(id: string | number | undefined): number | undefined {
   return ret;
 }
 
+type SpriteSpecSpriteSheet = { spritesheet: string };
+type SpriteSpecSprite = SpriteParamBase & { name: string };
+type SpriteSpec = SpriteSpecSprite | SpriteSpecSpriteSheet;
+
+function isSpriteSheetSpec(
+  sprite_data: TextureOptions & SpriteSpec
+): sprite_data is TextureOptions & SpriteSpecSpriteSheet {
+  return Boolean((sprite_data as SpriteSpecSpriteSheet).spritesheet);
+}
+
 function lookupGLDefines(
-  sprite_data: (TextureOptions | TextureOptionsAsStrings) & SpriteParamBase & { name: string }
-): asserts sprite_data is TextureOptions & SpriteParamBase & { name: string } {
+  sprite_data: (TextureOptions | TextureOptionsAsStrings) & SpriteSpec
+): asserts sprite_data is TextureOptions & SpriteSpec {
   sprite_data.filter_min = lookupGLDefine(sprite_data.filter_min);
   sprite_data.filter_mag = lookupGLDefine(sprite_data.filter_mag);
   sprite_data.wrap_s = lookupGLDefine(sprite_data.wrap_s);
@@ -317,20 +328,44 @@ function crawlerTraitsInit(ent_factory: TraitFactory<Entity, DataObject>): void 
     },
     init_prototype: function (opts: DrawableSpriteOpts) {
       lookupGLDefines(opts.sprite_data);
-      opts.sprite = spriteCreate(opts.sprite_data);
-      if (opts.sprite_data.filter_min !== gl.NEAREST) {
-        opts.sprite_near = spriteCreate({
-          ...opts.sprite_data,
-          filter_min: gl.NEAREST,
-          filter_mag: gl.NEAREST,
-        });
-      }
-      if (opts.hybrid) {
-        assert(opts.sprite_near);
-        opts.sprite_hybrid = spriteCreate({
-          ...opts.sprite_data,
-          texs: [opts.sprite.texs[0], opts.sprite_near.texs[0]],
-        });
+
+      if (isSpriteSheetSpec(opts.sprite_data)) {
+        let spritesheet = renderGetSpriteSheet(opts.sprite_data.spritesheet, false);
+        opts.sprite = spritesheet.sprite.withOrigin(opts.sprite_data.origin!);
+        let tiles = spritesheet.tiles;
+        for (let key in opts.anim_data) {
+          let anim = opts.anim_data[key]!;
+          if (!Array.isArray(anim.frames)) {
+            anim.frames = [anim.frames];
+          }
+          for (let ii = 0; ii < anim.frames.length; ++ii) {
+            let frame_src = anim.frames[ii] as number | string;
+            if (typeof frame_src === 'string') {
+              let frame = tiles[frame_src.toLowerCase()];
+              if (frame === undefined) {
+                dataError(`Unknown anim frame "${frame_src}"`);
+                frame = 0;
+              }
+              anim.frames[ii] = frame;
+            }
+          }
+        }
+      } else {
+        opts.sprite = spriteCreate(opts.sprite_data);
+        if (opts.sprite_data.filter_min !== gl.NEAREST) {
+          opts.sprite_near = spriteCreate({
+            ...opts.sprite_data,
+            filter_min: gl.NEAREST,
+            filter_mag: gl.NEAREST,
+          });
+        }
+        if (opts.hybrid) {
+          assert(opts.sprite_near);
+          opts.sprite_hybrid = spriteCreate({
+            ...opts.sprite_data,
+            texs: [opts.sprite.texs[0], opts.sprite_near.texs[0]],
+          });
+        }
       }
     },
     alloc_state: function (opts: DrawableSpriteOpts, ent: Entity) {

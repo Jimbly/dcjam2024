@@ -1272,7 +1272,7 @@
       "id": "solid",
       "walls": [
         "open",
-        "open",
+        "solitude_solid9",
         "open",
         "open"
       ]
@@ -1406,27 +1406,28 @@
     {
       "id": "solid",
       "walls": [
-        "open",
+        "solitude_solid9",
         "solitude_solid1",
         "open",
         "open"
       ]
     },
     {
-      "id": "solid",
+      "id": "solitude_fire",
       "walls": [
+        "solitude_solid9",
         "open",
-        "solitude_solid1",
-        "open",
-        "open"
-      ]
+        "solitude_solid9",
+        "solitude_solid9"
+      ],
+      "h": -0.1875
     },
     {
       "id": "solid",
       "walls": [
         "open",
         "open",
-        "open",
+        "solitude_solid9",
         "open"
       ]
     },
@@ -1566,7 +1567,7 @@
         "solitude_solid9",
         "open",
         "open",
-        "solitude_solid9"
+        "open"
       ],
       "h": -0.1875
     },
@@ -1899,12 +1900,18 @@
       "h": -0.1875
     },
     {
-      "id": "solitude_open2",
+      "id": "solitude_altar",
       "walls": [
         "solitude_solid9",
-        "solitude_solid1",
+        "solitude_solid9",
         "open",
-        "solitude_solid1"
+        "solitude_solid9"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "sanity_restore"
+        }
       ],
       "h": -0.1875
     },
@@ -2183,7 +2190,7 @@
       "id": "solitude_open1",
       "walls": [
         "solitude_solid7",
-        "solitude_solid9",
+        "open",
         "open",
         "open"
       ],
@@ -2318,27 +2325,28 @@
     {
       "id": "solid",
       "walls": [
-        "open",
-        "open",
-        "open",
-        "solitude_solid1"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
+        "solitude_solid9",
         "open",
         "open",
         "solitude_solid1"
       ]
     },
     {
+      "id": "solitude_fire",
+      "walls": [
+        "solitude_solid9",
+        "solitude_solid9",
+        "solitude_solid9",
+        "open"
+      ],
+      "h": -0.1875
+    },
+    {
       "id": "solid",
       "walls": [
         "open",
         "open",
-        "open",
+        "solitude_solid9",
         "open"
       ]
     },
@@ -2381,7 +2389,7 @@
   ],
   "initial_entities": [
     {
-      "type": "enemy0a",
+      "type": "enemy2",
       "pos": [
         0,
         14,
@@ -2397,7 +2405,7 @@
       ]
     },
     {
-      "type": "enemy1a",
+      "type": "enemy3",
       "pos": [
         1,
         15,

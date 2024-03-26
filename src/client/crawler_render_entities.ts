@@ -188,7 +188,7 @@ export function drawableSpriteDraw2D(this: EntityDrawableSprite, param: EntityDr
   if (aspect < 1) {
     w = h * aspect;
   } else {
-    h = w * aspect;
+    h = w / aspect;
   }
   sprite.draw({
     ...param,

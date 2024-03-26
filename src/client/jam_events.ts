@@ -6,6 +6,7 @@ import {
 } from '../common/crawler_script';
 import { CrawlerCell } from '../common/crawler_state';
 import { crawlerEntFactory } from './crawler_entity_client';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { dialog } from './dialog_system';
 import { EntityDemoClient, StatsData } from './entity_demo_client';
 import { autosave } from './play';
@@ -28,9 +29,6 @@ crawlerScriptRegisterEvent({
       last_solitude = is_solitude;
     } else if (last_solitude !== is_solitude) {
       last_solitude = is_solitude;
-      if (is_solitude) {
-        dialog('sanity_restore');
-      }
       autosave();
     }
   },

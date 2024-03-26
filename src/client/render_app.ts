@@ -8,6 +8,7 @@ import {
 } from './crawler_render';
 
 const spritesheet_crawlertest = require('./img/crawlertest');
+const spritesheet_enemies = require('./img/enemies');
 const spritesheet_ship1 = require('./img/ship1');
 const spritesheet_ship2 = require('./img/ship2');
 const spritesheet_solitude = require('./img/solitude');
@@ -24,6 +25,7 @@ export function renderResetFilter(): void {
   spritesheet_ship1.sprite.texs[0].setSamplerState(ss);
   spritesheet_ship2.sprite.texs[0].setSamplerState(ss);
   spritesheet_solitude.sprite.texs[0].setSamplerState(ss);
+  // spritesheet_enemies.sprite.texs[0].setSamplerState(ss);
 }
 
 export function renderAppStartup(): void {
@@ -49,6 +51,7 @@ export function renderAppStartup(): void {
       ship1: spritesheet_ship1,
       ship2: spritesheet_ship2,
       solitude: spritesheet_solitude,
+      enemies: spritesheet_enemies,
     },
     split_dist: 2.8,
     angle_offs: 0, // 9.5,

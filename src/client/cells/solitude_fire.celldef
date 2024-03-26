@@ -1,0 +1,33 @@
+---
+open_move: false
+open_vis: true
+default_wall: solitude_solid9
+visuals:
+- pass: bg
+  type: simple_ceiling
+  opts:
+    spritesheet: solitude
+    tile: crystal_floor3
+- pass: bg
+  type: simple_floor
+  opts:
+    spritesheet: solitude
+    tile: crystal_floor3
+- type: simple_billboard
+  opts:
+    spritesheet: solitude
+    tile:
+    - fire0
+    - fire1
+    - fire2
+    - fire3
+    - fire4
+    - fire5
+    - fire6
+    - fire7
+    times: 120
+    do_blend: 120
+    offs: [0, 0, 0]
+    face_camera: false # Otherwise faces frustum
+    do_split: false
+    do_alpha: true

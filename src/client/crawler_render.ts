@@ -334,6 +334,18 @@ export function crawlerRenderStartup(): void {
 export type SpriteSheetSet = Partial<Record<string, SpriteSheet>> & { default: SpriteSheet };
 let spritesheets: SpriteSheetSet;
 
+export function renderGetSpriteSheet(name: string, per_frame: boolean): SpriteSheet {
+  let ret = spritesheets[name];
+  if (!ret) {
+    dataErrorEx({
+      msg: `Unknown spritesheet "${name}"`,
+      per_frame,
+    });
+    ret = spritesheets.default;
+  }
+  return ret;
+}
+
 type SimpleVisualOpts = {
   spritesheet?: string;
   tile: string | string[];
@@ -420,8 +432,7 @@ function simpleGetSpriteParam(
       bucket = BUCKET_ALPHA;
     }
     let spritesheet_name = visual_opts.spritesheet || 'default';
-    let spritesheet = spritesheets[spritesheet_name];
-    assert(spritesheet, spritesheet_name);
+    let spritesheet = renderGetSpriteSheet(spritesheet_name, true);
     let { tile, do_blend } = visual_opts;
     assert(tile);
     if (Array.isArray(tile)) {

@@ -1033,6 +1033,7 @@ export function playStartup(font_tiny_in: Font): void {
       cuddly_scroll: true,
     },
   });
+  renderAppStartup();
   crawlerEntityClientStartupEarly();
   aiTraitsClientStartup();
   jamTraitsStartup();
@@ -1149,7 +1150,6 @@ export function playStartup(font_tiny_in: Font): void {
     },
   };
 
-  renderAppStartup();
   dialogStartup({
     font,
     text_style_cb: dialogTextStyle,

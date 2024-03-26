@@ -29,7 +29,7 @@ visuals:
     do_blend: 700
     width: 2
     height: 2
-    offs: [-0.2, 0, -0.1]
+    offs: [0, 0, -0.1]
     face_camera: false # Otherwise faces frustum
-    do_split: true
+    do_split: false
     do_alpha: true

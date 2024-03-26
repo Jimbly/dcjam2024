@@ -52,7 +52,7 @@ import {
 } from './ui';
 import type { TSMap, WithRequired } from 'glov/common/types';
 
-const { floor, max, min } = Math;
+const { floor, max, min, round } = Math;
 
 // Exported opaque types
 export type MarkdownCache = Record<string, never>;
@@ -496,6 +496,7 @@ function markdownLayout(param: MarkdownStateCached & MarkdownLayoutParam): void 
         if (calc_param.align & ALIGN.HCENTER) {
           xoffs *= 0.5;
         }
+        xoffs = round(xoffs); // DCJAM - only if noFilter font
         if (xoffs > 0) {
           for (let jj = row_start_idx; jj < ii; ++jj) {
             let block = draw_blocks[jj];
@@ -526,6 +527,7 @@ function markdownLayout(param: MarkdownStateCached & MarkdownLayoutParam): void 
       if (calc_param.align & ALIGN.VCENTER) {
         yoffs *= 0.5;
       }
+      yoffs = round(yoffs); // DCJ
       for (let ii = 0; ii < draw_blocks.length; ++ii) {
         let block = draw_blocks[ii];
         block.dims.y += yoffs;

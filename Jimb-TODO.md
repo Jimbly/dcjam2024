@@ -1,6 +1,4 @@
 TODO
-* solitude
-  * change sanity_restore to an event, attach it to a special tile with an altar or planter or something
 * get in-world monsters and battle sprites using the same source images (make this use a spritesheet!)
   * maybe combat uses enemy defs to decide what to draw, since those have animations, will have insane versions, etc
 * add a BACK type attack
@@ -17,6 +15,7 @@ TODO
   * flavor text
 * placeholder one-time world events that displays flavor text and damages or heals sanity
 * placeholder journal entries on a computer
+* rework ship2 -> default; secret door for default
 * Insanity view
   * party portraits to change to monsters - silhouettes
   * ghosts moving through the level
@@ -24,6 +23,8 @@ TODO
 * combat: unwinnable/losable combat: scale up damage of monsters / everyone every X turns?
 
 Polish
+* Minimap graphics
+* animate monsters
 * Add a [help] button on the combat screen that explains the basic mechanics
   * and/or just use the help area for "tooltips" during combat
   * explain hero ability icons: front/all/back

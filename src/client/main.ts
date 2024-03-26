@@ -139,6 +139,10 @@ export function main(): void {
   settings.set('use_fbos', use_fbos); // Needed for our effects
 
   spritesheetTextureOpts('whitebox', { force_mipmaps: true });
+  spritesheetTextureOpts('enemies', {
+    filter_min: 9987, // gl.LINEAR_MIPMAP_LINEAR
+    filter_mag: 9729, // gl.LINEAR
+  });
   // spritesheetTextureOpts('icons', {
   //   filter_min: 9728,
   //   filter_mag: 9728,
