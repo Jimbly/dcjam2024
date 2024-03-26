@@ -66,7 +66,7 @@ export const CLASSES: TSMap<HeroClassDef> = {
       hp: 8,
       shield: 1,
     }],
-    abilities: ['attack_light', 'poison'],
+    abilities: ['attack_back', 'poison'],
     faces: ['brownkobold'],
   },
   mid2: {
@@ -129,6 +129,14 @@ export const ABILITIES: TSMap<AbilityDef> = {
       amount: 3,
     }],
     icon: 'ability_gun2',
+  },
+  attack_back: {
+    aggro: 2,
+    effects: [{
+      type: AttackType.BACK,
+      amount: 2,
+    }],
+    icon: 'ability_back1',
   },
   shield_aggro: {
     aggro: 3,

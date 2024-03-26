@@ -1,5 +1,4 @@
 TODO
-* add a BACK type attack
 * rework to have 5 level 1 encounters, appropriate starting characters, and start balancing these fights for a random party
 * monsters move around - realtime
 * combat - maybe add log for enemy turn explaining what happened, press button to Roll! when done reading

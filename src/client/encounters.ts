@@ -20,7 +20,7 @@ export enum AttackType {
 const icons = require('./img/icons');
 export const AttackTypeToFrameHeroes: Record<AttackType, number> = {
   [AttackType.FRONT]: icons.FRAME_ATTACK_FRONT,
-  [AttackType.BACK]: icons.FRAME_ATTACK_FRONT,
+  [AttackType.BACK]: icons.FRAME_ATTACK_BACK,
   [AttackType.ALL]: icons.FRAME_ATTACK_ALL,
   [AttackType.SHIELD_SELF]: icons.FRAME_SHIELD,
   [AttackType.SHIELD_ALL]: icons.FRAME_SHIELD_ALL,
