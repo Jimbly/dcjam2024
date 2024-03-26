@@ -131,10 +131,10 @@ export function main(): void {
   const font_info_palanquin32 = require('./img/font/palanquin32.json');
   const font_info_04b03 = require('./img/font/04b03_8x1.json');
   let pixely = settings.pixely === 2 ? 'strict' : settings.pixely ? 'on' : override_pixely ? 'on' : false;
-  let font_info = require('./img/font/ibm8x8x1.json');
+  let font_info = require('./img/font/dcj24.json');
   let font = {
     info: font_info,
-    texture: 'font/ibm8x8x1',
+    texture: 'font/dcj24',
   };
   settings.set('use_fbos', use_fbos); // Needed for our effects
 
@@ -201,7 +201,8 @@ export function main(): void {
   let font_tiny = fontCreate(font_info_04b03, 'font/04b03_8x1');
   fonts = [
     fontCreate(font_info_palanquin32, 'font/palanquin32'),
-    fontCreate(font_info, 'font/ibm8x8x1'),
+    fontCreate(font_info, 'font/dcj24'),
+    fontCreate(font_info, 'font/dcj24'),
     font_tiny,
   ];
 

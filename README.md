@@ -18,6 +18,7 @@ GLOV.js is MIT licensed.
 Credits for assets used (may not make it into final version)
 ============================================================
 
+* Monster Art by Tyler Warren - https://tylerjwarren.itch.io/
 * Likely many textures from Dungeon Crawl Stone Soup - https://opengameart.org/content/dungeon-crawl-32x32-tiles-supplemental
 * Sci-Fi UI Pack - https://digital-mosaic-games.itch.io/sci-fi-ui-pack
 * Explosion.png - probably unused - https://opengameart.org/content/pixel-explosion-12-frames
@@ -25,3 +26,6 @@ Credits for assets used (may not make it into final version)
 * cartoon explosion - https://opengameart.org/content/2d-bomb-and-explosion
 * AAP-64 palette - https://twitter.com/AdigunPolack/status/917804769405792257 - https://lospec.com/palette-list/aap-64
 * Sanity icon derived from https://game-icons.net/
+* Some world art - Rogue Adventure by ELV Games - https://elvgames.itch.io/rogue-adventure-world
+* Font derived from Habbo - https://www.pentacom.jp/pentacom/bitfontmaker2/gallery/?id=357
+
