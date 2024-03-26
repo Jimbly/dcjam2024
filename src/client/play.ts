@@ -32,6 +32,7 @@ import {
   drawBox,
   menuUp,
   playUISound,
+  uiButtonHeight,
   uiButtonWidth,
   uiGetFont,
   uiTextHeight,
@@ -437,18 +438,30 @@ function moveBlockDead(): boolean {
   let w = render_width;
   let x = VIEWPORT_X0;
   let h = render_height;
-  let z = Z.UI;
+  let z = Z.UI + 100;
 
+  y += floor(h/2);
   font.drawSizedAligned(null,
-    x + floor(w/2), y + floor(h/2) - 16, z,
+    x + floor(w/2), y - 16, z,
     uiTextHeight(), ALIGN.HCENTER|ALIGN.VBOTTOM,
-    0, 0, 'You have died.');
+    0, 0, 'Insanity has overtaken you.');
 
+  let button_w = uiButtonWidth() * 3;
   if (buttonText({
-    x: x + floor(w/2 - uiButtonWidth()/2), y: y + floor(h/2), z,
-    text: 'Respawn',
+    x: x + floor(w/2 - button_w/2), y, z,
+    w: button_w,
+    text: 'Reload from last Solitude',
   })) {
     controller.goToFloor(0, 'stairs_in', 'respawn');
+  }
+  y += uiButtonHeight() + 16;
+
+  if (buttonText({
+    x: x + floor(w/2 - button_w/2), y, z,
+    w: button_w,
+    text: 'Exit to Menu',
+  })) {
+    urlhash.go('');
   }
 
   return true;
@@ -467,14 +480,16 @@ const style_sanity = fontStyle(null, {
   glow_outer: 2.5,
 });
 let sanity_flash_at: number;
+let sanity_flash_major: boolean;
 let fake_sanity: [number, number] | null;
-export function sanityDamage(perm: number, temp: number, delay: number): void {
+export function sanityDamage(perm: number, temp: number, delay: number, major: boolean): void {
   let me = myEnt();
   assert(me);
   fake_sanity = [me.data.sanity, me.data.sanity_max];
   me.data.sanity_max = max(0, me.data.sanity_max - perm);
   me.data.sanity = max(0, me.data.sanity - temp);
   sanity_flash_at = getFrameTimestamp() + delay;
+  sanity_flash_major = major;
 }
 
 function doSanity(): void {
@@ -513,7 +528,7 @@ function doSanity(): void {
     color: temp_color,
   });
   z++;
-  let scale = 1 + flash * 2;
+  let scale = sanity_flash_major ? (1 + flash * 2) : 1;
   spritesheet_icons.sprite.draw({
     x: SANITY_X + 10 - (scale - 1) * 16,
     y: SANITY_Y + 5 - (scale - 1) * 16,
@@ -737,7 +752,9 @@ function playCrawl(): void {
   //   inventory_up = !inventory_up;
   // }
 
-  doSanity();
+  if (!build_mode) {
+    doSanity();
+  }
 
   if (frame_combat) {
     if (controller.queueLength() === 1) {
@@ -809,7 +826,7 @@ function playCrawl(): void {
     }
   }
   if (engine.DEBUG && keyDownEdge(KEYS.I)) {
-    sanityDamage(1, 10, 0);
+    sanityDamage(1, 10, 0, true);
   }
   if (!overlay_menu_up && !frame_combat && (keyDownEdge(KEYS.M) || padButtonUpEdge(PAD.BACK))) {
     playUISound('button_click');
@@ -829,7 +846,7 @@ function playCrawl(): void {
       floor((game_width - MINIMAP_W)/2), 2); // note: compass ignored, compass_h = 0 above
   } else if (!frame_combat && !need_bamf) {
     crawlerMapViewDraw(game_state, MINIMAP_X, MINIMAP_Y, MINIMAP_W, minimap_display_h, compass_h, Z.MAP,
-      false, script_api, overlay_menu_up,
+      false, script_api, overlay_menu_up || !myEntOptional()?.isAlive(),
       COMPASS_X, COMPASS_Y);
   }
 

@@ -4,10 +4,6 @@ Agenda
 * realtime or turn based outside of combat?
 
 TODO
-* insanity
-  * permanent damage (1 per death)
-  * temp damage (10 per death, 1 per attack that damages?)
-  * game over condition
 * Rooms of Solitude
   * auto-save (also disable manual saving) upon enter and exit
   * restore sanity
@@ -19,8 +15,10 @@ TODO
 * add a BACK type attack
 * start balancing combat encounters
 * medicine cabinet
+  * one-time
   * restores max sanity after a choice
   * flavor text
+* placeholder one-time world events that displays flavor text and damages or heals sanity
 * placeholder journal entries on a computer
 * Get in-world monsters and battle sprites using the same source images (make this use a spritesheet!)
 * Insanity view

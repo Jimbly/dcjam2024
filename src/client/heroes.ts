@@ -57,7 +57,7 @@ export const CLASSES: TSMap<HeroClassDef> = {
   },
   mid1: {
     tier: [{
-      hp: 4,
+      hp: 6,
       shield: 0,
     }, {
       hp: 7,
@@ -71,7 +71,7 @@ export const CLASSES: TSMap<HeroClassDef> = {
   },
   mid2: {
     tier: [{
-      hp: 3,
+      hp: 6,
       shield: 0,
     }, {
       hp: 7,
@@ -85,7 +85,7 @@ export const CLASSES: TSMap<HeroClassDef> = {
   },
   back1: {
     tier: [{
-      hp: 2,
+      hp: 5,
       shield: 0,
     }, {
       hp: 5,
@@ -99,7 +99,7 @@ export const CLASSES: TSMap<HeroClassDef> = {
   },
   back2: {
     tier: [{
-      hp: 1,
+      hp: 5,
       shield: 0,
     }, {
       hp: 5,

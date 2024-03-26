@@ -38,6 +38,7 @@ Z.UI = 100;
 Z.MAP = Z.UI + 5; // also minimap
 Z.COMBAT_SHADE = Z.UI - 1;
 Z.ENEMY = 120;
+Z.DEAD_FADE = Z.ENEMY + 10;
 Z.FLOATERS = 125;
 Z.STATUS = 140;
 Z.CHAT = 300;

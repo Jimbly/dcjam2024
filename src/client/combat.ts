@@ -63,7 +63,7 @@ import {
 } from './globals';
 import { heroDrawPos } from './hero_draw';
 import { ABILITIES, CLASSES, DICE_SLOTS } from './heroes';
-import { drawHealthBar, myEnt, sanityDamage } from './play';
+import { drawHealthBar, myEnt, myEntOptional, sanityDamage } from './play';
 
 const spritesheet_icons = require('./img/icons');
 const { sprite_icons } = spritesheet_icons;
@@ -152,6 +152,7 @@ type Animatable = {
   animateAttack(enemy_idx: number, hero_idx: number): void;
   playSound(sound: string): void;
   onHeroDeath(hero_idx: number): void;
+  onPartyDamaged(): void;
 };
 
 class CombatState {
@@ -353,7 +354,7 @@ class CombatState {
     }
   }
 
-  damageHero(enemy_idx: number, attack_type: AttackType, idx: number, amount: number, animator?: Animatable): void {
+  damageHero(enemy_idx: number, attack_type: AttackType, idx: number, amount: number, animator?: Animatable): boolean {
     let hero = this.heroes[idx];
     let class_tier = hero.tier_ref;
     amount = max(0, amount - (hero.temp_shield || 0) - class_tier.shield);
@@ -378,6 +379,7 @@ class CombatState {
     });
     let arr = this.heroes_attacked[idx] = this.heroes_attacked[idx] || [];
     arr.push([attack_type, amount]);
+    return amount > 0;
   }
   doEnemyAction(enemy_idx: number, animator?: Animatable): void {
     let { heroes, enemies } = this;
@@ -415,20 +417,32 @@ class CombatState {
               }
             }
           }
+          let any_damaged = false;
           for (let kk = 0; kk < best.length; ++kk) {
             this.aggro_targetted[best[kk]] = true;
             animator?.animateAttack(enemy_idx, best[kk]);
-            this.damageHero(enemy_idx, effect.type, best[kk], floor(effect.amount / best.length), animator);
-          }
-        } break;
-        case AttackType.ALL:
-          animator?.animateAttack(enemy_idx, -1);
-          for (let kk = 0; kk < heroes.length; ++kk) {
-            if (heroes[kk].hp > 0) {
-              this.damageHero(enemy_idx, effect.type, kk, effect.amount, animator);
+            if (this.damageHero(enemy_idx, effect.type, best[kk], floor(effect.amount / best.length), animator)) {
+              any_damaged = true;
             }
           }
-          break;
+          if (any_damaged) {
+            animator?.onPartyDamaged();
+          }
+        } break;
+        case AttackType.ALL: {
+          animator?.animateAttack(enemy_idx, -1);
+          let any_damaged = false;
+          for (let kk = 0; kk < heroes.length; ++kk) {
+            if (heroes[kk].hp > 0) {
+              if (this.damageHero(enemy_idx, effect.type, kk, effect.amount, animator)) {
+                any_damaged = true;
+              }
+            }
+          }
+          if (any_damaged) {
+            animator?.onPartyDamaged();
+          }
+        } break;
         default:
           assert(false);
       }
@@ -595,7 +609,10 @@ class CombatScene {
   }
 
   onHeroDeath(hero_idx: number): void {
-    sanityDamage(1, 10, ATTACK_TIME);
+    sanityDamage(1, 10, ATTACK_TIME, true);
+  }
+  onPartyDamaged(): void {
+    sanityDamage(0, 1, ATTACK_TIME, false);
   }
   last_attack_land_time!: number;
   floaters: Floater[] = [];
@@ -746,6 +763,10 @@ export function combatIsPlayerTurn(): boolean {
   if (!(combat_scene && combat_scene.state_id === CSID.PlayerTurn)) {
     return false;
   }
+
+  if (!myEntOptional()?.isAlive()) {
+    return false;
+  }
   // also return false if all enemies are dead, we're just playing animations
   let { enemies } = combat_scene.combat_state;
   for (let ii = 0; ii < enemies.length; ++ii) {
@@ -788,7 +809,9 @@ export function combatReadyForEnemyTurn(usable_dice: Partial<Record<number, true
   }
   combat_scene.usable_dice = usable_dice;
   if (empty(usable_dice)) {
-    combat_scene.player_is_done = true;
+    if (myEntOptional()?.isAlive()) {
+      combat_scene.player_is_done = true;
+    }
   }
 }
 
@@ -1085,7 +1108,7 @@ export function doCombat(target: Entity, dt: number): void {
       render_width - SANITY_W * 2, 0, hint);
   }
 
-  if (engine.DEBUG) {
+  if (engine.DEBUG && myEntOptional()?.isAlive()) {
     if (buttonText({
       x: VIEWPORT_X0 + 4,
       y: VIEWPORT_Y0 + 4,

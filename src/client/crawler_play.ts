@@ -942,7 +942,7 @@ export function crawlerRenderFrame(): void {
 
   if (controller.getFadeAlpha()) {
     let fade_v = controller.getFadeColor();
-    ui.drawRect(cv.x, cv.y, cv.x + cv.w, cv.y + cv.h, 2, [fade_v, fade_v, fade_v, controller.getFadeAlpha()]);
+    ui.drawRect(cv.x, cv.y, cv.x + cv.w, cv.y + cv.h, Z.DEAD_FADE, [fade_v, fade_v, fade_v, controller.getFadeAlpha()]);
   }
 }
 
