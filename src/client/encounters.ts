@@ -92,10 +92,10 @@ export const ENCOUNTERS: TSMap<Encounter> = {
     enemies: ['damage1', 'damage1', 'aoe1'],
   },
   test2: {
-    enemies: ['sponge1', 'balanced1', 'damage1'],
+    enemies: ['sponge1', 'balanced1', 'aoe1'],
   },
   test3: {
-    enemies: ['sponge1', 'balanced1', 'aoe1'],
+    enemies: ['sponge1', 'balanced1', 'damage1'],
   },
   test4: {
     enemies: ['damage1', 'balanced1', 'balanced1'],

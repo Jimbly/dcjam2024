@@ -76,7 +76,7 @@ let font: Font;
 
 let damage_sprite: Sprite;
 
-let rand = randCreate(1234);
+let rand = randCreate(Date.now());
 
 const style_attack = fontStyle(null, {
   color: 0xFFFFFFff,
@@ -341,9 +341,12 @@ class CombatState {
   aggro_targetted!: Partial<Record<number, true>>;
   decayAggro(): void {
     let { heroes } = this;
-    for (let hero_idx in this.heroes_attacked) {
+    for (let hero_idx = 0; hero_idx < heroes.length; ++hero_idx) {
       heroes[hero_idx].temp_shield = 0;
     }
+    // for (let hero_idx in this.heroes_attacked) {
+    //   heroes[hero_idx].temp_shield = 0;
+    // }
 
     for (let ii = 0; ii < heroes.length; ++ii) {
       let hero = heroes[ii];

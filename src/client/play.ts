@@ -2,6 +2,7 @@ import assert from 'assert';
 import { cmd_parse } from 'glov/client/cmds';
 import * as engine from 'glov/client/engine';
 import {
+  getFrameDt,
   getFrameTimestamp,
 } from 'glov/client/engine';
 import {
@@ -132,6 +133,7 @@ import {
   render_width,
 } from './globals';
 import { heroesDraw } from './hero_draw';
+import { randomHero } from './heroes';
 import { jamTraitsReset, jamTraitsStartup } from './jam_events';
 import { levelGenTest } from './level_gen_test';
 import { renderAppStartup, renderResetFilter } from './render_app';
@@ -607,6 +609,7 @@ function doSanity(): void {
   }
 }
 
+let movement_disabled_last_frame = false;
 
 function playCrawl(): void {
   profilerStartFunc();
@@ -770,6 +773,8 @@ function playCrawl(): void {
   if (frame_combat) {
     if (controller.queueLength() === 1) {
       heroesDraw(true);
+      let existing_fade = (frame_combat.fade === null) ? 1 : frame_combat.fade;
+      frame_combat.fade = max(0, existing_fade - getFrameDt() * 0.003);
       doCombat(frame_combat, dt);
     } else {
       heroesDraw(false);
@@ -783,6 +788,7 @@ function playCrawl(): void {
 
 
   let disable_player_impulse = Boolean(frame_combat || locked_dialog || need_bamf);
+  movement_disabled_last_frame = disable_player_impulse;
   controller.doPlayerMotion({
     dt,
     button_x0: MOVE_BUTTONS_X0,
@@ -876,7 +882,8 @@ export function play(dt: number): void {
 
   let overlay_menu_up = pause_menu_up || dialogMoveLocked(); // || inventory_up
 
-  crawlerPlayTopOfFrame(overlay_menu_up);
+  crawlerPlayTopOfFrame(overlay_menu_up || movement_disabled_last_frame);
+  movement_disabled_last_frame = false;
 
   if (keyDownEdge(KEYS.F3)) {
     settings.set('show_fps', 1 - settings.show_fps);
@@ -972,37 +979,10 @@ export function playStartup(font_tiny_in: Font): void {
   font_tiny = font_tiny_in;
   font = uiGetFont();
   crawlerScriptAPIDummyServer(true); // No script API running on server
-  let heroes: Hero[] = [{
-    class_id: 'front1',
-    tier: 1,
-    name: 'Amano',
-    gender: 'm',
-  },{
-    class_id: 'front2',
-    tier: 0,
-    name: 'Barick',
-    gender: 'a',
-  },{
-    class_id: 'mid1',
-    tier: 0,
-    name: 'Takach',
-    gender: 'a',
-  },{
-    class_id: 'mid2',
-    tier: 0,
-    name: 'Jet',
-    gender: 'a',
-  },{
-    class_id: 'back1',
-    tier: 0,
-    name: 'Anton',
-    gender: 'm',
-  },{
-    class_id: 'back2',
-    tier: 0,
-    name: 'Greaves',
-    gender: 'a',
-  }];
+  let heroes: Hero[] = [];
+  while (heroes.length < 6) {
+    heroes.push(randomHero(heroes.length, heroes.length === 0 ? 1 : 0, heroes, true));
+  }
   crawlerPlayStartup({
     // on_broadcast: onBroadcast,
     play_init_online: playInitEarly,

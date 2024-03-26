@@ -1,7 +1,15 @@
+import assert from 'assert';
 import { TSMap } from 'glov/common/types';
 import { AttackType } from './encounters';
-import { AbilityDef, HeroClassDef } from './entity_demo_client';
+import { AbilityDef, Hero, HeroClassDef } from './entity_demo_client';
+import { GENDER, NAMEPAIR, NAMES_BY_GENDER } from './names';
 
+const { floor, random } = Math;
+
+function randomName(gender: GENDER): NAMEPAIR {
+  let v = floor(random() * NAMES_BY_GENDER[gender].length);
+  return NAMES_BY_GENDER[gender][v];
+}
 
 export const DICE_SLOTS = [
   [1, 2],
@@ -13,20 +21,6 @@ export const DICE_SLOTS = [
 ];
 
 export const CLASSES: TSMap<HeroClassDef> = {
-  demo: {
-    tier: [{
-      hp: 6,
-      shield: 0,
-    }, {
-      hp: 7,
-      shield: 1,
-    }, {
-      hp: 8,
-      shield: 2,
-    }],
-    abilities: ['attack_light', 'attack_heavy'],
-    faces: ['catears'],
-  },
   front1: {
     tier: [{
       hp: 8,
@@ -39,7 +33,7 @@ export const CLASSES: TSMap<HeroClassDef> = {
       shield: 3,
     }],
     abilities: ['attack_heavy', 'attack_light'],
-    faces: ['capedeagle'],
+    faces: [['a', 'capedeagle'], ['a', 'turtle2'], ['m', 'sawserpent'], ['a', 'nebulan2']],
   },
   front2: {
     tier: [{
@@ -53,7 +47,7 @@ export const CLASSES: TSMap<HeroClassDef> = {
       shield: 3,
     }],
     abilities: ['shield_aggro', 'shield_slow'],
-    faces: ['ifrit'],
+    faces: [['m', 'ifrit'], ['m', 'yanfly'], ['a', 'steelslime'], ['m', 'redmonster']],
   },
   mid1: {
     tier: [{
@@ -67,7 +61,7 @@ export const CLASSES: TSMap<HeroClassDef> = {
       shield: 1,
     }],
     abilities: ['attack_back', 'poison'],
-    faces: ['brownkobold'],
+    faces: [['a', 'brownkobold'], ['m', 'thief'], ['a', 'slug'], ['m', 'sahagin'], ['m', 'littlesahagin']],
   },
   mid2: {
     tier: [{
@@ -81,7 +75,7 @@ export const CLASSES: TSMap<HeroClassDef> = {
       shield: 1,
     }],
     abilities: ['area_light', 'area_med'],
-    faces: ['icelady'],
+    faces: [['f', 'icelady'], ['a', 'treegolem'], ['f', 'spiderlady'], ['a', 'phoenix'], ['a', 'mageslime2']],
   },
   back1: {
     tier: [{
@@ -95,7 +89,7 @@ export const CLASSES: TSMap<HeroClassDef> = {
       shield: 1,
     }],
     abilities: ['heal_med', 'heal_all_light'],
-    faces: ['healer2'],
+    faces: [['a', 'healer2'], ['a', 'wizardblack'], ['f', 'succubus'], ['f', 'pinkslimev2'], ['a', 'nebulan']],
   },
   back2: {
     tier: [{
@@ -109,9 +103,25 @@ export const CLASSES: TSMap<HeroClassDef> = {
       shield: 1,
     }],
     abilities: ['shield_other1', 'shield_other2'],
-    faces: ['calm'],
+    faces: [['m', 'calm'], ['a', 'stonegolem'], ['m', 'reddemonblue'], ['m', 'purpledemon']],
   },
 };
+
+const CLASS_BY_POS: string[][] = [[], [], [], [], [], []];
+for (let key in CLASSES) {
+  if (key.startsWith('front')) {
+    CLASS_BY_POS[0].push(key);
+    CLASS_BY_POS[1].push(key);
+  } else if (key.startsWith('mid')) {
+    CLASS_BY_POS[2].push(key);
+    CLASS_BY_POS[3].push(key);
+  } else if (key.startsWith('back')) {
+    CLASS_BY_POS[4].push(key);
+    CLASS_BY_POS[5].push(key);
+  } else {
+    assert(false);
+  }
+}
 
 export const ABILITIES: TSMap<AbilityDef> = {
   attack_light: {
@@ -216,3 +226,65 @@ export const ABILITIES: TSMap<AbilityDef> = {
     icon: 'ability_demo',
   },
 };
+
+function nameUsed(heroes: Hero[], name: string): boolean {
+  for (let ii = 0; ii < heroes.length; ++ii) {
+    if (heroes[ii].name === name) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function classUsed(heroes: Hero[], class_id: string): boolean {
+  for (let ii = 0; ii < heroes.length; ++ii) {
+    if (heroes[ii].class_id === class_id) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function faceUsed(heroes: Hero[], face_name: string): boolean {
+  for (let ii = 0; ii < heroes.length; ++ii) {
+    let hero = heroes[ii];
+    let class_def = CLASSES[hero.class_id]!;
+    if (class_def.faces[hero.face || 0][1] === face_name) {
+      return true;
+    }
+  }
+  return false;
+}
+
+export function randomHero(
+  idx: number, tier: number, heroes: Hero[], no_dup_class: boolean,
+  ignore_names?: string[],
+): Hero {
+  let options = CLASS_BY_POS[idx];
+  let class_id: string;
+  do {
+    class_id = options[floor(random() * options.length)];
+  // eslint-disable-next-line no-unmodified-loop-condition
+  } while (no_dup_class && classUsed(heroes, class_id));
+
+  let class_def = CLASSES[class_id]!;
+  let face: number;
+  do {
+    face = floor(random() * class_def.faces.length);
+  } while (faceUsed(heroes, class_def.faces[face][1]));
+  let gender: GENDER = class_def.faces[face][0];
+
+  let name: NAMEPAIR;
+  do {
+    // note: this may narrow gender=a -> name.gender=f/m
+    name = randomName(gender);
+  // eslint-disable-next-line no-unmodified-loop-condition
+  } while (nameUsed(heroes, name.name) || ignore_names && ignore_names.includes(name.name));
+
+  return {
+    class_id,
+    tier,
+    face,
+    ...name,
+  };
+}

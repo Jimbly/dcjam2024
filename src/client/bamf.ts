@@ -17,6 +17,7 @@ import {
   HERO_W,
   drawHero,
 } from './hero_draw';
+import { randomHero } from './heroes';
 import { myEnt, myEntOptional } from './play';
 
 const { floor, min, random } = Math;
@@ -80,22 +81,25 @@ export function bamfCheck(): void {
         while (s[0] === s[1]) {
           s[1] = ar(summons);
         }
+        let dead_names: string[] = [];
+        let heroes_temp = ent_heroes.filter((a) => {
+          if (a.dead) {
+            dead_names.push(a.name);
+            return false;
+          } else {
+            return true;
+          }
+        });
+        let tier = 1;
+        let h1 = randomHero(ii, tier, heroes_temp, false, dead_names);
+        heroes_temp.push(h1);
+        let h2 = randomHero(ii, tier, heroes_temp, false, dead_names);
         bamf_state = {
           hero_idx: ii,
           hero,
           line: randomLine(hero.gender),
           summons: s,
-          replacements: [{
-            class_id: 'mid1',
-            tier: 1,
-            name: 'Hale',
-            gender: 'a',
-          },{
-            class_id: 'mid2',
-            tier: 1,
-            name: 'Mags',
-            gender: 'a',
-          }],
+          replacements: [h1, h2],
           start: getFrameTimestamp(),
         };
       }

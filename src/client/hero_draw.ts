@@ -164,7 +164,7 @@ export function drawHero(idx: number, x0: number, y0: number, hero_def: Hero): v
   } else {
     v4set(color_temp, blink, blink, blink, 1);
   }
-  let face_frame = spritesheet_faces[`FRAME_${face.toUpperCase()}`];
+  let face_frame = spritesheet_faces[`FRAME_${face[1].toUpperCase()}`];
   let face_aspect = sprite_faces.uidata.aspect[face_frame] || 1;
   let face_w = round(PORTRAIT_SIZE * face_aspect);
   sprite_faces.draw({

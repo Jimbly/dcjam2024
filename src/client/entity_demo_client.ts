@@ -19,6 +19,7 @@ import {
   crawlerEntClientDefaultOnDelete,
   crawlerEntityManager,
 } from './crawler_entity_client';
+import { GENDER } from './names';
 
 import type { JSVec3 } from '../common/crawler_state';
 import type {
@@ -61,14 +62,14 @@ export type AbilityDef = {
 export type HeroClassDef = {
   tier: [HeroClassTier, HeroClassTier, HeroClassTier];
   abilities: [string, string];
-  faces: string[];
+  faces: [GENDER, string][];
 };
 
 export type Hero = {
   class_id: string;
   tier: number;
   name: string;
-  gender: 'm' | 'f' | 'a';
+  gender: GENDER;
   face?: number;
   dead?: boolean;
 };
