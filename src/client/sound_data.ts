@@ -34,4 +34,7 @@ export const SOUND_DATA: Partial<Record<string, {
   shield_block: { file: 'shield_block', volume: 1 },
   monster_attack: { file: 'monster_attack', volume: 1 },
   monster_attack_all: { file: 'monster_attack_all', volume: 1 },
+
+  hunter_seen: { file: 'hunter_seen', volume: 1 },
+  hunter_lost: { file: 'hunter_lost', volume: 1 },
 };

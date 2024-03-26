@@ -1343,18 +1343,18 @@
     {
       "id": "open",
       "walls": [
-        "ship1_solid5",
+        "door",
         "open",
         "open",
         "open"
       ]
     },
     {
-      "id": "solid",
+      "id": "open",
       "walls": [
-        "open",
-        "open",
         "solid",
+        "solid",
+        "door",
         "solid"
       ]
     },
@@ -1363,7 +1363,7 @@
       "walls": [
         "open",
         "open",
-        "open",
+        "solid",
         "open"
       ]
     },
@@ -1488,7 +1488,7 @@
     {
       "id": "open",
       "walls": [
-        "ship1_solid4",
+        "solid",
         "open",
         "open",
         "open"
@@ -1500,7 +1500,7 @@
         "open",
         "solid",
         "solid",
-        "open"
+        "solid"
       ]
     },
     {

@@ -478,7 +478,7 @@ export function crawlerRenderEntitiesPrep(): void {
   }
 
   let controller = crawlerController();
-  ent_in_front = controller.getEntInFront();
+  ent_in_front = controller.getEntInFront(); // Note: only gets those that block players (none in DCJAM24)
 
   let build_mode = buildModeActive();
 

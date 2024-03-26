@@ -901,7 +901,7 @@ export function play(dt: number): void {
     let script_api = crawlerScriptAPI();
     script_api.is_visited = true; // Always visited for AI
     aiDoFloor(game_state.floor_id, game_state, entityManager(), engine.defines,
-      settings.ai_pause || engine.defines.LEVEL_GEN || overlay_menu_up, script_api);
+      settings.ai_pause || engine.defines.LEVEL_GEN || overlay_menu_up || movement_disabled_last_frame, script_api);
   }
 
   crawlerPlayBottomOfFrame();

@@ -1,12 +1,16 @@
 ---
 traits:
 - id: enemy
+- id: patrol
+- id: hunter
+  radius: 9
 - id: stats_default
   encounter: test1
 - id: drawable
   biasL: [-0.25, 0.3]
   biasF: [0, -0.25]
-  biasR: [-0.25, 0.3]
+  biasR: [-0.25, 0.2]
+  biasIn: [0, 0.3, 0.14]
 - id: drawable_sprite
   anim_data:
     idle:

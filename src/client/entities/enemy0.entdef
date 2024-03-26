@@ -1,6 +1,12 @@
 ---
+properties:
+  ai_move_min_time: 500
+  ai_move_rand_time: 1000
 traits:
 - id: enemy
+- id: hunter
+- id: patrol
+- id: wander
 - id: stats_default
   encounter: test3
 - id: drawable

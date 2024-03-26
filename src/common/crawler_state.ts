@@ -122,7 +122,9 @@ import {
   empty,
   lerp,
   ridx,
+  sign,
 } from 'glov/common/util';
+import verify from 'glov/common/verify';
 import {
   ROVec2,
   Vec2,
@@ -133,7 +135,8 @@ import {
 } from 'glov/common/vmath';
 import { CrawlerScriptAPI, getEffCell, getEffWall } from './crawler_script';
 
-const { ceil, floor } = Math;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const { abs, ceil, floor } = Math;
 
 export type JSVec2 = [number, number];
 export type JSVec3 = [number, number, number];
@@ -690,6 +693,64 @@ export class CrawlerLevel {
       }
     }
     return ret as BlockType;
+  }
+
+  simpleVisCheck(pos0: ROVec2, pos1: ROVec2, script_api: CrawlerScriptAPI): boolean {
+    let max_steps = 100;
+    let ix = pos0[0];
+    let x0 = ix + 0.5;
+    let iy = pos0[1];
+    let y0 = iy + 0.5;
+    let targetx = pos1[0];
+    let targety = pos1[1];
+    let dx = targetx - ix;
+    let signdx = sign(dx);
+    const xdir = dx > 0 ? EAST : WEST;
+    let dy = targety - iy;
+    let signdy = sign(dy);
+    const ydir = dy > 0 ? NORTH : SOUTH;
+
+    while (ix !== targetx || iy !== targety) {
+      let nextx = ix + ((dx > 0) ? 1 : 0);
+      let nexty = iy + ((dy > 0) ? 1 : 0);
+      let xtime = dx ? (nextx - x0) / dx : Infinity;
+      let ytime = dy ? (nexty - y0) / dy : Infinity;
+      if (abs(xtime - ytime) < 0.0001) {
+        // do both
+        if (
+          !(this.wallsBlock([ix, iy], xdir, script_api) & BLOCK_VIS) &&
+          !(this.wallsBlock([ix + signdx, iy], ydir, script_api) & BLOCK_VIS)
+        ) {
+          // good
+        } else if (
+          !(this.wallsBlock([ix, iy], ydir, script_api) & BLOCK_VIS) &&
+          !(this.wallsBlock([ix, iy + signdy], xdir, script_api) & BLOCK_VIS)
+        ) {
+          // good
+        } else {
+          return false;
+        }
+        ix += signdx;
+        iy += signdy;
+      } else if (xtime < ytime) {
+        // do x
+        if (this.wallsBlock([ix, iy], xdir, script_api) & BLOCK_VIS) {
+          return false;
+        }
+        ix += signdx;
+      } else {
+        // do y
+        if (this.wallsBlock([ix, iy], ydir, script_api) & BLOCK_VIS) {
+          return false;
+        }
+        iy += signdy;
+      }
+      if (!--max_steps) {
+        verify(false);
+        return false;
+      }
+    }
+    return true;
   }
 
   fromASCII(source: string[]): void {
