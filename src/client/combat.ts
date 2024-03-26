@@ -63,7 +63,7 @@ import {
 } from './globals';
 import { heroDrawPos } from './hero_draw';
 import { ABILITIES, CLASSES, DICE_SLOTS } from './heroes';
-import { drawHealthBar, myEnt } from './play';
+import { drawHealthBar, myEnt, sanityDamage } from './play';
 
 const spritesheet_icons = require('./img/icons');
 const { sprite_icons } = spritesheet_icons;
@@ -151,6 +151,7 @@ type Animatable = {
   addFloater(f: FloaterParam): void;
   animateAttack(enemy_idx: number, hero_idx: number): void;
   playSound(sound: string): void;
+  onHeroDeath(hero_idx: number): void;
 };
 
 class CombatState {
@@ -365,6 +366,7 @@ class CombatState {
       this.dice_used.push(true);
       // Died!
       // animator?.playSound('hero_death');
+      animator?.onHeroDeath(idx);
       sound = 'hero_death';
     }
     animator?.addFloater({
@@ -592,6 +594,9 @@ class CombatScene {
     return false;
   }
 
+  onHeroDeath(hero_idx: number): void {
+    sanityDamage(1, 10, ATTACK_TIME);
+  }
   last_attack_land_time!: number;
   floaters: Floater[] = [];
   addFloater(f: FloaterParam): void {
@@ -811,7 +816,7 @@ function combatTickEnemyTurn(): void {
   let ent_heroes = me.data.heroes;
   let { heroes } = combat_state;
   for (let ii = 0; ii < heroes.length; ++ii) {
-    if (!heroes[ii].hp) {
+    if (!heroes[ii].hp && !ent_heroes[ii].dead) {
       ent_heroes[ii].dead = true;
     }
   }
@@ -1085,8 +1090,9 @@ export function doCombat(target: Entity, dt: number): void {
       x: VIEWPORT_X0 + 4,
       y: VIEWPORT_Y0 + 4,
       text: 'DBG:SKIP',
+      disabled: combat_scene.state_id !== CSID.PlayerTurn,
     })) {
-      combat_scene.combat_state.doEnemyTurn(combat_scene);
+      combatStartEnemyTurn();
     }
     if (buttonText({
       x: VIEWPORT_X0 + 8 + uiButtonWidth(),

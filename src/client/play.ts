@@ -1,5 +1,9 @@
+import assert from 'assert';
 import { cmd_parse } from 'glov/client/cmds';
 import * as engine from 'glov/client/engine';
+import {
+  getFrameTimestamp,
+} from 'glov/client/engine';
 import {
   ALIGN,
   Font,
@@ -38,9 +42,10 @@ import { webFSAPI } from 'glov/client/webfs';
 import {
   EntityID,
 } from 'glov/common/types';
-import { clamp } from 'glov/common/util';
+import { clamp, easeIn } from 'glov/common/util';
 import {
   Vec2,
+  v4set,
   vec4,
 } from 'glov/common/vmath';
 import {
@@ -461,6 +466,17 @@ const style_sanity = fontStyle(null, {
   glow_color: 0x242234ff,
   glow_outer: 2.5,
 });
+let sanity_flash_at: number;
+let fake_sanity: [number, number] | null;
+export function sanityDamage(perm: number, temp: number, delay: number): void {
+  let me = myEnt();
+  assert(me);
+  fake_sanity = [me.data.sanity, me.data.sanity_max];
+  me.data.sanity_max = max(0, me.data.sanity_max - perm);
+  me.data.sanity = max(0, me.data.sanity - temp);
+  sanity_flash_at = getFrameTimestamp() + delay;
+}
+
 function doSanity(): void {
   let me = myEnt();
   if (!me) {
@@ -475,6 +491,18 @@ function doSanity(): void {
     me.data.sanity_max = sanity_max = min(100, sanity + 20);
   }
 
+  let flash = 0;
+  if (sanity_flash_at) {
+    let dt = getFrameTimestamp() - sanity_flash_at;
+    if (dt < 0) {
+      // delaying until later
+      assert(fake_sanity);
+      [sanity, sanity_max] = fake_sanity;
+    } else if (dt < 500) {
+      flash = easeIn(1 - dt / 500, 2);
+    }
+  }
+  v4set(temp_color, 1 + flash, 1, 1, 1);
   let z = Z.UI;
   ui_sprites.sanity_bg.draw({
     x: SANITY_X,
@@ -482,15 +510,18 @@ function doSanity(): void {
     z,
     w: SANITY_W,
     h: SANITY_H,
+    color: temp_color,
   });
   z++;
+  let scale = 1 + flash * 2;
   spritesheet_icons.sprite.draw({
-    x: SANITY_X + 10,
-    y: SANITY_Y + 5,
+    x: SANITY_X + 10 - (scale - 1) * 16,
+    y: SANITY_Y + 5 - (scale - 1) * 16,
     z,
-    w: 24,
-    h: 24,
+    w: 24 * scale,
+    h: 24 * scale,
     frame: FRAME_SANITY24,
+    color: temp_color,
   });
   z++;
 
@@ -512,6 +543,7 @@ function doSanity(): void {
     z,
     w: 5,
     h: 200,
+    color: temp_color,
   });
   z++;
   bar_y++;
@@ -524,6 +556,7 @@ function doSanity(): void {
     z,
     w: 3.2,
     h: bar_h + 0.2,
+    color: temp_color,
   };
   if (bar_h) {
     if (bar_h >= 94) {
@@ -593,7 +626,7 @@ function playCrawl(): void {
   const need_bamf = !build_mode && bamfTick();
   const frame_combat = !need_bamf && engagedEnemy();
   let locked_dialog = dialogMoveLocked();
-  const overlay_menu_up = Boolean(pause_menu_up || frame_combat); // || inventory_up
+  const overlay_menu_up = pause_menu_up; // || inventory_up
   let minimap_display_h = build_mode ? BUTTON_W : MINIMAP_W;
   let show_compass = false; // !build_mode;
   let compass_h = show_compass ? 11 : 0;
@@ -775,7 +808,10 @@ function playCrawl(): void {
       mapViewToggle();
     }
   }
-  if (!overlay_menu_up && (keyDownEdge(KEYS.M) || padButtonUpEdge(PAD.BACK))) {
+  if (engine.DEBUG && keyDownEdge(KEYS.I)) {
+    sanityDamage(1, 10, 0);
+  }
+  if (!overlay_menu_up && !frame_combat && (keyDownEdge(KEYS.M) || padButtonUpEdge(PAD.BACK))) {
     playUISound('button_click');
     mapViewToggle();
   }
