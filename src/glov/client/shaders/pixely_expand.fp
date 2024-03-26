@@ -56,7 +56,7 @@ void main()
   vec2 intcoords = (floor(texcoords.xy * orig_pixel_size.xy) + 0.5) * orig_pixel_size.zw;
   vec2 deltacoords = (texcoords.xy - intcoords) * orig_pixel_size.xy; // -0.5 ... 0.5
   // for horizontal sampling, map [-0.5 .. -A .. A .. 0.5] -> [-0.5 .. 0 .. 0 .. 0.5];
-  float A = 0.25;
+  float A = 0.125;
   float Ainv = (0.5 - A) * 2.0;
   float uoffs = clamp((abs(deltacoords.x) - A) / Ainv, 0.0, 1.0) * orig_pixel_size.z;
   uoffs *= sign(deltacoords.x);

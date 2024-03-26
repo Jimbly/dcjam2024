@@ -976,7 +976,7 @@ export function doCombat(target: Entity, dt: number): void {
     ent.draw2D({
       x: x_mid + ENEMY_SPRITE_H / 2,
       y: enemy_y,
-      z: z + 1 - ii * 0.1 + (draw_as_dead ? -0.5 : 0),
+      z: z + 1 + ii * 0.1 + (draw_as_dead ? -0.5 : 0),
       w: -ENEMY_SPRITE_H,
       h: ENEMY_SPRITE_H,
       color: temp_color,

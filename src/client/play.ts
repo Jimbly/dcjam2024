@@ -974,12 +974,12 @@ export function playStartup(font_tiny_in: Font): void {
   crawlerScriptAPIDummyServer(true); // No script API running on server
   let heroes: Hero[] = [{
     class_id: 'front1',
-    tier: 2,
+    tier: 1,
     name: 'Amano',
     gender: 'm',
   },{
     class_id: 'front2',
-    tier: 1,
+    tier: 0,
     name: 'Barick',
     gender: 'a',
   },{

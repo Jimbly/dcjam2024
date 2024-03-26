@@ -173,7 +173,7 @@ module.exports = function (opts) {
           for (let xx = -pad; xx < imgw + pad; ++xx) {
             let xxx;
             if (clamp_horiz) {
-              xxx = xx < 0 ? 0 : xx >= imgw ? imgh - 1 : xx;
+              xxx = xx < 0 ? 0 : xx >= imgw ? imgw - 1 : xx;
             } else {
               xxx = (xx + imgw) % imgw;
             }

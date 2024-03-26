@@ -46,8 +46,26 @@ export type EnemyDef = {
 };
 
 export const ENEMIES: TSMap<EnemyDef> = {
-  eye: {
-    enttype: 'enemy2',
+  sponge1: {
+    enttype: 'enemy0', // flayer
+    hp: 7,
+    shield: 0,
+    effects: [{
+      type: AttackType.FRONT,
+      amount: 1,
+    }],
+  },
+  damage1: {
+    enttype: 'enemy1', // glowbug
+    hp: 4,
+    shield: 0,
+    effects: [{
+      type: AttackType.FRONT,
+      amount: 4,
+    }],
+  },
+  balanced1: {
+    enttype: 'enemy2', // angrystar
     hp: 5,
     shield: 0,
     effects: [{
@@ -55,8 +73,8 @@ export const ENEMIES: TSMap<EnemyDef> = {
       amount: 3,
     }],
   },
-  blob: {
-    enttype: 'enemy0',
+  aoe1: {
+    enttype: 'enemy3', // bottomcrawler
     hp: 4,
     shield: 0,
     effects: [{
@@ -68,6 +86,18 @@ export const ENEMIES: TSMap<EnemyDef> = {
 
 export const ENCOUNTERS: TSMap<Encounter> = {
   demo: {
-    enemies: ['eye', 'eye', 'blob'],
+    enemies: ['balanced1', 'sponge1', 'damage1'],
+  },
+  test1: {
+    enemies: ['damage1', 'damage1', 'aoe1'],
+  },
+  test2: {
+    enemies: ['sponge1', 'balanced1', 'damage1'],
+  },
+  test3: {
+    enemies: ['sponge1', 'balanced1', 'aoe1'],
+  },
+  test4: {
+    enemies: ['damage1', 'balanced1', 'balanced1'],
   },
 };

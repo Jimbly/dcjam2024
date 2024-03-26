@@ -2389,7 +2389,7 @@
   ],
   "initial_entities": [
     {
-      "type": "enemy2",
+      "type": "enemy1",
       "pos": [
         0,
         14,
@@ -2397,7 +2397,7 @@
       ]
     },
     {
-      "type": "enemy1",
+      "type": "enemy3",
       "pos": [
         2,
         15,
@@ -2405,7 +2405,7 @@
       ]
     },
     {
-      "type": "enemy3",
+      "type": "enemy2",
       "pos": [
         1,
         15,
