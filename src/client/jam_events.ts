@@ -5,9 +5,10 @@ import {
   crawlerScriptRegisterEvent,
 } from '../common/crawler_script';
 import { CrawlerCell } from '../common/crawler_state';
+import { bamfAddRandom } from './bamf';
 import { crawlerEntFactory } from './crawler_entity_client';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { dialog } from './dialog_system';
+import { dialog, dialogPush } from './dialog_system';
 import { EntityDemoClient, StatsData } from './entity_demo_client';
 import { autosave, myEnt } from './play';
 import { statusPush } from './status';
@@ -15,6 +16,14 @@ import { statusPush } from './status';
 export function statusShort(text: string): void {
   statusPush(text).counter = 3000;
 }
+
+const JOIN_MSGS = `
+NAME is looking for adventure.
+NAME just wants to prove they're awesome.
+NAME silently joins your group.
+From planet Eart, NAME joins you.
+NAME is ready to party!
+`.trim().split('\n');
 
 type Entity = EntityDemoClient;
 
@@ -32,6 +41,24 @@ crawlerScriptRegisterEvent({
       //autosave();
     }
     autosave();
+  },
+});
+
+crawlerScriptRegisterEvent({
+  key: 'party_add',
+  when: CrawlerScriptWhen.POST,
+  func: (api: CrawlerScriptAPI, cell: CrawlerCell, param: string) => {
+    let idx = Number(param) || 6;
+    if (myEnt().data.heroes.length < idx) {
+      bamfAddRandom();
+      let tail_idx = myEnt().data.heroes.length - 1;
+      let tail = myEnt().data.heroes[tail_idx];
+      dialogPush({
+        name: '',
+        text: JOIN_MSGS[tail_idx-1].replace('NAME', tail.name),
+        transient: true,
+      });
+    }
   },
 });
 

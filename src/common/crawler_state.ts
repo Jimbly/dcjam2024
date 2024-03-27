@@ -514,7 +514,9 @@ export class CrawlerLevel {
       if (v) {
         while (c && cell_idx < cells.length) {
           if (!cells[cell_idx].visible_bits) {
-            this.seen_cells++;
+            if (!cells[cell_idx].desc.auto_evict) {
+              this.seen_cells++;
+            }
           }
           cells[cell_idx++].visible_bits |= v;
           --c;
@@ -659,7 +661,9 @@ export class CrawlerLevel {
         if (!cell.desc.open_vis) {
           continue;
         }
-        ++total_cells;
+        if (!cell.desc.auto_evict) {
+          ++total_cells;
+        }
         for (let ii = 0 as DirType; ii < 4; ++ii) {
           floor_corners.push(floorOverlayCorner(this, xx, yy, cell, ii));
           corner_details.push(cornerDetailType(this, xx, yy, cell, ii));

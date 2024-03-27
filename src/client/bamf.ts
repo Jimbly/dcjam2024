@@ -62,6 +62,8 @@ let bamf_state: {
   start: number;
 } | null = null;
 
+const placeholder_hero = { dead: true } as Hero;
+
 export function bamfCheck(): void {
   let me = myEntOptional();
   if (!me) {
@@ -71,6 +73,9 @@ export function bamfCheck(): void {
   need_bamf = false;
   if (!ent_heroes) {
     return;
+  }
+  if (ent_heroes.length === 0) {
+    ent_heroes = [placeholder_hero];
   }
   for (let ii = 0; ii < ent_heroes.length; ++ii) {
     let hero = ent_heroes[ii];
@@ -91,9 +96,9 @@ export function bamfCheck(): void {
           }
         });
         let tier = 1;
-        let h1 = randomHero(ii, tier, heroes_temp, false, dead_names);
+        let h1 = randomHero(ii, tier, heroes_temp, 0, dead_names);
         heroes_temp.push(h1);
-        let h2 = randomHero(ii, tier, heroes_temp, false, dead_names);
+        let h2 = randomHero(ii, tier, heroes_temp, 1, dead_names);
         bamf_state = {
           hero_idx: ii,
           hero,
@@ -109,6 +114,8 @@ export function bamfCheck(): void {
 }
 
 export function bamfReset(): void {
+  need_bamf = false;
+  bamf_state = null;
   bamfCheck();
 }
 
@@ -122,6 +129,12 @@ const style_death = fontStyle(style_label, {
   glow_outer: 2.5,
 });
 
+export function bamfAddRandom(): void {
+  let ent_heroes = myEnt().data.heroes;
+  let h1 = randomHero(ent_heroes.length, 0, ent_heroes, 1, []);
+  ent_heroes.push(h1);
+}
+
 const PAD = 8;
 export function bamfTick(): boolean {
   if (!need_bamf) {
@@ -131,9 +144,11 @@ export function bamfTick(): boolean {
   let y0 = VIEWPORT_Y0;
   let w = render_width;
   let h = game_height - PAD - y0;
+  let z = Z.BAMF;
   let panel_param = {
     x: x0,
     y: y0,
+    z: z - 1,
     w,
     h,
     eat_clicks: false,
@@ -156,29 +171,45 @@ export function bamfTick(): boolean {
   }
 
   //y += 24;
-  markdownAuto({
-    font_style: style_death,
-    x, y, w, h: 104 - y,
-    align: ALIGN.HCENTER | ALIGN.HWRAP | ALIGN.VCENTER,
-    text: bamf_state.line.replace('NAME', `[c=2]${hero.name}[/c]`).replace('has died', 'has [c=1]died[/c]'),
-    alpha: alpha_death,
-  });
+  if (hero === placeholder_hero) {
+    markdownAuto({
+      font_style: style_label,
+      x, y, z, w, h: 104 - y,
+      align: ALIGN.HCENTER | ALIGN.HWRAP | ALIGN.VCENTER,
+      text: `
+Drifting through deep space is an [c=2]ancient shipwreck[/c] said to be bigger on the inside than it is on the outside.
+
+Rumor has it that deep within this ruin lie answers to questions about the meaning of life and one's place in the universe.
+
+[c=2]WHO VENTURES NEXT[/c] into the ruined ship, seeking fortune, glory, philosophical answers, or a cure for boredom?
+`,
+      alpha: alpha_death,
+    });
+  } else {
+    markdownAuto({
+      font_style: style_death,
+      x, y, z, w, h: 104 - y,
+      align: ALIGN.HCENTER | ALIGN.HWRAP | ALIGN.VCENTER,
+      text: bamf_state.line.replace('NAME', `[c=2]${hero.name}[/c]`).replace('has died', 'has [c=1]died[/c]'),
+      alpha: alpha_death,
+    });
+  }
 
   let picked = -1;
   if (alpha_choices) {
     y = 104;
     y += markdownAuto({
       font_style: style_label,
-      x, y, w,
+      x, y, z, w,
       align: ALIGN.HCENTER | ALIGN.HWRAP,
       text: 'You activate the [c=2]Bamf[/c] device and call in...',
-      alpha: alpha_choices,
+      alpha: min(alpha_choices, hero === placeholder_hero ? 0 : 1),
     }).h + PAD;
 
 
     let hero_x = x + floor((w - HERO_W)/2);
     if (alpha_choices < 1) {
-      drawRect(hero_x, y, hero_x + HERO_W, y + (HERO_H + uiButtonHeight()) * 2 + PAD, Z.UI + 100,
+      drawRect(hero_x, y, hero_x + HERO_W, y + (HERO_H + uiButtonHeight()) * 2 + PAD, z + 100,
         [32/255, 27/255, 37/255, 1 - alpha_choices]);
     }
     for (let ii = 0; ii < bamf_state.replacements.length; ++ii) {
@@ -189,10 +220,10 @@ export function bamfTick(): boolean {
         picked = ii;
         playUISound('button_click');
       }
-      drawHero(bamf_state.hero_idx, hero_x, y, bamf_state.replacements[ii]);
+      drawHero(bamf_state.hero_idx, hero_x, y, z, bamf_state.replacements[ii]);
       y += HERO_H;
       if (buttonText({
-        x: hero_x, y,
+        x: hero_x, y, z,
         w: HERO_W,
         text: bamf_state.summons[ii].replace('NAME', bamf_state.replacements[ii].name),
       })) {

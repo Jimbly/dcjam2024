@@ -3,6 +3,7 @@ import { TSMap } from 'glov/common/types';
 import { AttackType } from './encounters';
 import { AbilityDef, Hero, HeroClassDef } from './entity_demo_client';
 import { GENDER, NAMEPAIR, NAMES_BY_GENDER } from './names';
+import { isBootstrap } from './play';
 
 const { floor, random } = Math;
 
@@ -257,15 +258,21 @@ function faceUsed(heroes: Hero[], face_name: string): boolean {
 }
 
 export function randomHero(
-  idx: number, tier: number, heroes: Hero[], no_dup_class: boolean,
+  idx: number, tier: number, heroes: Hero[], no_dup_class_tail: number,
   ignore_names?: string[],
 ): Hero {
   let options = CLASS_BY_POS[idx];
   let class_id: string;
+  let heroes_to_check = [];
+  for (let ii = 0; ii < no_dup_class_tail; ++ii) {
+    heroes_to_check.push(heroes[heroes.length - 1 - ii]);
+  }
   do {
     class_id = options[floor(random() * options.length)];
-  // eslint-disable-next-line no-unmodified-loop-condition
-  } while (no_dup_class && classUsed(heroes, class_id));
+  } while (classUsed(heroes_to_check, class_id));
+  if (isBootstrap()) {
+    class_id = 'front1';
+  }
 
   let class_def = CLASSES[class_id]!;
   let face: number;

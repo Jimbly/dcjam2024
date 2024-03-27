@@ -1321,9 +1321,13 @@ function calcVisibility(
     cell.visible_frame = frame_idx;
     let x = idx % w;
     let y = (idx - x) / w;
-    if (map_update_this_frame && !cell.visible_bits && v2distSq(pos, [x+0.5, y+0.5]) < VIS_RADIUS * VIS_RADIUS) {
+    if (map_update_this_frame && !(cell.visible_bits & VIS_SEEN) &&
+      v2distSq(pos, [x+0.5, y+0.5]) < VIS_RADIUS * VIS_RADIUS
+    ) {
       cell.visible_bits |= VIS_SEEN;
-      level.seen_cells++;
+      if (!cell.desc.auto_evict) {
+        level.seen_cells++;
+      }
     }
     for (let ii = 0 as DirType; ii < 4; ++ii) {
       let wall_desc = getEffWall(script_api, cell, ii).swapped; // needed?

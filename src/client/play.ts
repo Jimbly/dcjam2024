@@ -136,7 +136,6 @@ import {
   render_width,
 } from './globals';
 import { heroesDraw } from './hero_draw';
-import { randomHero } from './heroes';
 import { jamTraitsReset, jamTraitsStartup } from './jam_events';
 import { levelGenTest } from './level_gen_test';
 import { renderAppStartup, renderResetFilter } from './render_app';
@@ -504,6 +503,20 @@ function useNoText(): boolean {
   return input.inputTouchMode() || input.inputPadMode() || settings.turn_toggle;
 }
 
+export function isBootstrap(): boolean {
+  let me = myEntOptional();
+  if (!me) {
+    return true;
+  }
+  if (!me.data.heroes) {
+    return true;
+  }
+  if (me.data.heroes.length === 0) {
+    return true;
+  }
+  return false;
+}
+
 const SANITY_H = 38;
 const SANITY_X = game_width - SANITY_W;
 const SANITY_Y = game_height - SANITY_H;
@@ -527,7 +540,7 @@ export function sanityDamage(perm: number, temp: number, delay: number, major: b
 
 function doSanity(): void {
   let me = myEnt();
-  if (!me) {
+  if (!me || isBootstrap()) {
     return;
   }
   if (me.data.sanity === undefined) { // REMOVEME
@@ -754,7 +767,9 @@ function playCrawl(): void {
   if (menu_up) {
     menu_pads.push(PAD.B, PAD.BACK);
   }
-  button(0, 0, menu_up ? 10 : 6, 'menu', menu_keys, menu_pads);
+  if (!isBootstrap()) {
+    button(0, 0, menu_up ? 10 : 6, 'menu', menu_keys, menu_pads);
+  }
   // if (!build_mode) {
   //   button(0, 1, 7, 'inv', [KEYS.I], [PAD.Y], inventory_up);
   //   if (up_edge.inv) {
@@ -1004,9 +1019,9 @@ export function playStartup(font_tiny_in: Font): void {
   font = uiGetFont();
   crawlerScriptAPIDummyServer(true); // No script API running on server
   let heroes: Hero[] = [];
-  while (heroes.length < 6) {
-    heroes.push(randomHero(heroes.length, heroes.length === 0 ? 1 : 0, heroes, true));
-  }
+  // while (heroes.length < 6) {
+  //   heroes.push(randomHero(heroes.length, heroes.length === 0 ? 1 : 0, heroes, true));
+  // }
   crawlerPlayStartup({
     // on_broadcast: onBroadcast,
     play_init_online: playInitEarly,
@@ -1014,10 +1029,10 @@ export function playStartup(font_tiny_in: Font): void {
     offline_data: {
       new_player_data: {
         type: 'player',
-        pos: [0, 0, 0],
-        floor: 0,
+        pos: [0, 0, 0], // set in level10.json
+        floor: 10,
         stats: {
-          hp: 1, // set to 0 to trigger end of game
+          hp: 1,
         },
         sanity: 100,
         sanity_max: 100,

@@ -5,7 +5,9 @@ export const HERO_H = Math.floor(game_height / 6);
 
 import assert from 'assert';
 import * as engine from 'glov/client/engine';
+import { getFrameTimestamp } from 'glov/client/engine';
 import { ALIGN, Font, fontStyle, fontStyleAlpha } from 'glov/client/font';
+import { markdownAuto } from 'glov/client/markdown';
 import {
   buttonText,
   buttonWasFocused,
@@ -31,7 +33,7 @@ import {
   CLASSES,
   DICE_SLOTS,
 } from './heroes';
-import { myEnt } from './play';
+import { isBootstrap, myEnt } from './play';
 
 const spritesheet_faces = require('./img/faces');
 const { sprite_faces } = spritesheet_faces;
@@ -48,7 +50,7 @@ const {
   sprite_icons,
 } = spritesheet_icons;
 
-const { floor, max, round } = Math;
+const { abs, floor, max, round, sin } = Math;
 let font_tiny: Font;
 let font: Font;
 
@@ -59,6 +61,7 @@ export function heroesDrawStartup(font_tiny_in: Font): void {
 
 const DEAD_ALPHA = 0.5;
 
+const style_label = fontStyle(null, { color: 0xffffffff });
 const style_hp = fontStyle(null, {
   color: 0xFFFFFFff,
   outline_width: 4,
@@ -114,24 +117,28 @@ let dice_usable: Partial<Record<number, true>>;
 const color_dead = vec4(1, 1, 1, DEAD_ALPHA);
 const color_dead_portrait = vec4(0, 0, 0, 1);
 const color_temp = vec4();
+
+const placeholder_hero: Hero = {
+  name: '',
+} as Hero;
+
 export function heroDrawPos(hero_idx: number): [number, number] {
   return [0 + PORTRAIT_X + PORTRAIT_SIZE / 2, hero_idx * HERO_H + PORTRAIT_Y + PORTRAIT_SIZE/2];
 }
-export function drawHero(idx: number, x0: number, y0: number, hero_def: Hero): void {
+export function drawHero(idx: number, x0: number, y0: number, z: number, hero_def: Hero): void {
   let combat_states = combatGetStates();
   let combat_hero = combat_states && combat_states.combat_state.heroes[idx] || null;
   let preview_hero = combat_states && combat_states.preview_state.heroes[idx] || null;
   let aspect = sprite_icons.uidata.aspect[FRAME_HERO_BG];
   let { tier, class_id } = hero_def;
   let class_def = CLASSES[class_id];
-  assert(class_def);
-  let class_tier = class_def.tier[tier];
-  let hp = preview_hero ? preview_hero.hp / class_tier.hp : 1;
+  let is_placeholder = hero_def === placeholder_hero;
+  let class_tier = class_def && class_def.tier[tier];
+  let hp = is_placeholder ? 0 : preview_hero ? preview_hero.hp / class_tier!.hp : 1;
   let dead = preview_hero ? !hp : hero_def.dead;
   if (dead) {
     hp = 0;
   }
-  let z = Z.UI;
   let blink = combatDrawFloaters({
     x: x0 + PORTRAIT_X + PORTRAIT_SIZE/2,
     y: y0 + PORTRAIT_Y + PORTRAIT_SIZE/2,
@@ -158,34 +165,38 @@ export function drawHero(idx: number, x0: number, y0: number, hero_def: Hero): v
     });
   }
   z++;
-  let face = class_def.faces[hero_def.face || 0] || class_def.faces[0];
+  let face = class_def ? (class_def.faces[hero_def.face || 0] || class_def.faces[0]) : '';
   if (dead) {
     v4copy(color_temp, color_dead_portrait);
   } else {
     v4set(color_temp, blink, blink, blink, 1);
   }
-  let face_frame = spritesheet_faces[`FRAME_${face[1].toUpperCase()}`];
-  let face_aspect = sprite_faces.uidata.aspect[face_frame] || 1;
-  let face_w = round(PORTRAIT_SIZE * face_aspect);
-  sprite_faces.draw({
-    x: x0 + PORTRAIT_X + floor((PORTRAIT_SIZE - face_w) / 2),
-    y: y0 + PORTRAIT_Y,
-    z,
-    w: face_w,
-    h: PORTRAIT_SIZE,
-    frame: face_frame,
-    color: color_temp,
-  });
+  if (face) {
+    let face_frame = spritesheet_faces[`FRAME_${face[1].toUpperCase()}`];
+    let face_aspect = sprite_faces.uidata.aspect[face_frame] || 1;
+    let face_w = round(PORTRAIT_SIZE * face_aspect);
+    sprite_faces.draw({
+      x: x0 + PORTRAIT_X + floor((PORTRAIT_SIZE - face_w) / 2),
+      y: y0 + PORTRAIT_Y,
+      z,
+      w: face_w,
+      h: PORTRAIT_SIZE,
+      frame: face_frame,
+      color: color_temp,
+    });
+  }
   z++;
-  font_tiny.draw({
-    style: style_name,
-    x: x0 + PORTRAIT_X,
-    y: y0 + PORTRAIT_Y + PORTRAIT_SIZE + 1,
-    z,
-    w: PORTRAIT_SIZE,
-    align: ALIGN.HCENTER,
-    text: hero_def.name || 'J. Doe',
-  });
+  if (hero_def.name) {
+    font_tiny.draw({
+      style: style_name,
+      x: x0 + PORTRAIT_X,
+      y: y0 + PORTRAIT_Y + PORTRAIT_SIZE + 1,
+      z,
+      w: PORTRAIT_SIZE,
+      align: ALIGN.HCENTER,
+      text: hero_def.name,
+    });
+  }
   for (let ii = 0; ii < tier; ++ii) {
     sprite_icons.draw({
       x: x0 + 3 + ii * 9,
@@ -229,19 +240,21 @@ export function drawHero(idx: number, x0: number, y0: number, hero_def: Hero): v
     }
   }
   z++;
-  font_tiny.draw({
-    style: style_hp,
-    x: x0 + HP_X,
-    y: y0 + HP_Y - 1,
-    z,
-    w: HP_W,
-    align: ALIGN.HCENTER,
-    text: dead ? 'DEAD' : preview_hero ? `${preview_hero.hp} / ${class_tier.hp}` : `${class_tier.hp}`,
-  });
+  if (class_tier) {
+    font_tiny.draw({
+      style: style_hp,
+      x: x0 + HP_X,
+      y: y0 + HP_Y - 1,
+      z,
+      w: HP_W,
+      align: ALIGN.HCENTER,
+      text: dead ? 'DEAD' : preview_hero ? `${preview_hero.hp} / ${class_tier!.hp}` : `${class_tier!.hp}`,
+    });
+  }
 
   let y = y0 + 2;
   let shield_text = '';
-  if (class_tier.shield) {
+  if (class_tier && class_tier.shield) {
     shield_text = `${class_tier.shield}`;
   }
   if (preview_hero && preview_hero.temp_shield) {
@@ -315,7 +328,8 @@ export function drawHero(idx: number, x0: number, y0: number, hero_def: Hero): v
   y = y0 + ABILITY_Y;
   let abil_y0 = y;
   let zabil = z;
-  for (let ability_idx = 0; ability_idx < 2; ++ability_idx) {
+  // eslint-disable-next-line no-unmodified-loop-condition
+  for (let ability_idx = 0; class_def && ability_idx < 2; ++ability_idx) {
     z = zabil;
     y = abil_y0;
     let ability_id = class_def.abilities[ability_idx];
@@ -403,6 +417,19 @@ export function drawHero(idx: number, x0: number, y0: number, hero_def: Hero): v
     }
   }
 
+  if (!class_def && (idx === 0 || !isBootstrap())) {
+    markdownAuto({
+      font_style: style_label,
+      x: x0 + ABILITY_X[0],
+      y: abil_y0,
+      w: ABILITY_W * 2,
+      h: ABILITY_H,
+      align: ALIGN.HVCENTER,
+      alpha: isBootstrap() ? 0.5 : abs(sin(getFrameTimestamp() * 0.0005)) * 0.5,
+      text: idx === 0 ? 'Choose a leader...' : 'Gathering party...', // '[c=2]Bamf[/c] device charging...',
+    });
+  }
+
   // draw predicted incoming damage
   // Disabled this: it's too noisy, not really clear anyway, maybe even removes the interesting aggro math
   if (combat_hero && engine.defines.INCOMING) {
@@ -452,10 +479,10 @@ export function heroesDraw(is_combat: boolean): void {
     return;
   }
   dice_usable = {};
-  for (let ii = 0; ii < heroes.length; ++ii) {
+  for (let ii = 0; ii < max(6, heroes.length); ++ii) {
     let x0 = 0;
     let y0 = ii * HERO_H;
-    drawHero(ii, x0, y0, heroes[ii]);
+    drawHero(ii, x0, y0, Z.UI, heroes[ii] || placeholder_hero);
   }
   if (is_combat) {
     combatReadyForEnemyTurn(dice_usable);

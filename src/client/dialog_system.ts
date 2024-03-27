@@ -48,6 +48,7 @@ import { crawlerScriptAPI } from './crawler_play';
 const { ceil, round } = Math;
 
 const FADE_TIME = 1000;
+const MS_PER_CHARACTER = 12;
 
 export type DialogButton = {
   label: string;
@@ -217,7 +218,7 @@ export function dialogRun(dt: number, viewport: UIBox & { pad_top: number; pad_b
   let align = transient ? ALIGN.HCENTER|ALIGN.HWRAP : ALIGN.HLEFT|ALIGN.HWRAP;
   let dims = dimsSplit(style, align, w - HPAD * 2, size, text);
   y += h - dims.h - pad_bottom - buttons_h;
-  let text_len = ceil(counter / 18);
+  let text_len = ceil(counter / MS_PER_CHARACTER);
   let text_definitely_full = text_len >= (text.length + 20);
   let text_to_draw = text;
   let text_full = text_definitely_full;

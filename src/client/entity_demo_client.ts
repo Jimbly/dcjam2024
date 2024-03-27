@@ -154,6 +154,9 @@ export class EntityDemoClient extends EntityBaseClient implements EntityCrawlerC
     if (!heroes) {
       return true;
     }
+    if (heroes.length < 6) {
+      return true; // bootstrapping
+    }
     for (let ii = 0; ii < heroes.length; ++ii) {
       if (!heroes[ii].dead) {
         return true;

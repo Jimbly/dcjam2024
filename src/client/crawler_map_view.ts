@@ -199,7 +199,7 @@ export function crawlerMapViewDraw(
   let num_enemies = 0;
   for (let ent_id in entities) {
     let ent = entities[ent_id]!;
-    if (ent.isEnemy() && !ent.fading_out) {
+    if (ent.isEnemy() && !ent.fading_out && ent.data.floor === game_state.floor_id) {
       ++num_enemies;
     }
   }

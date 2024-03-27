@@ -1,5 +1,6 @@
 TODO
 * sketch out ship and first level
+* bug: pause menu on bamf screen can be clicked through
 * placeholder one-time world events that display one of your characters in dialog (just hard-coded index in the event, not even random!)
 * combat - maybe add log for enemy turn explaining what happened, press button to Roll! when done reading
   * probably don't need as much help text then?
@@ -33,6 +34,7 @@ T2 3 / 5 / 9   (+2/4)
 T3 9 / 13 / 21 (+4/8)
 
 Polish
+* moving on full map?
 * door/stairs_in  fade is covering up the menu button
 * Enemy stay at target position for ~10 seconds if they lost their target
 * animate monsters
