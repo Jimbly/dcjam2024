@@ -5,6 +5,7 @@ import { ALIGN, fontStyle } from 'glov/client/font';
 import { inputClick } from 'glov/client/input';
 import { markdownAuto } from 'glov/client/markdown';
 import { buttonText, drawRect, panel, playUISound, uiButtonHeight } from 'glov/client/ui';
+import { showAbilityTooltip } from './combat';
 import { crawlerGameState } from './crawler_play';
 import { Hero } from './entity_demo_client';
 import {
@@ -19,7 +20,7 @@ import {
   drawHero,
 } from './hero_draw';
 import { randomHero } from './heroes';
-import { myEnt, myEntOptional } from './play';
+import { isBootstrap, myEnt, myEntOptional } from './play';
 
 const { floor, max, min, random } = Math;
 
@@ -73,7 +74,7 @@ let bamf_state: {
   start: number;
 } | null = null;
 
-const placeholder_hero = { dead: true } as Hero;
+const placeholder_hero = { dead: true, tier: 0 } as Hero;
 
 export function bamfCheck(): void {
   let me = myEntOptional();
@@ -241,6 +242,10 @@ Rumor has it that deep within this ruin lie answers to questions about the meani
         picked = ii;
       }
       y += uiButtonHeight() + PAD;
+    }
+
+    if (!isBootstrap() || true) {
+      showAbilityTooltip(28, y - HERO_H * 2 - uiButtonHeight());
     }
   }
 

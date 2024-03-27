@@ -82,6 +82,8 @@ export type MarkdownLayoutParam = {
   h?: number;
   // TODO: also need line_height here!  Get alignment/etc respecting that
   text_height?: number;
+  line_height?: number;
+  img_height?: number; // DCJ24 hack
   indent?: number;
   align?: ALIGN;
 };
@@ -159,9 +161,9 @@ class MDBlockParagraph implements MDLayoutBlock {
     if (param.align & ALIGN.HWRAP) {
       if (param.cursor.x !== param.cursor.line_x0) {
         param.cursor.line_x0 = param.cursor.x = param.indent;
-        param.cursor.y += param.text_height;
+        param.cursor.y += param.line_height;
       }
-      param.cursor.y += param.text_height * 0.5;
+      param.cursor.y += param.line_height * 0.5;
     } else {
       param.cursor.x += param.text_height * 0.25;
     }
@@ -260,7 +262,7 @@ class MDBlockText implements MDLayoutBlock {
         param.font_style, w, indent, param.text_height, text, param.align,
         (x0: number, linenum: number, line: string, x1: number) => {
           if (linenum > 0) {
-            param.cursor.y += param.text_height;
+            param.cursor.y += param.line_height;
             param.cursor.line_x0 = param.indent;
           }
           let layout_param: MDBlockTextLayout = {
@@ -440,10 +442,15 @@ function markdownLayout(param: MarkdownStateCached & MarkdownLayoutParam): void 
   } else {
     font_styles = { def: font_style };
   }
+  let text_height = param.text_height || uiTextHeight();
+  let line_height = param.line_height || text_height;
+  let img_height = param.img_height || line_height;
   let calc_param: MDLayoutCalcParam = {
     w: param.w || 0,
     h: param.h || 0,
-    text_height: param.text_height || uiTextHeight(),
+    text_height,
+    line_height,
+    img_height,
     indent: param.indent || 0,
     align: param.align || 0,
     font: param.font || uiGetFont(),
@@ -475,7 +482,7 @@ function markdownLayout(param: MarkdownStateCached & MarkdownLayoutParam): void 
   }
   if ((calc_param.align & (ALIGN.HRIGHT | ALIGN.HCENTER)) && draw_blocks.length) {
     // Find rightmost block for every row
-    let row_h_est = calc_param.text_height / 2;
+    let row_h_est = calc_param.line_height / 2;
     let row_start_idx = 0;
     let last_dims = draw_blocks[0].dims;
     for (let ii = 1; ii < draw_blocks.length + 1; ++ii) {

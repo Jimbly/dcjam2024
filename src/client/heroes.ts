@@ -126,6 +126,7 @@ for (let key in CLASSES) {
 
 export const ABILITIES: TSMap<AbilityDef> = {
   attack_light: {
+    name: 'Light Attack',
     aggro: 2,
     effects: [{
       type: AttackType.FRONT,
@@ -134,6 +135,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     icon: 'ability_gun1',
   },
   attack_heavy: {
+    name: 'Heavy Attack',
     aggro: 3,
     effects: [{
       type: AttackType.FRONT,
@@ -142,6 +144,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     icon: 'ability_gun2',
   },
   attack_back: {
+    name: 'Snipe',
     aggro: 2,
     effects: [{
       type: AttackType.BACK,
@@ -150,6 +153,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     icon: 'ability_back1',
   },
   shield_aggro: {
+    name: 'Taunt',
     aggro: 4,
     effects: [{
       type: AttackType.SHIELD_SELF,
@@ -158,6 +162,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     icon: 'ability_shield2',
   },
   shield_slow: {
+    name: 'Provoke',
     aggro: 3,
     effects: [{
       type: AttackType.SHIELD_SELF,
@@ -166,6 +171,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     icon: 'ability_shield1',
   },
   poison: {
+    name: 'Poison',
     aggro: 1,
     effects: [{
       type: AttackType.POISON,
@@ -174,6 +180,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     icon: 'ability_poison2',
   },
   area_light: {
+    name: 'Light Blast',
     aggro: 2,
     effects: [{
       type: AttackType.ALL,
@@ -182,6 +189,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     icon: 'ability_ranged_all2',
   },
   area_med: {
+    name: 'Medium Blast',
     aggro: 3,
     effects: [{
       type: AttackType.ALL,
@@ -190,6 +198,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     icon: 'ability_ranged_all1',
   },
   heal_all_light: {
+    name: 'Take \'em If Ya Got \'em',
     aggro: 1,
     effects: [{
       type: AttackType.HEAL_ALL,
@@ -198,6 +207,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     icon: 'ability_heal_all',
   },
   heal_med: {
+    name: 'Medkit',
     aggro: 2,
     effects: [{
       type: AttackType.HEAL,
@@ -206,6 +216,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     icon: 'ability_heal',
   },
   shield_other1: {
+    name: 'Distract',
     aggro: 3,
     effects: [{
       type: AttackType.SHIELD_ALL,
@@ -214,6 +225,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     icon: 'ability_shield_all',
   },
   shield_other2: {
+    name: 'Defend',
     aggro: 2,
     effects: [{
       type: AttackType.SHIELD_ALL,
@@ -222,6 +234,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     icon: 'ability_shield_all',
   },
   hide: {
+    name: 'Hide',
     aggro: -5,
     effects: [],
     icon: 'ability_demo',

@@ -55,6 +55,7 @@ export type HeroClassTier = {
 };
 
 export type AbilityDef = {
+  name: string;
   aggro: number;
   effects: AttackDef[];
   icon: string;

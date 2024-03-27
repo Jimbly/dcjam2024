@@ -21,6 +21,7 @@ import { Sprite, spriteCreate } from 'glov/client/sprites';
 import {
   buttonText,
   drawRect,
+  panel,
   playUISound,
   suppressNewDOMElemWarnings,
   uiButtonWidth,
@@ -65,6 +66,7 @@ import {
 } from './globals';
 import {
   HERO_H,
+  getAbiltiyTooltip,
   heroDrawPos,
 } from './hero_draw';
 import { ABILITIES, CLASSES, DICE_SLOTS } from './heroes';
@@ -871,6 +873,31 @@ export function combatPreviewAlpha(): number {
   return abs(sin(getFrameTimestamp() * 0.01));
 }
 
+const COMBAT_TOOLTIP_W = render_width - SANITY_W * 2;
+export function showAbilityTooltip(x: number, y: number): void {
+  let ability_tooltip = getAbiltiyTooltip();
+  if (ability_tooltip) {
+    const PAD = 5;
+    let h = markdownAuto({
+      font_style: style_hint,
+      x: x + PAD,
+      y: y + PAD + 2,
+      z: Z.TOOLTIP + 1,
+      text_height: uiTextHeight(),
+      img_height: uiTextHeight() + 1,
+      line_height: uiTextHeight() + 3,
+      align: ALIGN.HCENTER|ALIGN.HWRAP,
+      w: COMBAT_TOOLTIP_W,
+      text: ability_tooltip,
+    }).h;
+    panel({
+      x, y, z: Z.TOOLTIP - 1,
+      w: COMBAT_TOOLTIP_W + PAD * 2,
+      h: h + PAD * 2 + 4,
+    });
+  }
+}
+
 
 let last_combat_frame = -1;
 let last_combat_ent: Entity | null = null;
@@ -1134,16 +1161,26 @@ export function doCombat(target: Entity, dt: number): void {
       num_left++;
     }
   }
-  if (num_left > 1) {
+  let ability_tooltip = getAbiltiyTooltip();
+  if (ability_tooltip) {
+    hint = ability_tooltip;
+  } else if (num_left > 1) {
     hint = 'COMBAT: choose 2 abilities matching your dice';
   } else if (num_left === 1) {
     hint = 'COMBAT: choose 1 more ability and then the enemy will attack';
   }
   if (hint) {
-    font.drawSizedAligned(style_hint,
-      VIEWPORT_X0 + SANITY_W, VIEWPORT_Y0 + render_height + 8, Z.UI, uiTextHeight(),
-      ALIGN.HCENTER|ALIGN.HWRAP,
-      render_width - SANITY_W * 2, 0, hint);
+    markdownAuto({
+      font_style: style_hint,
+      x: VIEWPORT_X0 + SANITY_W,
+      y: VIEWPORT_Y0 + render_height + 8,
+      text_height: uiTextHeight(),
+      img_height: uiTextHeight() + 1,
+      line_height: uiTextHeight() + 3,
+      align: ALIGN.HCENTER|ALIGN.HWRAP,
+      w: COMBAT_TOOLTIP_W,
+      text: hint,
+    });
   }
 
   if (/*engine.DEBUG && */myEntOptional()?.isAlive()) {

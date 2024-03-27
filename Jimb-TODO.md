@@ -3,7 +3,6 @@ TODO
 * medkit messages should be clear about mechanics
 * combat - maybe add log for enemy turn explaining what happened, press button to Roll! when done reading
   * probably don't need as much help text then?
-  * can put tooltip in same place
 * start balancing combat encounters
 * bug: pause menu on bamf screen can be clicked through
 * placeholder one-time world events that display one of your characters in dialog (just hard-coded index in the event, not even random!)

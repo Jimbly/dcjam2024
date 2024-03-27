@@ -175,6 +175,7 @@ export function main(): void {
       abilitybutton_rollover: { name: 'abilitybutton_rollover', ws: [24, 16, 24], hs: [32] },
       abilitybutton_down: { name: 'abilitybutton_down', ws: [24, 16, 24], hs: [32] },
       abilitybutton_disabled: { name: 'abilitybutton_disabled', ws: [24, 16, 24], hs: [32] },
+      abilitybutton_disabled_focused: { name: 'abilitybutton_disabled_focused', ws: [24, 16, 24], hs: [32] },
       buttonselected_regular: { name: 'pixely/buttonselected', ws: [4, 5, 4], hs: [13] },
       buttonselected_down: { name: 'pixely/buttonselected_down', ws: [4, 5, 4], hs: [13] },
       buttonselected_rollover: { name: 'pixely/buttonselected', ws: [4, 5, 4], hs: [13] },

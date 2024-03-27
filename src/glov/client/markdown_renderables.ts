@@ -31,6 +31,8 @@ import type { Box } from './geom_types';
 import type { SpriteSheet } from './spritesheet';
 import type { Optional, TSMap } from 'glov/common/types';
 
+const { floor } = Math;
+
 export function markdownRenderableAddDefault(key: string, renderable: MarkdownRenderable): void {
   markdown_default_renderables[key] = renderable;
 }
@@ -50,10 +52,10 @@ markdownSetColorStyles(default_palette.map((c) => fontStyleColored(null, c)));
 export type MarkdownRenderable = (content: RenderableContent, data?: unknown) => (MDLayoutBlock | null);
 
 export function markdownLayoutFit(param: MDLayoutCalcParam, dims: Optional<Box, 'x' | 'y'>): dims is Box {
-  let { cursor, text_height } = param;
+  let { cursor, line_height } = param;
   if (cursor.x + dims.w > param.w + EPSILON && cursor.x !== cursor.line_x0 && (param.align & ALIGN.HWRAP)) {
     cursor.x = cursor.line_x0 = param.indent;
-    cursor.y += text_height;
+    cursor.y += line_height;
   }
   if (cursor.x + dims.w > param.w + EPSILON && (param.align & ALIGN.HWRAP)) {
     // still over, doesn't fit on a whole line, modify w (if caller listens to that)
@@ -112,13 +114,18 @@ class MDRImg implements MDLayoutBlock, MDDrawBlock, Box {
   w!: number;
   h!: number;
   layout(param: MDLayoutCalcParam): MDDrawBlock[] {
-    let { text_height } = param;
+    let { line_height, img_height, text_height } = param;
     let offs = 0;
-    if (param.h && !(param.align & ALIGN.HWRAP) && this.scale === 1) {
-      text_height = param.h; // do line height
+    if (img_height) {
+      line_height = img_height;
+      offs = -floor((line_height - text_height) / 2) - 1; // DCJAM hack
+    } else if (param.h && !(param.align & ALIGN.HWRAP) && this.scale === 1) {
+      line_height = param.h; // do line height
       offs = -1;
+    } else {
+      offs = -floor((line_height - text_height) / 2) - 1; // DCJAM hack
     }
-    let h = this.h = text_height * this.scale;
+    let h = this.h = line_height * this.scale;
     let img_data = getImageData(this.key);
     let { sprite, frame } = img_data;
     let aspect = 1;
@@ -142,7 +149,7 @@ class MDRImg implements MDLayoutBlock, MDDrawBlock, Box {
     markdownLayoutFit(param, this);
     // vertically center image
     // if scale is > 1.0, we perhaps want some line height logic instead
-    this.y += (text_height - h) / 2;
+    this.y += (line_height - h) / 2;
     this.y += offs; // DCJ24 HACK for centering larger icons next to smaller text
     return [this];
   }

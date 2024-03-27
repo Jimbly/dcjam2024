@@ -161,6 +161,7 @@ declare module 'glov/client/settings' {
 
 declare module 'glov/client/ui' {
   interface UISprites {
+    abilitybutton_disabled_focused: Sprite;
     sanity_bar_blocked: Sprite;
     sanity_bar_full: Sprite;
     sanity_bar_bg: Sprite;

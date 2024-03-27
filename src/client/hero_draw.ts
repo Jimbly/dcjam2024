@@ -5,14 +5,21 @@ export const HERO_H = Math.floor(game_height / 6);
 
 import assert from 'assert';
 import * as engine from 'glov/client/engine';
-import { getFrameTimestamp } from 'glov/client/engine';
+import {
+  getFrameIndex,
+  getFrameTimestamp,
+} from 'glov/client/engine';
 import { ALIGN, Font, fontStyle, fontStyleAlpha } from 'glov/client/font';
 import { markdownAuto } from 'glov/client/markdown';
 import {
+  ButtonTextParam,
   buttonText,
   buttonWasFocused,
+  drawBox,
   uiGetFont,
+  sprites as ui_sprites,
 } from 'glov/client/ui';
+import { WithRequired } from 'glov/common/types';
 import { v4copy, v4set, vec4 } from 'glov/common/vmath';
 import {
   combatAcitvateAbility,
@@ -24,8 +31,10 @@ import {
   combatSetPreviewState,
 } from './combat';
 import {
+  AttackType,
   AttackTypeToFrameEnemies,
   AttackTypeToFrameHeroes,
+  AttackTypeToMDHeroes,
 } from './encounters';
 import { Hero } from './entity_demo_client';
 import {
@@ -117,6 +126,67 @@ let dice_usable: Partial<Record<number, true>>;
 const color_dead = vec4(1, 1, 1, DEAD_ALPHA);
 const color_dead_portrait = vec4(0, 0, 0, 1);
 const color_temp = vec4();
+
+let ability_tooltip: string | null = null;
+let ability_tooltip_frame: number = -1;
+export function getAbiltiyTooltip(): string | null {
+  if (getFrameIndex() !== ability_tooltip_frame) {
+    return null;
+  }
+  assert(ability_tooltip);
+  let ability = ABILITIES[ability_tooltip]!;
+  let { name, aggro, effects } = ability;
+  let ret = [];
+  ret.push(`**${name}**`);
+
+  for (let ii = 0; ii < effects.length; ++ii) {
+    let effect = effects[ii];
+    let { type, amount } = effect;
+    let frame = AttackTypeToMDHeroes[type];
+    let msg = `${amount}${frame} - `;
+    switch (type) {
+      case AttackType.FRONT:
+        msg += `attack the [c=3]front[/c] monster for [c=1]${amount}[/c]`;
+        break;
+      case AttackType.BACK:
+        msg += `attack the [c=3]rear[/c] monster for [c=1]${amount}[/c]`;
+        break;
+      case AttackType.ALL:
+        msg += `attack [c=3]all[/c] monsters for [c=1]${amount}[/c]`;
+        break;
+      case AttackType.SHIELD_SELF:
+        msg += `[c=2]block[/c] an extra ${amount} this round`;
+        break;
+      case AttackType.SHIELD_ALL:
+        msg += `all allies [c=2]block[/c] ${amount} more this round`;
+        break;
+      case AttackType.POISON:
+        msg += `add [c=2]${amount}[/c] [c=2]poison[/c] to the [c=3]front[/c] monster`;
+        break;
+      case AttackType.HEAL:
+        msg += `[c=2]heal[/c] [c=1]${amount}[/c] to the most wounded ally`;
+        break;
+      case AttackType.HEAL_ALL:
+        msg += `[c=2]heal[/c] [c=1]${amount}[/c] to all allies`;
+        break;
+      default:
+        msg += '???';
+    }
+    ret.push(msg);
+  }
+
+  if (aggro < 0) {
+    ret.push(`Reduces [img=aggro]Aggro by [c=1]${-aggro}[/c]`);
+  } else if (aggro) {
+    ret.push(`[img=aggro]Aggro increases by [c=1]${aggro}[/c]`);
+  }
+
+  return ret.join('\n');
+}
+function abilitySetTooltip(ability_id: string): void {
+  ability_tooltip_frame = getFrameIndex();
+  ability_tooltip = ability_id;
+}
 
 const placeholder_hero: Hero = {
   name: '',
@@ -346,7 +416,7 @@ export function drawHero(idx: number, x0: number, y0: number, z: number, hero_de
     if (!disabled) {
       dice_usable[die] = true;
     }
-    if (buttonText({
+    let button_param: WithRequired<ButtonTextParam, 'x' | 'y' | 'w' | 'h'> = {
       x,
       y,
       z,
@@ -355,14 +425,25 @@ export function drawHero(idx: number, x0: number, y0: number, z: number, hero_de
       text: ' ',
       base_name: 'abilitybutton',
       disabled,
+      sound_rollover: disabled ? null : undefined,
       sound_button: icon,
-    })) {
+      disabled_focusable: true,
+    };
+    if (buttonText(button_param)) {
       combatAcitvateAbility(idx, ability_idx);
     } else if (buttonWasFocused() && !combatAnimPaused()) {
-      assert(combat_states);
-      let new_state = combat_states.combat_state.clone();
-      new_state.activateAbility(idx, ability_idx);
-      combatSetPreviewState(new_state);
+      if (disabled) {
+        drawBox({
+          ...button_param,
+          z: z + 0.05,
+        }, ui_sprites.abilitybutton_disabled_focused, 1);
+      } else {
+        assert(combat_states);
+        let new_state = combat_states.combat_state.clone();
+        new_state.activateAbility(idx, ability_idx);
+        combatSetPreviewState(new_state);
+      }
+      abilitySetTooltip(ability_id);
     }
 
     z++;

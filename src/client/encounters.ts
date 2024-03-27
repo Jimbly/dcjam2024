@@ -28,6 +28,16 @@ export const AttackTypeToFrameHeroes: Record<AttackType, number> = {
   [AttackType.HEAL]: icons.FRAME_HEAL,
   [AttackType.HEAL_ALL]: icons.FRAME_HEAL_ALL,
 };
+export const AttackTypeToMDHeroes: Record<AttackType, string> = {
+  [AttackType.FRONT]: '[img=attack_front]',
+  [AttackType.BACK]: '[img=attack_back]',
+  [AttackType.ALL]: '[img=attack_all]',
+  [AttackType.SHIELD_SELF]: '[img=shield]',
+  [AttackType.SHIELD_ALL]: '[img=shield_all]',
+  [AttackType.POISON]: '[img=poison]',
+  [AttackType.HEAL]: '[img=heal]',
+  [AttackType.HEAL_ALL]: '[img=heal_all]',
+};
 export const AttackTypeToFrameEnemies: Record<AttackType, number> = {
   ...AttackTypeToFrameHeroes,
   [AttackType.FRONT]: icons.FRAME_ATTACK_FRONT_ENEMY,
