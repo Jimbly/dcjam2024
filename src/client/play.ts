@@ -772,7 +772,7 @@ function playCrawl(): void {
   if (menu_up) {
     menu_pads.push(PAD.B, PAD.BACK);
   }
-  if (!isBootstrap()) {
+  if (!isBootstrap() && !need_bamf) {
     button(0, 0, menu_up ? 10 : 6, 'menu', menu_keys, menu_pads);
   }
   // if (!build_mode) {

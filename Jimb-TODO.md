@@ -1,6 +1,5 @@
 TODO
 * start balancing combat encounters
-* bug: pause menu on bamf screen can be clicked through
 * placeholder one-time world events that display one of your characters in dialog (just hard-coded index in the event, not even random!)
 * spend XP to level up skills or heroes
   * only in Rooms of Solitude
@@ -43,7 +42,6 @@ Polish
 * change wander to only wander between 2 spaces, start and random neighbor, then can enable on all
 * moving on full map?
 * darken read notes on the minimap
-* door/stairs_in  fade is covering up the menu button
 * Enemy stay at target position for ~10 seconds if they lost their target
 * animate monsters
 * shake things whe people get hit

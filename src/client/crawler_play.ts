@@ -954,8 +954,13 @@ export function crawlerRenderFrame(): void {
   }
 
   if (controller.getFadeAlpha()) {
-    let fade_v = controller.getFadeColor();
-    ui.drawRect(cv.x, cv.y, cv.x + cv.w, cv.y + cv.h, Z.DEAD_FADE, [fade_v, fade_v, fade_v, controller.getFadeAlpha()]);
+    // let fade_v = controller.getFadeColor();
+    ui.drawRect(cv.x, cv.y, cv.x + cv.w, cv.y + cv.h, Z.DEAD_FADE, [
+      0x14/255,
+      0x10/255,
+      0x13/255, // DCJ24 HACK
+      controller.getFadeAlpha()
+    ]);
   }
 }
 
