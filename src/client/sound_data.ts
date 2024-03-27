@@ -18,10 +18,12 @@ export const SOUND_DATA: Partial<Record<string, {
   // Game sounds
   dice: ['dice1', 'dice2'],
   ability_back1: { file: 'ability_back1', volume: 1 },
+  ability_back2: { file: 'ability_back1', volume: 1 },
   ability_gun1: { file: 'ability_gun1', volume: 1 },
   ability_gun2: { file: 'ability_gun2', volume: 1 },
   ability_shield2: { file: 'ability_shield2', volume: 1 },
   ability_shield1: { file: 'ability_shield1', volume: 1 },
+  ability_poison1: { file: 'ability_poison2', volume: 1 },
   ability_poison2: { file: 'ability_poison2', volume: 1 },
   ability_ranged_all2: { file: 'ability_ranged_all2', volume: 1 },
   ability_ranged_all1: { file: 'ability_ranged_all1', volume: 1 },
