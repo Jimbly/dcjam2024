@@ -1,13 +1,14 @@
 
 import * as engine from 'glov/client/engine.js';
+import { ALIGN } from 'glov/client/font.js';
 import { localStorageGetJSON } from 'glov/client/local_storage.js';
-import { netSubs } from 'glov/client/net.js';
 import {
   buttonText,
   modalDialog,
   print,
   uiButtonHeight,
   uiButtonWidth,
+  uiGetFont,
   uiTextHeight,
 } from 'glov/client/ui';
 import * as urlhash from 'glov/client/urlhash.js';
@@ -70,16 +71,28 @@ function title(dt: number): void {
     if (auto_data.timestamp > manual_data.timestamp) {
       manual_data = auto_data;
     }
-    print(null, x, y, Z.UI, `Slot ${slot}`);
+    let yy = y;
+    print(null, x, yy, Z.UI, `Slot ${slot}`);
+    yy += uiButtonHeight();
     if (buttonText({
-      x, y: y + uiButtonHeight(), text: 'Load Game',
+      x, y: yy, text: 'Load Game',
       disabled: !hasSaveData(slot)
     })) {
       crawlerPlayWantMode('recent');
       urlhash.go(`?c=local&slot=${slot}`);
     }
+    yy += uiButtonHeight() + 2;
+    if (manual_data.time_played) {
+      uiGetFont().draw({
+        x, y: yy,
+        w: uiButtonWidth(),
+        align: ALIGN.HCENTER,
+        text: `(${Math.ceil(manual_data.time_played/(1000*60))} mins)`
+      });
+    }
+    yy += uiTextHeight() + 2;
     if (buttonText({
-      x, y: y + uiButtonHeight() * 2 + 2, text: 'New Game',
+      x, y: yy, text: 'New Game',
     })) {
       if (manual_data.timestamp) {
         modalDialog({
@@ -100,15 +113,15 @@ function title(dt: number): void {
     x += uiButtonWidth() + 2;
   }
   x = 10;
-  y += uiButtonHeight() * 3 + 6;
-  if (netSubs().loggedIn()) {
-    if (buttonText({
-      x, y, text: 'Online Test', w: uiButtonWidth() * 1.5,
-    })) {
-      urlhash.go('?c=build');
-    }
-    y += uiButtonHeight() + 2;
-  }
+  // y += uiButtonHeight() * 4 + 6;
+  // if (netSubs().loggedIn()) {
+  //   if (buttonText({
+  //     x, y, text: 'Online Test', w: uiButtonWidth() * 1.5,
+  //   })) {
+  //     urlhash.go('?c=build');
+  //   }
+  //   y += uiButtonHeight() + 2;
+  // }
   if (crawlerCommWant()) {
     crawlerCommStart();
   }

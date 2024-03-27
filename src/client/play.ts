@@ -48,10 +48,12 @@ import {
 import { clamp, easeIn } from 'glov/common/util';
 import {
   Vec2,
+  v2same,
   v4set,
   vec4,
 } from 'glov/common/vmath';
 import {
+  JSVec3,
   crawlerLoadData,
 } from '../common/crawler_state';
 import {
@@ -89,7 +91,6 @@ import {
 import {
   crawlerBuildModeActivate,
   crawlerController,
-  crawlerCurSavePlayTime,
   crawlerGameState,
   crawlerPlayBottomOfFrame,
   crawlerPlayInitOffline,
@@ -99,6 +100,7 @@ import {
   crawlerPrepAndRenderFrame,
   crawlerRenderSetUIClearColor,
   crawlerSaveGame,
+  crawlerSavePlayTime,
   crawlerScriptAPI,
   getScaledFrameDt,
 } from './crawler_play';
@@ -237,6 +239,18 @@ export function myEntOptional(): Entity | undefined {
 //   return crawlerEntityManager() as ClientEntityManagerInterface<Entity>;
 // }
 
+let autosave_pos: JSVec3 | null = null;
+function autoSavedHere(): boolean {
+  if (!autosave_pos) {
+    return false;
+  }
+  let ent = myEntOptional();
+  if (!ent) {
+    return false;
+  }
+  return v2same(ent.data.pos, autosave_pos);
+}
+
 const allow_manual_save = false;
 let pause_menu: SimpleMenu;
 function pauseMenu(): void {
@@ -292,7 +306,7 @@ function pauseMenu(): void {
     });
   }
   items.push({
-    name: isOnline() ? 'Return to Title' : 'Exit without saving',
+    name: (isOnline() || autoSavedHere()) ? 'Exit to Title' : 'Exit without saving',
     cb: function () {
       urlhash.go('');
     },
@@ -624,7 +638,7 @@ function playCrawl(): void {
   }
 
   if (!controller.hasMoveBlocker() && !myEnt().isAlive()) {
-    crawlerCurSavePlayTime();
+    crawlerSavePlayTime('auto');
     controller.setMoveBlocker(moveBlockDead);
   }
 
@@ -932,6 +946,7 @@ function playInitShared(online: boolean): void {
   pause_menu_up = false;
   // inventory_up = false;
   movement_disabled_last_frame = false;
+  autosave_pos = null;
 }
 
 function initLevel(): void {
@@ -958,6 +973,7 @@ function playInitEarly(room: ClientChannelWorker): void {
 export function autosave(): void {
   crawlerSaveGame('auto');
   statusPush('Auto-saved.');
+  autosave_pos = myEnt().data.pos.slice(0) as JSVec3;
 }
 
 export function restartFromLastSave(): void {

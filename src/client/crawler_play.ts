@@ -258,6 +258,19 @@ export function crawlerCurSavePlayTime(): number {
   return (local_game_data.time_played || 0) + dt;
 }
 
+export function crawlerSavePlayTime(mode: 'manual' | 'auto'): void {
+  let slot = urlhash.get('slot') || '1';
+  let save_data = localStorageGetJSON<SavedGameData>(`savedgame_${slot}.${mode}`, { timestamp: 0 });
+  if (save_data.timestamp) {
+    let local_time = crawlerCurSavePlayTime();
+    if (!save_data.time_played || local_time > save_data.time_played) {
+      save_data.time_played = local_time;
+      localStorageSetJSON<SavedGameData>(`savedgame_${slot}.${mode}`, save_data);
+    }
+  }
+}
+
+
 let last_saved_vis_string: Partial<Record<number, string>>;
 let vis_string_save_in_progress = 0;
 let vis_string_last_save_time = 0;
