@@ -14,7 +14,7 @@ traits:
 - id: drawable_sprite
   anim_data:
     idle:
-      frames: [GlowBug5]
+      frames: [L1-damage-GlowBug4]
       times: 10000
   sprite_data:
     spritesheet: enemies

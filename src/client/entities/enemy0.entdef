@@ -17,7 +17,7 @@ traits:
 - id: drawable_sprite
   anim_data:
     idle:
-      frames: [FlayerEvo4]
+      frames: [L1-sponge-FlayerEvo1]
       times: 10000
   sprite_data:
     spritesheet: enemies

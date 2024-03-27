@@ -49,6 +49,7 @@ export type AttackDef = {
 };
 
 export type EnemyDef = {
+  name: string;
   hp: number;
   shield: number;
   effects: AttackDef[];
@@ -56,8 +57,9 @@ export type EnemyDef = {
 };
 
 export const ENEMIES: TSMap<EnemyDef> = {
-  sponge1: {
-    enttype: 'enemy0', // flayer
+  sponge1: { // L1-sponge-FlayerEvo1
+    name: 'Flayer',
+    enttype: 'enemy0',
     hp: 7,
     shield: 0,
     effects: [{
@@ -65,8 +67,9 @@ export const ENEMIES: TSMap<EnemyDef> = {
       amount: 1,
     }],
   },
-  damage1: {
-    enttype: 'enemy1', // glowbug
+  damage1: { // L1-damage-GlowBug4
+    name: 'Glow Bug',
+    enttype: 'enemy1',
     hp: 4,
     shield: 0,
     effects: [{
@@ -74,8 +77,9 @@ export const ENEMIES: TSMap<EnemyDef> = {
       amount: 4,
     }],
   },
-  balanced1: {
-    enttype: 'enemy2', // angrystar
+  balanced1: { // L1-balanced-AngryStar
+    name: 'Angry Star',
+    enttype: 'enemy2',
     hp: 5,
     shield: 0,
     effects: [{
@@ -83,8 +87,9 @@ export const ENEMIES: TSMap<EnemyDef> = {
       amount: 3,
     }],
   },
-  aoe1: {
-    enttype: 'enemy3', // bottomcrawler
+  aoe1: { // L1-aoe-NeonWiggler
+    name: 'Neon Wiggler',
+    enttype: 'enemy3',
     hp: 4,
     shield: 0,
     effects: [{

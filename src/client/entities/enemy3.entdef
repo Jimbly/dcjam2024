@@ -13,7 +13,7 @@ traits:
 - id: drawable_sprite
   anim_data:
     idle:
-      frames: [BottomCreeper]
+      frames: [L1-aoe-NeonWiggler]
       times: 10000
   sprite_data:
     spritesheet: enemies
