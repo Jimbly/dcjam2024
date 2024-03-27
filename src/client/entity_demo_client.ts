@@ -7,6 +7,7 @@ import {
 import {
   DataObject,
   NetErrorCallback,
+  TSMap,
 } from 'glov/common/types.js';
 import { EntityCrawlerDataCommon, entSamePos } from '../common/crawler_entity_common';
 import {
@@ -85,6 +86,7 @@ export type EntityDataClient = {
   sanity: number;
   sanity_max: number;
   heroes: Hero[];
+  events_done?: TSMap<true>;
 } & EntityCrawlerDataCommon;
 
 

@@ -1,4 +1,7 @@
 TODO
+* assets (walls? cells?)
+  note scrap
+  secret door
 * medicine cabinet
   * one-time
   * restores max sanity after a choice
@@ -11,7 +14,6 @@ TODO
 * start balancing combat encounters
 * spend XP to level up skills or heroes
   * only in Rooms of Solitude
-* rework ship2 -> default; secret door for default
 * add sanity icon to spritesheet and use in dialogs
 * Insanity view
   * party portraits to change to monsters - silhouettes
@@ -50,3 +52,7 @@ Polish
 * long-press on ability is not focusing and showing preview
   * also, make sure it all works well with controller
 * scrolling starfield
+
+Post-game fixes / polish
+* bias features for simple billboard details
+* reorganize all of the example entities to use a spritesheet

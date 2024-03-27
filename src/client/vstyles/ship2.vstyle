@@ -17,8 +17,8 @@ wall_swaps:
   door_locked: demo_door_locked
   door_locked_unlocked: demo_door_locked_unlocked
   entrance: demo_entrance
-  secret_door: demo_secret_door
-  secret_door_unvisited: demo_secret_door
+  secret_door: ship2_secret_door
+  secret_door_unvisited: ship2_secret_door
   solid: ship2_solid1
   stairs_in: ship2_stairs_in
   stairs_out: ship2_stairs_out

@@ -166,6 +166,7 @@ declare module 'glov/client/ui' {
     sanity_bar_full: Sprite;
     sanity_bar_bg: Sprite;
     sanity_bg: Sprite;
+    panel_note: Sprite;
   }
 }
 
@@ -658,7 +659,7 @@ function playCrawl(): void {
     x: VIEWPORT_X0 + 8,
     w: render_width - 16,
     y: VIEWPORT_Y0,
-    h: render_height + 4,
+    h: render_height + 1,
     z: Z.STATUS,
     pad_top: 5,
     pad_bottom: 5,
@@ -995,7 +996,7 @@ settings.register({
 });
 
 export function dialogTextStyle(dialog?: DialogParam): FontStyle {
-  return style_dialog;
+  return dialog?.font_style || style_dialog;
 }
 
 export function playStartup(font_tiny_in: Font): void {

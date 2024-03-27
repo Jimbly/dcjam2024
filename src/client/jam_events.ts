@@ -9,7 +9,7 @@ import { crawlerEntFactory } from './crawler_entity_client';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { dialog } from './dialog_system';
 import { EntityDemoClient, StatsData } from './entity_demo_client';
-import { autosave } from './play';
+import { autosave, myEnt } from './play';
 import { statusPush } from './status';
 
 export function statusShort(text: string): void {
@@ -34,6 +34,19 @@ crawlerScriptRegisterEvent({
     autosave();
   },
 });
+
+export function onetimeEvent(query_only?: boolean): boolean {
+  let me = myEnt();
+  let events_done = me.data.events_done = me.data.events_done || {};
+  let pos_key = me.data.pos.slice(0, 2).join(',');
+  if (events_done[pos_key]) {
+    return false;
+  }
+  if (!query_only) {
+    events_done[pos_key] = true;
+  }
+  return true;
+}
 
 export function jamTraitsReset(): void {
   last_solitude = null;

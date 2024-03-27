@@ -24,6 +24,7 @@ import {
   MDASTNode,
   mdParse,
 } from 'glov/client/markdown_parse';
+import { Sprite } from 'glov/client/sprites';
 import {
   UIBox,
   buttonText,
@@ -55,8 +56,11 @@ export type DialogButton = {
 export type DialogParam = {
   name: string;
   text: string;
+  font_style?: FontStyle;
   transient?: boolean;
+  instant?: boolean;
   buttons?: DialogButton[];
+  panel_sprite?: Sprite;
 };
 
 let active_dialog: DialogParam | null = null;
@@ -73,8 +77,8 @@ let active_state: DialogState;
 let temp_color = vec4(1, 1, 1, 1);
 
 let style_default = fontStyle(null, { color: 0x000000ff });
-function dialogDefaultTextStyle(): FontStyle {
-  return style_default;
+function dialogDefaultTextStyle(param: DialogParam): FontStyle {
+  return param.font_style || style_default;
 }
 type DialogTextStyleCB = (dialog: DialogParam) => FontStyle;
 let text_style_cb: DialogTextStyleCB = dialogDefaultTextStyle;
@@ -183,7 +187,7 @@ export function dialogRun(dt: number, viewport: UIBox & { pad_top: number; pad_b
   if (!active_dialog) {
     return false;
   }
-  let { transient, text, name, buttons } = active_dialog;
+  let { transient, text, name, buttons, panel_sprite } = active_dialog;
   if (name) {
     text = `${name}: ${text}`;
   }
@@ -291,6 +295,7 @@ export function dialogRun(dt: number, viewport: UIBox & { pad_top: number; pad_b
       w: text_w + HPAD * 2,
       h: dims.h + pad_top + pad_bottom,
       color: temp_color,
+      sprite: panel_sprite,
     });
   } else {
     panel({
@@ -299,6 +304,7 @@ export function dialogRun(dt: number, viewport: UIBox & { pad_top: number; pad_b
       w,
       h: dims.h + pad_top + pad_bottom + buttons_h,
       color: temp_color,
+      sprite: panel_sprite,
     });
   }
 
@@ -313,6 +319,9 @@ export function dialogRun(dt: number, viewport: UIBox & { pad_top: number; pad_b
 export function dialogPush(param: DialogParam): void {
   active_dialog = param;
   active_state = new DialogState();
+  if (param.instant) {
+    active_state.counter += 10000000;
+  }
 }
 
 export function dialogReset(): void {

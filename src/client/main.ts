@@ -179,6 +179,7 @@ export function main(): void {
       buttonselected_rollover: { name: 'pixely/buttonselected', ws: [4, 5, 4], hs: [13] },
       buttonselected_disabled: { name: 'pixely/buttonselected_disabled', ws: [4, 5, 4], hs: [13] },
       panel: { name: 'panel', ws: [24, 16, 24], hs: [5, 22, 5] },
+      panel_note: { name: 'panel_note', ws: [3, 2, 3], hs: [3, 2, 3] },
       menu_entry: { name: 'pixely/menu_entry', ws: [7, 2, 7], hs: [16] },
       menu_selected: { name: 'pixely/menu_selected', ws: [7, 2, 7], hs: [16] },
       menu_down: { name: 'pixely/menu_down', ws: [7, 2, 7], hs: [16] },
