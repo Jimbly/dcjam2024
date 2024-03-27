@@ -1,0 +1,16 @@
+---
+open_move: false
+open_vis: false
+map_view_wall_frames_from: solid
+visuals:
+- type: simple_wall
+  opts:
+    spritesheet: ship2
+    tile: solid3
+- type: simple_wall
+  pass: details
+  opts:
+    detail_layer: 1
+    spritesheet: ship2
+    tile: sink
+    offs: [0, -0.09375]

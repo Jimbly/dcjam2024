@@ -1,4 +1,5 @@
 import { fontStyle } from 'glov/client/font';
+import { randSimpleSpatial } from 'glov/client/rand_fast';
 import { sprites as ui_sprites } from 'glov/client/ui';
 import {
   dialogPush,
@@ -10,7 +11,7 @@ import {
   sanityDamage,
 } from './play';
 
-const { min } = Math;
+const { min, floor } = Math;
 
 const style_terminal = fontStyle(null, {
   color: 0x59c135ff,
@@ -32,9 +33,13 @@ dialogRegister({
     });
   },
   note: function (param: string) {
+    let me = myEnt();
+    let { pos, heroes } = me.data;
+    let rnd = randSimpleSpatial(pos[0], pos[1], 0);
+    let name = heroes[floor(rnd * heroes.length)].name;
     dialogPush({
       name: '',
-      text: param,
+      text: `*NAME finds a little piece of paper on the ground.*\n\n${param}`.replace('NAME', name),
       font_style: style_note,
       transient: true,
       instant: true,

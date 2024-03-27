@@ -1,5 +1,4 @@
 TODO
-* sketch out ship and first level
 * bug: pause menu on bamf screen can be clicked through
 * placeholder one-time world events that display one of your characters in dialog (just hard-coded index in the event, not even random!)
 * combat - maybe add log for enemy turn explaining what happened, press button to Roll! when done reading
@@ -17,6 +16,7 @@ TODO
 * final battle
   * no bamf after final battle
   * no sanity loss? only lose condition is all heroes are dead?
+* more humanoid choices for front1, since the player picks that!
 
 Balance Plan: conservation of XP
           level + tier that should get 1-2 deaths in some combats (2/5?) and 2-3 deaths on boss

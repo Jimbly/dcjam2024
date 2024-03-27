@@ -34,6 +34,6 @@ a Caldera
 
 export const NAMES_BY_GENDER: Record<GENDER, NAMEPAIR[]> = {
   m: NAMES.filter((a) => a.gender !== 'f'),
-  f: NAMES.filter((a) => a.gender !== 'a'),
+  f: NAMES.filter((a) => a.gender !== 'm'),
   a: NAMES,
 };
