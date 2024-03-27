@@ -211,7 +211,7 @@ export function aiTraitsClientStartup(): void {
       ai_move_rand_time: 100,
     },
     default_opts: {
-      radius: 4,
+      radius: 3,
     },
     methods: {
       aiHunt: function (this: EntityHunter, game_state: CrawlerState, script_api: CrawlerScriptAPI): boolean {

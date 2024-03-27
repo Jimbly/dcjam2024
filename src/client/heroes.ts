@@ -150,7 +150,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     icon: 'ability_back1',
   },
   shield_aggro: {
-    aggro: 3,
+    aggro: 4,
     effects: [{
       type: AttackType.SHIELD_SELF,
       amount: 2,
@@ -158,7 +158,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     icon: 'ability_shield2',
   },
   shield_slow: {
-    aggro: 1,
+    aggro: 3,
     effects: [{
       type: AttackType.SHIELD_SELF,
       amount: 3,

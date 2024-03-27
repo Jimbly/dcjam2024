@@ -34,6 +34,7 @@ T2 3 / 5 / 9   (+2/4)
 T3 9 / 13 / 21 (+4/8)
 
 Polish
+* remove dbg:kill buttons!
 * moving on full map?
 * door/stairs_in  fade is covering up the menu button
 * Enemy stay at target position for ~10 seconds if they lost their target

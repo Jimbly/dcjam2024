@@ -3,6 +3,7 @@ const MAX_AGGRO = 9;
 
 import assert from 'assert';
 import { AnimationSequencer } from 'glov/client/animation';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as engine from 'glov/client/engine';
 import {
   getFrameIndex,
@@ -613,7 +614,7 @@ class CombatScene {
   }
 
   onHeroDeath(hero_idx: number): void {
-    sanityDamage(1, 10, ATTACK_TIME, true);
+    sanityDamage(1, 8, ATTACK_TIME, true);
   }
   onPartyDamaged(): void {
     sanityDamage(0, 1, ATTACK_TIME, false);
@@ -1118,7 +1119,7 @@ export function doCombat(target: Entity, dt: number): void {
       render_width - SANITY_W * 2, 0, hint);
   }
 
-  if (engine.DEBUG && myEntOptional()?.isAlive()) {
+  if (/*engine.DEBUG && */myEntOptional()?.isAlive()) {
     if (buttonText({
       x: VIEWPORT_X0 + 4,
       y: VIEWPORT_Y0 + 4,

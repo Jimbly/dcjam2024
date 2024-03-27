@@ -5,6 +5,7 @@ import { ALIGN, fontStyle } from 'glov/client/font';
 import { inputClick } from 'glov/client/input';
 import { markdownAuto } from 'glov/client/markdown';
 import { buttonText, drawRect, panel, playUISound, uiButtonHeight } from 'glov/client/ui';
+import { crawlerGameState } from './crawler_play';
 import { Hero } from './entity_demo_client';
 import {
   VIEWPORT_X0,
@@ -52,6 +53,16 @@ function randomLine(gender: 'm' | 'f' | 'a'): string {
   return ar(lines);
 }
 
+function tierFromFloor(): number {
+  let floor_id = crawlerGameState().floor_id;
+  if (floor_id === 15) {
+    return 2;
+  } else if (floor_id === 13 || floor_id === 14) {
+    return 1;
+  }
+  return 0;
+}
+
 let need_bamf: boolean;
 let bamf_state: {
   hero: Hero;
@@ -95,7 +106,7 @@ export function bamfCheck(): void {
             return true;
           }
         });
-        let tier = 1;
+        let tier = tierFromFloor();
         let h1 = randomHero(ii, tier, heroes_temp, 0, dead_names);
         heroes_temp.push(h1);
         let h2 = randomHero(ii, tier, heroes_temp, 1, dead_names);
