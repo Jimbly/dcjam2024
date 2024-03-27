@@ -1,7 +1,9 @@
 TODO
+* sketch out ship and first level
 * placeholder one-time world events that display one of your characters in dialog (just hard-coded index in the event, not even random!)
 * combat - maybe add log for enemy turn explaining what happened, press button to Roll! when done reading
   * probably don't need as much help text then?
+  * can put tooltip in same place
 * start balancing combat encounters
 * spend XP to level up skills or heroes
   * only in Rooms of Solitude
@@ -19,10 +21,11 @@ Balance Plan: conservation of XP
           level + tier that should get 1-2 deaths in some combats (2/5?) and 2-3 deaths on boss
                 replacement tier (even if not L3)
 Floor 1 : T1L1  T1
-Floor 2 : T2L1  T1
-Floor 3 : T2L3  T2
-Floor 4 : T3L1  T2
-Floor 5 : T3L3  T3
+Floor 2 : T1L3  T1
+Floor 3 : T2L1  T2
+Floor 4 : T2L3  T2
+Floor 5 : T3L1  T3
+Boss fight : T3L3
 
 XP Cost
 T1 0 / 1 / 3   (+1/2)
@@ -30,10 +33,10 @@ T2 3 / 5 / 9   (+2/4)
 T3 9 / 13 / 21 (+4/8)
 
 Polish
-* door/stairs in fade is covering up the menu button
+* door/stairs_in  fade is covering up the menu button
 * Enemy stay at target position for ~10 seconds if they lost their target
-* Minimap graphics
 * animate monsters
+* shake things whe people get hit
 * Add a [help] button on the combat screen that explains the basic mechanics
   * and/or just use the help area for "tooltips" during combat
   * explain hero ability icons: front/all/back

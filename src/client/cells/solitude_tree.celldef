@@ -1,6 +1,7 @@
 ---
 open_move: false
 open_vis: true
+map_view_detail_frame: 8
 visuals:
 - pass: bg
   type: simple_floor

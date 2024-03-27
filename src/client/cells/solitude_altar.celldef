@@ -2,6 +2,7 @@
 open_move: true
 open_vis: true
 default_wall: solitude_solid9
+map_view_detail_frame: 27
 default_events:
 - dialog sanity_restore
 visuals:

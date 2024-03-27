@@ -2,6 +2,7 @@
 open_move: true
 open_vis: true
 default_wall: solid
+map_view_detail_frame: 36
 default_events:
 - dialog terminal MSG
 visuals:

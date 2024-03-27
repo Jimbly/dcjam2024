@@ -1,6 +1,7 @@
 ---
 open_move: true
 open_vis: true
+map_view_detail_frame: 27
 default_wall: solid
 default_events:
 - dialog medkit
