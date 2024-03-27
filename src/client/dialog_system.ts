@@ -147,7 +147,14 @@ let dims_split_cache: {
   text: string;
   ret: DimsSplitRet;
 };
-function dimsSplit(style: FontStyle, align: ALIGN, w: number, size: number, text: string): DimsSplitRet {
+function dimsSplit(
+  style: FontStyle,
+  align: ALIGN,
+  w: number,
+  size: number,
+  line_height: number,
+  text: string
+): DimsSplitRet {
   if (dims_split_cache && dims_split_cache.text === text) {
     return dims_split_cache.ret;
   }
@@ -156,6 +163,7 @@ function dimsSplit(style: FontStyle, align: ALIGN, w: number, size: number, text
     font_style: style,
     w,
     text_height: size,
+    line_height,
     text: text,
     align,
   };
@@ -214,9 +222,10 @@ export function dialogRun(dt: number, viewport: UIBox & { pad_top: number; pad_b
   let buttons_h = num_buttons * uiButtonHeight() + (num_buttons ? BUTTON_HEAD + (num_buttons - 1) * BUTTON_PAD : 0);
   const text_height = uiTextHeight();
   let size = text_height;
+  let line_height = size + 1; // DCJ24 hack
   let style = text_style_cb(active_dialog);
   let align = transient ? ALIGN.HCENTER|ALIGN.HWRAP : ALIGN.HLEFT|ALIGN.HWRAP;
-  let dims = dimsSplit(style, align, w - HPAD * 2, size, text);
+  let dims = dimsSplit(style, align, w - HPAD * 2, size, line_height, text);
   y += h - dims.h - pad_bottom - buttons_h;
   let text_len = ceil(counter / MS_PER_CHARACTER);
   let text_definitely_full = text_len >= (text.length + 20);
@@ -250,6 +259,7 @@ export function dialogRun(dt: number, viewport: UIBox & { pad_top: number; pad_b
   markdownAuto({
     font_style: style,
     text_height: size,
+    line_height,
     x: x + HPAD,
     y: yy,
     z,

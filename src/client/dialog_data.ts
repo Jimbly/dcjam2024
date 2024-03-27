@@ -53,7 +53,13 @@ dialogRegister({
       sanityDamage(0, -delta, 1000, true);
       dialogPush({
         name: '',
-        text: 'You take a moment in solitude to regain some sanity...',
+        text: 'You take a moment in solitude to regain some [c=sanity]sanity[/c]...',
+        transient: true,
+      });
+    } else {
+      dialogPush({
+        name: '',
+        text: 'You feel fine now, but know that if you come back, you can refresh your [c=sanity]sanity[/c]...',
         transient: true,
       });
     }
@@ -67,13 +73,14 @@ dialogRegister({
     if (!delta) {
       dialogPush({
         name: '',
-        text: 'This medical station may be useful later...',
+        text: 'This medical station may be useful later...\n(Restores up to [c=sanity]15 MAX Sanity[/c])',
         transient: true,
       });
     } else {
       dialogPush({
         name: 'Medical Station',
-        text: 'You rummage through the drawers and see some pills... take them?',
+        text: 'You rummage through the drawers and see some pills... take them?\n' +
+          '(Restores up to [c=sanity]15 MAX Sanity[/c])',
         buttons: [{
           label: 'What\'s the worst that could happen?',
           cb: 'pills',

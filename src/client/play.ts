@@ -19,6 +19,7 @@ import {
   keyUpEdge,
   padButtonUpEdge,
 } from 'glov/client/input';
+import { markdownSetColorStyle } from 'glov/client/markdown_renderables';
 import { ClientChannelWorker } from 'glov/client/net';
 import { MenuItem } from 'glov/client/selection_box';
 import * as settings from 'glov/client/settings';
@@ -526,6 +527,9 @@ const style_sanity = fontStyle(null, {
   glow_color: 0x242234ff,
   glow_outer: 2.5,
 });
+markdownSetColorStyle('sanity', fontStyle(style_sanity, {
+  glow_color: 0,
+}));
 let sanity_flash_at: number;
 let sanity_flash_major: boolean;
 let fake_sanity: [number, number] | null;

@@ -1,5 +1,4 @@
 TODO
-* medkit messages should be clear about mechanics
 * start balancing combat encounters
 * bug: pause menu on bamf screen can be clicked through
 * placeholder one-time world events that display one of your characters in dialog (just hard-coded index in the event, not even random!)

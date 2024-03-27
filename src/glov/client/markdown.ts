@@ -52,7 +52,7 @@ import {
 } from './ui';
 import type { TSMap, WithRequired } from 'glov/common/types';
 
-const { floor, max, min, round } = Math;
+const { ceil, floor, max, min, round } = Math;
 
 // Exported opaque types
 export type MarkdownCache = Record<string, never>;
@@ -163,9 +163,9 @@ class MDBlockParagraph implements MDLayoutBlock {
         param.cursor.line_x0 = param.cursor.x = param.indent;
         param.cursor.y += param.line_height;
       }
-      param.cursor.y += param.line_height * 0.5;
+      param.cursor.y += ceil(param.line_height * 0.5);
     } else {
-      param.cursor.x += param.text_height * 0.25;
+      param.cursor.x += ceil(param.text_height * 0.25);
     }
 
     return Array.prototype.concat.apply([], ret);

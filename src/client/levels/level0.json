@@ -1365,6 +1365,12 @@
         "solid",
         "open",
         "solid"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "medkit"
+        }
       ]
     },
     {
