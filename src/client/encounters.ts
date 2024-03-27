@@ -97,6 +97,16 @@ export const ENEMIES: TSMap<EnemyDef> = {
       amount: 1,
     }],
   },
+  boss1: { // L1-boss-HexBot
+    name: 'Hex Bot',
+    enttype: 'l1boss',
+    hp: 17,
+    shield: 1,
+    effects: [{
+      type: AttackType.FRONT,
+      amount: 3,
+    }],
+  },
 };
 
 export const ENCOUNTERS: TSMap<Encounter> = {
@@ -114,5 +124,8 @@ export const ENCOUNTERS: TSMap<Encounter> = {
   },
   test4: {
     enemies: ['damage1', 'balanced1', 'balanced1'],
+  },
+  l1boss: {
+    enemies: ['boss1', 'aoe1'],
   },
 };

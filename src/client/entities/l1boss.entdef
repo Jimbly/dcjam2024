@@ -1,25 +1,23 @@
 ---
-properties:
-  ai_move_min_time: 500
-  ai_move_rand_time: 1000
 traits:
 - id: enemy
 - id: hunter
+  radius: 1.1
 # - id: patrol
 # - id: wander
 - id: stats_default
-  encounter: test3
+  encounter: l1boss
 - id: drawable
   biasL: [-0.25, 0.3]
   biasF: [0, -0.25]
   biasR: [-0.25, 0.3]
-  lod_bias: [-1,0]
+  biasIn: [0, 0.1, 0]
 - id: drawable_sprite
   anim_data:
     idle:
-      frames: [L1-sponge-FlayerEvo1]
+      frames: [L1-boss-HexBot]
       times: 10000
   sprite_data:
     spritesheet: enemies
-    origin: [0.5, 1.3]
-  scale: 0.5
+    origin: [0.5, 1.1]
+  scale: 0.8

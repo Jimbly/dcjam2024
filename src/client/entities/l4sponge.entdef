@@ -17,9 +17,9 @@ traits:
 - id: drawable_sprite
   anim_data:
     idle:
-      frames: [L1-sponge-FlayerEvo1]
+      frames: [L4-sponge-FlayerEvo4]
       times: 10000
   sprite_data:
     spritesheet: enemies
-    origin: [0.5, 1.3]
-  scale: 0.5
+    origin: [0.5, 0.92]
+  scale: 0.7

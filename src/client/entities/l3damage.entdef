@@ -14,9 +14,9 @@ traits:
 - id: drawable_sprite
   anim_data:
     idle:
-      frames: [L1-damage-GlowBug4]
+      frames: [L3-damage-GlowBug5]
       times: 10000
   sprite_data:
     spritesheet: enemies
-    origin: [0.5, 1.01]
+    origin: [0.5, 1.2]
   scale: 0.6

@@ -1,5 +1,4 @@
 TODO
-* add floor 1 boss (with 2 minions?)
 * medkit messages should be clear about mechanics
 * start balancing combat encounters
 * bug: pause menu on bamf screen can be clicked through
@@ -16,6 +15,7 @@ TODO
   * no bamf after final battle
   * no sanity loss? only lose condition is all heroes are dead?
 * more humanoid choices for front1, since the player picks that!
+* dungeon event that tiers-up your leader if still T1 on end of floor 4?
 
 Balance Plan: conservation of XP
           level + tier that should get 1-2 deaths in some combats (2/5?) and 2-3 deaths on boss
@@ -38,6 +38,7 @@ Playtest Feedback
 
 
 Polish
+* consistent ability icons
 * scroll area for combat log when needed
 * remove dbg:kill buttons!
 * change wander to only wander between 2 spaces, start and random neighbor, then can enable on all
