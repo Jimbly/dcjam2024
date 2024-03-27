@@ -115,6 +115,7 @@ function cloneEnemy(enemy: Enemy): Enemy {
 
 export class CombatHero {
   hp!: number;
+  name!: string;
   temp_shield: number = 0;
   aggro: number = 0;
   class_ref!: HeroClassDef;
@@ -160,7 +161,17 @@ type Animatable = {
   playSound(sound: string): void;
   onHeroDeath(hero_idx: number): void;
   onPartyDamaged(): void;
+  combatLog(msg: string): void;
 };
+
+const PRONOUNS = {
+  m: 'him',
+  f: 'her',
+  a: 'them',
+};
+function heroPronoun(idx: number): string {
+  return PRONOUNS[myEnt().data.heroes[idx].gender];
+}
 
 class CombatState {
   enemies: Enemy[] = [];
@@ -364,10 +375,19 @@ class CombatState {
     }
   }
 
-  damageHero(enemy_idx: number, attack_type: AttackType, idx: number, amount: number, animator?: Animatable): boolean {
+  damageHero(enemy_idx: number, attack_type: AttackType, idx: number, amount: number,
+    animator: Animatable | undefined, log: string | null
+  ): boolean {
     let hero = this.heroes[idx];
     let class_tier = hero.tier_ref;
-    amount = max(0, amount - (hero.temp_shield || 0) - class_tier.shield);
+    let shield_amt = (hero.temp_shield || 0) + class_tier.shield;
+    let msg = '';
+    let full_amount = amount;
+    amount = max(0, amount - shield_amt);
+    if (log) {
+      msg = `${log}for [c=1]${full_amount}[/c]${shield_amt ?
+        `-${shield_amt}[img=shield]=[c=1]${amount}[/c]`: ''}`;
+    }
     let sound = amount ? attack_type === AttackType.ALL ? 'monster_attack_all' : 'monster_attack' : 'shield_block';
     hero.hp -= amount;
     if (hero.hp <= 0) {
@@ -379,6 +399,12 @@ class CombatState {
       // animator?.playSound('hero_death');
       animator?.onHeroDeath(idx);
       sound = 'hero_death';
+      if (log) {
+        msg += `, killing ${heroPronoun(idx)}!`;
+      }
+    }
+    if (log) {
+      animator?.combatLog(msg);
     }
     animator?.addFloater({
       hero_idx: idx,
@@ -407,8 +433,10 @@ class CombatState {
         enemy.hp = 0;
         // TODO: died!
         animator?.playSound('monster_death');
+        animator?.combatLog(`[c=1]${def.name}[/c] took [c=2]${poison}[/c][img=poison] damage and died!`);
         return;
       }
+      animator?.combatLog(`[c=1]${def.name}[/c] took [c=2]${poison}[/c][img=poison] damage`);
     }
     for (let jj = 0; jj < def.effects.length; ++jj) {
       let effect = def.effects[jj];
@@ -428,10 +456,22 @@ class CombatState {
             }
           }
           let any_damaged = false;
+          let damage = floor(effect.amount / best.length);
+          let log: string | null = null;
+          if (best.length > 1) {
+            animator?.combatLog(`[c=1]${def.name}[/c] attacks the [c=3]${best.length}[/c]` +
+              ` with [c=1]${best_aggro}[/c][img=aggro],` +
+              ` splitting [c=1]${effect.amount}[/c] to [c=1]${damage}[/c] each`);
+          } else {
+            if (animator) {
+              let hero = heroes[best[0]]!;
+              log = `[c=1]${def.name}[/c] attacks [c=3]${hero.name}[/c] ([c=1]${best_aggro}[/c][img=aggro]), `;
+            }
+          }
           for (let kk = 0; kk < best.length; ++kk) {
             this.aggro_targetted[best[kk]] = true;
             animator?.animateAttack(enemy_idx, best[kk]);
-            if (this.damageHero(enemy_idx, effect.type, best[kk], floor(effect.amount / best.length), animator)) {
+            if (this.damageHero(enemy_idx, effect.type, best[kk], damage, animator, log)) {
               any_damaged = true;
             }
           }
@@ -442,15 +482,23 @@ class CombatState {
         case AttackType.ALL: {
           animator?.animateAttack(enemy_idx, -1);
           let any_damaged = false;
+          let num_killed = 0;
           for (let kk = 0; kk < heroes.length; ++kk) {
             if (heroes[kk].hp > 0) {
-              if (this.damageHero(enemy_idx, effect.type, kk, effect.amount, animator)) {
+              if (this.damageHero(enemy_idx, effect.type, kk, effect.amount, animator, null)) {
                 any_damaged = true;
+              }
+              if (!heroes[kk].hp) {
+                num_killed++;
               }
             }
           }
           if (any_damaged) {
             animator?.onPartyDamaged();
+            animator?.combatLog(`[c=1]${def.name}[/c] attacks [c=3]everyone[/c] for` +
+              ` [c=1]${effect.amount}[/c] each${num_killed ? `, [c=1]killing[/c] [c=3]${num_killed}[/c]!` : ''}`);
+          } else {
+            animator?.combatLog(`[c=1]${def.name}[/c] attacks [c=3]everyone[/c] ineffectively`);
           }
         } break;
         default:
@@ -572,6 +620,7 @@ class CombatScene {
       let { abilities } = class_def;
       let class_tier = class_def.tier[tier];
       let hero = new CombatHero();
+      hero.name = hero_ref.name;
       hero.class_ref = class_def;
       hero.tier_ref = class_tier;
       let a0 = ABILITIES[abilities[0]];
@@ -631,6 +680,15 @@ class CombatScene {
   }
   onPartyDamaged(): void {
     sanityDamage(0, 1, ATTACK_TIME, false);
+  }
+  last_log: string = '';
+  combatLog(msg: string): void {
+    console.log(msg);
+    if (this.last_log) {
+      this.last_log = `${this.last_log}\n${msg}`;
+    } else {
+      this.last_log = msg;
+    }
   }
   last_attack_land_time!: number;
   floaters: Floater[] = [];
@@ -838,6 +896,7 @@ function combatStartEnemyTurn(): void {
   assert(combat_scene);
   combat_scene.state_id = CSID.EnemyTurn;
   let { combat_state } = combat_scene;
+  combat_scene.last_log = '';
   combat_state.doEnemyTurnStart();
   combat_state.doEnemyTurnTick(combat_scene);
 }
@@ -873,7 +932,9 @@ export function combatPreviewAlpha(): number {
   return abs(sin(getFrameTimestamp() * 0.01));
 }
 
-const COMBAT_TOOLTIP_W = render_width - SANITY_W * 2;
+const DIE_W = 20;
+const DIE_PAD = 3;
+const COMBAT_TOOLTIP_W = render_width - SANITY_W - DIE_W - DIE_PAD * 2;
 export function showAbilityTooltip(x: number, y: number): void {
   let ability_tooltip = getAbiltiyTooltip();
   if (ability_tooltip) {
@@ -1095,8 +1156,6 @@ export function doCombat(target: Entity, dt: number): void {
   }
 
   // draw dice
-  const DIE_W = 20;
-  const DIE_PAD = 3;
   const DIE_X = VIEWPORT_X0 + 3;
   // const DIE_Y = VIEWPORT_Y0 + render_height + DIE_PAD;
   let num_dice = preview_state.dice.length;
@@ -1164,6 +1223,8 @@ export function doCombat(target: Entity, dt: number): void {
   let ability_tooltip = getAbiltiyTooltip();
   if (ability_tooltip) {
     hint = ability_tooltip;
+  } else if (combat_scene.last_log) {
+    hint = combat_scene.last_log;
   } else if (num_left > 1) {
     hint = 'COMBAT: choose 2 abilities matching your dice';
   } else if (num_left === 1) {
@@ -1172,8 +1233,8 @@ export function doCombat(target: Entity, dt: number): void {
   if (hint) {
     markdownAuto({
       font_style: style_hint,
-      x: VIEWPORT_X0 + SANITY_W,
-      y: VIEWPORT_Y0 + render_height + 8,
+      x: VIEWPORT_X0 + DIE_W + DIE_PAD * 2,
+      y: VIEWPORT_Y0 + render_height + 4,
       text_height: uiTextHeight(),
       img_height: uiTextHeight() + 1,
       line_height: uiTextHeight() + 3,

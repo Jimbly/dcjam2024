@@ -1,8 +1,6 @@
 TODO
 * add floor 1 boss (with 2 minions?)
 * medkit messages should be clear about mechanics
-* combat - maybe add log for enemy turn explaining what happened, press button to Roll! when done reading
-  * probably don't need as much help text then?
 * start balancing combat encounters
 * bug: pause menu on bamf screen can be clicked through
 * placeholder one-time world events that display one of your characters in dialog (just hard-coded index in the event, not even random!)
@@ -40,6 +38,7 @@ Playtest Feedback
 
 
 Polish
+* scroll area for combat log when needed
 * remove dbg:kill buttons!
 * change wander to only wander between 2 spaces, start and random neighbor, then can enable on all
 * moving on full map?
