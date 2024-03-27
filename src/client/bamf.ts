@@ -21,7 +21,7 @@ import {
 import { randomHero } from './heroes';
 import { myEnt, myEntOptional } from './play';
 
-const { floor, min, random } = Math;
+const { floor, max, min, random } = Math;
 
 const lines_m: string[] = [
   'NAME has died. His two cats are very hungry and unsure what to do about it.',
@@ -106,7 +106,7 @@ export function bamfCheck(): void {
             return true;
           }
         });
-        let tier = tierFromFloor();
+        let tier = max(tierFromFloor(), hero.tier);
         let h1 = randomHero(ii, tier, heroes_temp, 0, dead_names);
         heroes_temp.push(h1);
         let h2 = randomHero(ii, tier, heroes_temp, 1, dead_names);

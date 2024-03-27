@@ -63,7 +63,10 @@ import {
   render_height,
   render_width,
 } from './globals';
-import { heroDrawPos } from './hero_draw';
+import {
+  HERO_H,
+  heroDrawPos,
+} from './hero_draw';
 import { ABILITIES, CLASSES, DICE_SLOTS } from './heroes';
 import { drawHealthBar, myEnt, myEntOptional, sanityDamage } from './play';
 
@@ -487,13 +490,21 @@ class CombatState {
   }
 
   roll(): void {
-    this.dice = [
-      rand.range(6) + 1,
-      rand.range(6) + 1,
-    ];
-    for (let ii = 0; ii < this.deaths; ++ii) {
-      this.dice.push(rand.range(6) + 1);
+    let num_dice = 2 + this.deaths;
+    this.dice = [];
+    let count_per_slot: Record<number, number> = {};
+    for (let ii = 0; ii < num_dice; ++ii) {
+      let v: number;
+      let slot: number;
+      do {
+        v = rand.range(6) + 1;
+        slot = floor((v - 1) / 2);
+        // max 4 dice per slot (12 dice total)
+      } while (count_per_slot[slot] === 4);
+      count_per_slot[slot] = (count_per_slot[slot] || 0) + 1;
+      this.dice.push(v);
     }
+
     //this.dice = [1,2,3,4,5,6];
     //this.dice[1] = 5;
     this.dice_used = this.dice.map((a) => false);
@@ -1058,12 +1069,23 @@ export function doCombat(target: Entity, dt: number): void {
 
   // draw dice
   const DIE_W = 20;
-  const DIE_PAD = 8;
-  const DIE_Y = VIEWPORT_Y0 + render_height + DIE_PAD;
+  const DIE_PAD = 3;
+  const DIE_X = VIEWPORT_X0 + 3;
+  // const DIE_Y = VIEWPORT_Y0 + render_height + DIE_PAD;
   let num_dice = preview_state.dice.length;
-  let die_x = floor(VIEWPORT_X0 + (render_width - (DIE_W * num_dice + DIE_PAD * (num_dice - 1))) / 2);
+  let dice_per_slot: Record<number, number> = {};
+  let dice_done_per_slot: Record<number, number> = {};
   for (let ii = 0; ii < num_dice; ++ii) {
     let die = preview_state.dice[ii];
+    let slot = floor((die - 1) / 2);
+    dice_per_slot[slot] = (dice_per_slot[slot] || 0) + 1;
+    dice_done_per_slot[slot] = 0;
+  }
+  //let die_x = floor(VIEWPORT_X0 + (render_width - (DIE_W * num_dice + DIE_PAD * (num_dice - 1))) / 2);
+  const SLOT_Y = [HERO_H, HERO_H*3, HERO_H*5];
+  for (let ii = 0; ii < num_dice; ++ii) {
+    let die = preview_state.dice[ii];
+    let slot = floor((die - 1) / 2);
     let used = preview_state.dice_used[ii];
     let preview_used = combat_state.dice_used[ii];
     if (rolled_at > getFrameTimestamp() - 250) {
@@ -1077,9 +1099,15 @@ export function doCombat(target: Entity, dt: number): void {
     let revenge = ii >= num_dice - combat_scene.combat_state.deaths;
     v4copy(temp_color, revenge ? used ? color_die_revenge_used : color_die_revenge :
       used ? color_die_used : color_white);
+
+    let slot_y_mid = SLOT_Y[slot];
+    let slot_y0 = floor(slot_y_mid - (dice_per_slot[slot] * (DIE_W + DIE_PAD) - DIE_PAD + 1) / 2);
+    let die_y = slot_y0 + dice_done_per_slot[slot] * (DIE_W + DIE_PAD);
+    dice_done_per_slot[slot]++;
+
     sprite_icons.draw({
-      x: die_x,
-      y: DIE_Y,
+      x: DIE_X,
+      y: die_y,
       w: DIE_W, h: DIE_W,
       frame: spritesheet_icons[`FRAME_DIE${die}`],
       color: temp_color,
@@ -1087,15 +1115,14 @@ export function doCombat(target: Entity, dt: number): void {
     if (preview_used !== used) {
       v4set(temp_color, 1, 1, 1, 0.5 + 0.5 * combatPreviewAlpha());
       sprite_icons.draw({
-        x: die_x,
-        y: DIE_Y,
+        x: DIE_X,
+        y: die_y,
         z: Z.UI + 1,
         w: DIE_W, h: DIE_W,
         frame: spritesheet_icons[`FRAME_DIE${die}`],
         color: temp_color,
       });
     }
-    die_x += DIE_W + DIE_PAD;
   }
 
   // show hint
@@ -1114,14 +1141,14 @@ export function doCombat(target: Entity, dt: number): void {
   }
   if (hint) {
     font.drawSizedAligned(style_hint,
-      VIEWPORT_X0 + SANITY_W, DIE_Y + DIE_W + DIE_PAD, Z.UI, uiTextHeight(),
+      VIEWPORT_X0 + SANITY_W, VIEWPORT_Y0 + render_height + 8, Z.UI, uiTextHeight(),
       ALIGN.HCENTER|ALIGN.HWRAP,
       render_width - SANITY_W * 2, 0, hint);
   }
 
   if (/*engine.DEBUG && */myEntOptional()?.isAlive()) {
     if (buttonText({
-      x: VIEWPORT_X0 + 4,
+      x: VIEWPORT_X0 + 4 + DIE_W,
       y: VIEWPORT_Y0 + 4,
       text: 'DBG:SKIP',
       disabled: combat_scene.state_id !== CSID.PlayerTurn,
@@ -1129,7 +1156,7 @@ export function doCombat(target: Entity, dt: number): void {
       combatStartEnemyTurn();
     }
     if (buttonText({
-      x: VIEWPORT_X0 + 8 + uiButtonWidth(),
+      x: VIEWPORT_X0 + 8 + DIE_W + uiButtonWidth(),
       y: VIEWPORT_Y0 + 4,
       text: 'DBG:KILL',
       sound_button: 'ability_gun1',

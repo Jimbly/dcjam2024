@@ -1,12 +1,12 @@
 TODO
-* feedback:
-  * too many monsters on first floor - maybe aim for ~7 encounters per floor? or more avoidable?
-* bug: pause menu on bamf screen can be clicked through
-* placeholder one-time world events that display one of your characters in dialog (just hard-coded index in the event, not even random!)
+* add floor 1 boss (with 2 minions?)
+* medkit messages should be clear about mechanics
 * combat - maybe add log for enemy turn explaining what happened, press button to Roll! when done reading
   * probably don't need as much help text then?
   * can put tooltip in same place
 * start balancing combat encounters
+* bug: pause menu on bamf screen can be clicked through
+* placeholder one-time world events that display one of your characters in dialog (just hard-coded index in the event, not even random!)
 * spend XP to level up skills or heroes
   * only in Rooms of Solitude
 * add sanity icon to spritesheet and use in dialogs
@@ -35,9 +35,16 @@ T1 0 / 1 / 3   (+1/2)
 T2 3 / 5 / 9   (+2/4)
 T3 9 / 13 / 21 (+4/8)
 
+
+Playtest Feedback
+* too many monsters on first floor - maybe aim for ~7 encounters per floor? or more avoidable?
+
+
 Polish
 * remove dbg:kill buttons!
+* change wander to only wander between 2 spaces, start and random neighbor, then can enable on all
 * moving on full map?
+* darken read notes on the minimap
 * door/stairs_in  fade is covering up the menu button
 * Enemy stay at target position for ~10 seconds if they lost their target
 * animate monsters
@@ -55,3 +62,4 @@ Polish
 Post-game fixes / polish
 * bias features for simple billboard details
 * reorganize all of the example entities to use a spritesheet
+* add support for multiple fonts with different heights to dialog system and/or markdown - handwriting font would be cool
