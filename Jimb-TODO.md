@@ -1,14 +1,5 @@
 TODO
-* assets (walls? cells?)
-  note scrap
-  secret door
-* medicine cabinet
-  * one-time
-  * restores max sanity after a choice
-  * flavor text
-* placeholder one-time world events that displays flavor text and damages or heals sanity
 * placeholder one-time world events that display one of your characters in dialog (just hard-coded index in the event, not even random!)
-* placeholder journal entries on a computer
 * combat - maybe add log for enemy turn explaining what happened, press button to Roll! when done reading
   * probably don't need as much help text then?
 * start balancing combat encounters
