@@ -110,19 +110,16 @@ export const ENEMIES: TSMap<EnemyDef> = {
 };
 
 export const ENCOUNTERS: TSMap<Encounter> = {
-  demo: {
-    enemies: ['balanced1', 'sponge1', 'damage1'],
-  },
-  test1: {
-    enemies: ['damage1', 'damage1', 'aoe1'],
-  },
-  test2: {
-    enemies: ['sponge1', 'balanced1', 'aoe1'],
-  },
-  test3: {
+  l1sponge: {
     enemies: ['sponge1', 'balanced1', 'damage1'],
   },
-  test4: {
+  l1damage: {
+    enemies: ['damage1', 'damage1', 'aoe1'],
+  },
+  l1aoe: {
+    enemies: ['sponge1', 'balanced1', 'aoe1'],
+  },
+  l1balanced: {
     enemies: ['damage1', 'balanced1', 'balanced1'],
   },
   l1boss: {

@@ -8,7 +8,7 @@ traits:
 # - id: patrol
 # - id: wander
 - id: stats_default
-  encounter: test3
+  encounter: l1sponge
 - id: drawable
   biasL: [-0.25, 0.3]
   biasF: [0, -0.25]

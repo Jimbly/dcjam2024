@@ -74,7 +74,7 @@ import {
 } from './crawler_render';
 
 import type { JSVec4 } from '../common/crawler_state';
-import type { spineCreate } from 'glov/client/spine';
+// import type { spineCreate } from 'glov/client/spine';
 import type { SpriteAnimation, SpriteAnimationParam } from 'glov/client/sprite_animation';
 import type { Sprite, SpriteParamBase, TextureOptions } from 'glov/client/sprites';
 
@@ -140,7 +140,8 @@ export type DrawableSpineOpts = {
   offs: [number, number];
 };
 
-type Spine = ReturnType<typeof spineCreate>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Spine = any; // ReturnType<typeof spineCreate>;
 export type DrawableSpineState = {
   spine: Spine;
   anim_update_frame: number;

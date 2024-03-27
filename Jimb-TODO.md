@@ -7,7 +7,6 @@ TODO
   * party portraits to change to monsters - silhouettes
   * ghosts moving through the level
   * dark/postprocess - 16-bit color crunch? - dither?
-* combat: unwinnable/losable combat: scale up damage of everyone after X turns, +1 damage per round
 * final battle
   * no bamf after final battle
   * no sanity loss? only lose condition is all heroes are dead?

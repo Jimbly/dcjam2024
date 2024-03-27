@@ -84,7 +84,7 @@ export function jamTraitsStartup(): void {
   ent_factory.registerTrait<StatsData, undefined>('stats_default', {
     default_opts: {
       hp: 1,
-      encounter: 'demo',
+      encounter: 'l1sponge',
     },
     alloc_state: function (opts: StatsData, ent: Entity) {
       if (!ent.data.stats) {

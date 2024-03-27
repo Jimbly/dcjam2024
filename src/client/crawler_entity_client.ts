@@ -16,7 +16,7 @@ import {
   entityPositionManagerCreate,
 } from 'glov/client/entity_position_manager';
 import { netSubs } from 'glov/client/net';
-import { spineCreate } from 'glov/client/spine';
+// import { spineCreate } from 'glov/client/spine';
 import { spriteAnimationCreate } from 'glov/client/sprite_animation';
 import {
   SpriteParamBase,
@@ -409,8 +409,9 @@ function crawlerTraitsInit(ent_factory: TraitFactory<Entity, DataObject>): void 
       offs: [0, 0],
     },
     alloc_state: function (opts: DrawableSpineOpts, ent: Entity) {
-      let spine = spineCreate(opts.spine_data);
-      spine.setAnimation(0, ent.data.state || 'idle');
+      let spine = null; // DCJ24 hack for unit tests
+      // let spine = spineCreate(opts.spine_data);
+      // spine.setAnimation(0, ent.data.state || 'idle');
       let ret: DrawableSpineState = {
         spine,
         anim_update_frame: 0,

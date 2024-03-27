@@ -108,9 +108,9 @@ export function bamfCheck(): void {
           }
         });
         let tier = max(tierFromFloor(), hero.tier);
-        let h1 = randomHero(ii, tier, heroes_temp, 0, dead_names);
+        let h1 = randomHero(ii, tier, heroes_temp, 0, isBootstrap(), dead_names);
         heroes_temp.push(h1);
-        let h2 = randomHero(ii, tier, heroes_temp, 1, dead_names);
+        let h2 = randomHero(ii, tier, heroes_temp, 1, isBootstrap(), dead_names);
         bamf_state = {
           hero_idx: ii,
           hero,
@@ -143,7 +143,7 @@ const style_death = fontStyle(style_label, {
 
 export function bamfAddRandom(): void {
   let ent_heroes = myEnt().data.heroes;
-  let h1 = randomHero(ent_heroes.length, 0, ent_heroes, 1, []);
+  let h1 = randomHero(ent_heroes.length, 0, ent_heroes, 1, false, []);
   ent_heroes.push(h1);
 }
 

@@ -53,6 +53,7 @@ import {
 import {
   AbilityDef,
   EntityDemoClient,
+  Hero,
   HeroClassDef,
   HeroClassTier,
   entityManager,
@@ -173,10 +174,13 @@ function heroPronoun(idx: number): string {
   return PRONOUNS[myEnt().data.heroes[idx].gender];
 }
 
-class CombatState {
+export class CombatState {
   enemies: Enemy[] = [];
   heroes: CombatHero[] = [];
   deaths = 0;
+  turns = 0;
+  is_boss = false;
+  damage_bonus = 0;
   dice: number[] = [];
   dice_used: boolean[] = [];
 
@@ -225,6 +229,9 @@ class CombatState {
     ret.deaths = this.deaths;
     ret.dice = this.dice.slice(0);
     ret.dice_used = this.dice_used.slice(0);
+    ret.turns = this.turns;
+    ret.is_boss = this.is_boss;
+    ret.damage_bonus = this.damage_bonus;
     return ret;
   }
 
@@ -258,17 +265,18 @@ class CombatState {
       let effect = effects[ii];
       switch (effect.type) {
         case AttackType.FRONT:
-          this.damage(living_enemies[0], effect.type, effect.amount, animator);
+          this.damage(living_enemies[0], effect.type, effect.amount + this.damage_bonus, animator);
           break;
         case AttackType.POISON:
           this.poison(living_enemies[0], effect.amount, animator);
           break;
         case AttackType.BACK:
-          this.damage(living_enemies[living_enemies.length - 1], effect.type, effect.amount, animator);
+          this.damage(living_enemies[living_enemies.length - 1], effect.type,
+            effect.amount + this.damage_bonus, animator);
           break;
         case AttackType.ALL:
           for (let jj = 0; jj < living_enemies.length; ++jj) {
-            this.damage(living_enemies[jj], effect.type, effect.amount, animator);
+            this.damage(living_enemies[jj], effect.type, effect.amount + this.damage_bonus, animator);
           }
           break;
         case AttackType.SHIELD_SELF:
@@ -431,7 +439,7 @@ class CombatState {
       enemy.hp -= poison;
       if (enemy.hp <= 0) {
         enemy.hp = 0;
-        // TODO: died!
+        // Died!
         animator?.playSound('monster_death');
         animator?.combatLog(`[c=1]${def.name}[/c] took [c=2]${poison}[/c][img=poison] damage and died!`);
         return;
@@ -456,12 +464,13 @@ class CombatState {
             }
           }
           let any_damaged = false;
-          let damage = floor(effect.amount / best.length);
+          let base_damage = effect.amount + this.damage_bonus;
+          let damage = floor(base_damage / best.length);
           let log: string | null = null;
           if (best.length > 1) {
             animator?.combatLog(`[c=1]${def.name}[/c] attacks the [c=3]${best.length}[/c]` +
               ` with [c=1]${best_aggro}[/c][img=aggro],` +
-              ` splitting [c=1]${effect.amount}[/c] to [c=1]${damage}[/c] each`);
+              ` splitting [c=1]${base_damage}[/c] to [c=1]${damage}[/c] each`);
           } else {
             if (animator) {
               let hero = heroes[best[0]]!;
@@ -481,11 +490,12 @@ class CombatState {
         } break;
         case AttackType.ALL: {
           animator?.animateAttack(enemy_idx, -1);
+          let damage = effect.amount + this.damage_bonus;
           let any_damaged = false;
           let num_killed = 0;
           for (let kk = 0; kk < heroes.length; ++kk) {
             if (heroes[kk].hp > 0) {
-              if (this.damageHero(enemy_idx, effect.type, kk, effect.amount, animator, null)) {
+              if (this.damageHero(enemy_idx, effect.type, kk, damage, animator, null)) {
                 any_damaged = true;
               }
               if (!heroes[kk].hp) {
@@ -496,7 +506,7 @@ class CombatState {
           if (any_damaged) {
             animator?.onPartyDamaged();
             animator?.combatLog(`[c=1]${def.name}[/c] attacks [c=3]everyone[/c] for` +
-              ` [c=1]${effect.amount}[/c] each${num_killed ? `, [c=1]killing[/c] [c=3]${num_killed}[/c]!` : ''}`);
+              ` [c=1]${damage}[/c] each${num_killed ? `, [c=1]killing[/c] [c=3]${num_killed}[/c]!` : ''}`);
           } else {
             animator?.combatLog(`[c=1]${def.name}[/c] attacks [c=3]everyone[/c] ineffectively`);
           }
@@ -507,10 +517,15 @@ class CombatState {
     }
   }
   enemy_tick_idx!: number;
-  doEnemyTurnStart(): void {
+  doEnemyTurnStart(animator?: Animatable): void {
     this.heroes_attacked = {};
     this.aggro_targetted = {};
     this.enemy_tick_idx = 0;
+    let max_turns = this.is_boss ? 20 : 10;
+    if (this.turns > max_turns) {
+      this.damage_bonus = this.turns - max_turns;
+      animator?.combatLog(`Long combat, +[c=1]${this.damage_bonus}[/c] to everyone`);
+    }
   }
   doEnemyTurnTick(animator?: Animatable): boolean {
     let { enemies } = this;
@@ -530,7 +545,7 @@ class CombatState {
     this.dice_used = [];
   }
   doEnemyTurn(animator?: Animatable): void {
-    this.doEnemyTurnStart();
+    this.doEnemyTurnStart(animator);
 
     while (this.doEnemyTurnTick(animator)) {
       // repeat
@@ -539,7 +554,7 @@ class CombatState {
     this.doEnemyTurnFinish();
   }
 
-  roll(): void {
+  roll(animator?: Animatable): void {
     let num_dice = 2 + this.deaths;
     this.dice = [];
     let count_per_slot: Record<number, number> = {};
@@ -558,6 +573,7 @@ class CombatState {
     //this.dice = [1,2,3,4,5,6];
     //this.dice[1] = 5;
     this.dice_used = this.dice.map((a) => false);
+    this.turns++;
   }
 
   getDiceAvail(): Partial<Record<number, true>> {
@@ -593,6 +609,39 @@ enum CSID {
   EnemyTurn,
 }
 
+export function combatStateInit(heroes: Hero[], encounter: Encounter): CombatState {
+  let combat_state = new CombatState();
+  for (let ii = 0; ii < encounter.enemies.length; ++ii) {
+    let enemy_id = encounter.enemies[ii];
+    let enemy_def = ENEMIES[enemy_id];
+    assert(enemy_def);
+    combat_state.enemies.push(new Enemy(enemy_def));
+    if (enemy_id.includes('boss')) {
+      combat_state.is_boss = true;
+    }
+  }
+  for (let ii = 0; ii < heroes.length; ++ii) {
+    let hero_ref = heroes[ii];
+    let { class_id, tier } = hero_ref;
+    let class_def = CLASSES[class_id]!;
+    let { abilities } = class_def;
+    let class_tier = class_def.tier[tier];
+    let hero = new CombatHero();
+    hero.name = hero_ref.name;
+    hero.class_ref = class_def;
+    hero.tier_ref = class_tier;
+    let a0 = ABILITIES[abilities[0]];
+    assert(a0);
+    let a1 = ABILITIES[abilities[1]];
+    assert(a1);
+    hero.ability_refs = [a0, a1];
+    hero.hp = hero_ref.dead ? 0 : class_tier.hp;
+    combat_state.heroes.push(hero);
+  }
+
+  return combat_state;
+}
+
 class CombatScene {
   state_id: CSID = CSID.PlayerTurn;
   combat_state: CombatState;
@@ -606,32 +655,9 @@ class CombatScene {
   usable_dice: Partial<Record<number, true>> = {};
 
   constructor(me: Entity, encounter: Encounter) {
-    let combat_state = this.combat_state = new CombatState();
-    for (let ii = 0; ii < encounter.enemies.length; ++ii) {
-      let enemy_def = ENEMIES[encounter.enemies[ii]];
-      assert(enemy_def);
-      combat_state.enemies.push(new Enemy(enemy_def));
-    }
     let { heroes } = me.data;
-    for (let ii = 0; ii < heroes.length; ++ii) {
-      let hero_ref = heroes[ii];
-      let { class_id, tier } = hero_ref;
-      let class_def = CLASSES[class_id]!;
-      let { abilities } = class_def;
-      let class_tier = class_def.tier[tier];
-      let hero = new CombatHero();
-      hero.name = hero_ref.name;
-      hero.class_ref = class_def;
-      hero.tier_ref = class_tier;
-      let a0 = ABILITIES[abilities[0]];
-      assert(a0);
-      let a1 = ABILITIES[abilities[1]];
-      assert(a1);
-      hero.ability_refs = [a0, a1];
-      hero.hp = hero_ref.dead ? 0 : class_tier.hp;
-      combat_state.heroes.push(hero);
-    }
-    this.setPreviewState(combat_state);
+    this.combat_state = combatStateInit(heroes, encounter);
+    this.setPreviewState(this.combat_state);
   }
 
   setPreviewState(new_state: CombatState): void {
@@ -897,7 +923,7 @@ function combatStartEnemyTurn(): void {
   combat_scene.state_id = CSID.EnemyTurn;
   let { combat_state } = combat_scene;
   combat_scene.last_log = '';
-  combat_state.doEnemyTurnStart();
+  combat_state.doEnemyTurnStart(combat_scene);
   combat_state.doEnemyTurnTick(combat_scene);
 }
 function combatTickEnemyTurn(): void {
@@ -991,7 +1017,7 @@ export function doCombat(target: Entity, dt: number): void {
   } else {
     if (combat_scene.needsRoll()) {
       rolled_at = getFrameTimestamp();
-      combat_scene.combat_state.roll();
+      combat_scene.combat_state.roll(combat_scene);
       playUISound('dice');
     } else if (combat_scene.state_id === CSID.PlayerTurn && combat_scene.player_is_done) {
       combatStartEnemyTurn();
