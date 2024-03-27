@@ -1,4 +1,6 @@
 TODO
+* feedback:
+  * too many monsters on first floor - maybe aim for ~7 encounters per floor? or more avoidable?
 * bug: pause menu on bamf screen can be clicked through
 * placeholder one-time world events that display one of your characters in dialog (just hard-coded index in the event, not even random!)
 * combat - maybe add log for enemy turn explaining what happened, press button to Roll! when done reading

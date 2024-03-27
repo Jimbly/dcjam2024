@@ -5,8 +5,8 @@ properties:
 traits:
 - id: enemy
 - id: hunter
-- id: patrol
-- id: wander
+# - id: patrol
+# - id: wander
 - id: stats_default
   encounter: test3
 - id: drawable

@@ -1,7 +1,7 @@
 ---
 traits:
 - id: enemy
-- id: patrol
+# - id: patrol
 - id: hunter
   radius: 9
 - id: stats_default

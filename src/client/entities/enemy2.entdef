@@ -2,8 +2,8 @@
 traits:
 - id: enemy
 - id: hunter
-- id: patrol
-- id: wander
+# - id: patrol
+# - id: wander
 - id: stats_default
   encounter: test4
 - id: drawable
