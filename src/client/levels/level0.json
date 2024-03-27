@@ -1650,12 +1650,6 @@
         "open",
         "open",
         "solid"
-      ],
-      "events": [
-        {
-          "id": "solitude",
-          "param": ""
-        }
       ]
     },
     {

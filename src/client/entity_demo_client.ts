@@ -144,7 +144,20 @@ export class EntityDemoClient extends EntityBaseClient implements EntityCrawlerC
   }
 
   isAlive(): boolean {
-    return this.data.sanity === undefined ? true : this.data.sanity > 0;
+    let sane = this.data.sanity === undefined ? true : this.data.sanity > 0;
+    if (!sane) {
+      return false;
+    }
+    let { heroes } = this.data;
+    if (!heroes) {
+      return true;
+    }
+    for (let ii = 0; ii < heroes.length; ++ii) {
+      if (!heroes[ii].dead) {
+        return true;
+      }
+    }
+    return false;
   }
 
   isEnemy(): boolean {

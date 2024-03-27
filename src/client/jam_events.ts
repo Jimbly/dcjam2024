@@ -29,8 +29,9 @@ crawlerScriptRegisterEvent({
       last_solitude = is_solitude;
     } else if (last_solitude !== is_solitude) {
       last_solitude = is_solitude;
-      autosave();
+      //autosave();
     }
+    autosave();
   },
 });
 

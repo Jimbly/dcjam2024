@@ -89,6 +89,7 @@ import {
 import {
   crawlerBuildModeActivate,
   crawlerController,
+  crawlerCurSavePlayTime,
   crawlerGameState,
   crawlerPlayBottomOfFrame,
   crawlerPlayInitOffline,
@@ -141,6 +142,7 @@ import {
   statusPush,
   statusTick,
 } from './status';
+import { hasSaveData } from './title';
 
 const spritesheet_icons = require('./img/icons');
 const { FRAME_SANITY24 } = spritesheet_icons;
@@ -457,15 +459,18 @@ function moveBlockDead(): boolean {
   font.drawSizedAligned(null,
     x + floor(w/2), y - 16, z,
     uiTextHeight(), ALIGN.HCENTER|ALIGN.VBOTTOM,
-    0, 0, 'Insanity has overtaken you.');
+    0, 0, myEnt().data.sanity <= 0 ? 'Insanity has overtaken you.' : 'The party has perished');
 
+  let slot = urlhash.get('slot') || '1';
   let button_w = uiButtonWidth() * 3;
   if (buttonText({
     x: x + floor(w/2 - button_w/2), y, z,
     w: button_w,
     text: 'Reload from last Solitude',
+    disabled: !hasSaveData(slot),
   })) {
-    controller.goToFloor(0, 'stairs_in', 'respawn');
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    restartFromLastSave();
   }
   y += uiButtonHeight() + 16;
 
@@ -619,6 +624,7 @@ function playCrawl(): void {
   }
 
   if (!controller.hasMoveBlocker() && !myEnt().isAlive()) {
+    crawlerCurSavePlayTime();
     controller.setMoveBlocker(moveBlockDead);
   }
 
@@ -925,6 +931,7 @@ function playInitShared(online: boolean): void {
 
   pause_menu_up = false;
   // inventory_up = false;
+  movement_disabled_last_frame = false;
 }
 
 function initLevel(): void {

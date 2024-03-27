@@ -4,6 +4,7 @@ TODO
   * restores max sanity after a choice
   * flavor text
 * placeholder one-time world events that displays flavor text and damages or heals sanity
+* placeholder one-time world events that display one of your characters in dialog (just hard-coded index in the event, not even random!)
 * placeholder journal entries on a computer
 * combat - maybe add log for enemy turn explaining what happened, press button to Roll! when done reading
   * probably don't need as much help text then?
@@ -17,6 +18,9 @@ TODO
   * ghosts moving through the level
   * dark/postprocess - 16-bit color crunch? - dither?
 * combat: unwinnable/losable combat: scale up damage of everyone after X turns, +1 damage per round
+* final battle
+  * no bamf after final battle
+  * no sanity loss? only lose condition is all heroes are dead?
 
 Balance Plan: conservation of XP
           level + tier that should get 1-2 deaths in some combats (2/5?) and 2-3 deaths on boss
@@ -33,6 +37,7 @@ T2 3 / 5 / 9   (+2/4)
 T3 9 / 13 / 21 (+4/8)
 
 Polish
+* door/stairs in fade is covering up the menu button
 * Enemy stay at target position for ~10 seconds if they lost their target
 * Minimap graphics
 * animate monsters
