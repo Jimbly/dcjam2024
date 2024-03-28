@@ -5,6 +5,5 @@ map_view_wall_frames_from: solid
 visuals:
 - type: simple_wall
   opts:
-    do_alpha: true
     spritesheet: ship3
-    tile: window
+    tile: solid5

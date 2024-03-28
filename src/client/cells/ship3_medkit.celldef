@@ -2,15 +2,15 @@
 open_move: true
 open_vis: true
 # map_view_detail_frame: 27
-default_wall: solid
+default_wall: ship3_solid3
 default_events:
 - dialog medkit
 visuals:
-# - pass: bg
-#   type: simple_ceiling
-#   opts:
-#     spritesheet: ship3
-#     tile: ceiling
+- pass: bg
+  type: simple_ceiling
+  opts:
+    spritesheet: ship3
+    tile: ceiling3
 - pass: bg
   type: simple_floor
   opts:

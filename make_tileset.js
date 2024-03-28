@@ -94,10 +94,9 @@ visuals:
     cat = 'wall';
     content = `
 ---
-open_move: true
+open_move: false
 open_vis: false
-advertise_other_side: true
-map_view_wall_frames_from: door
+advertise_other_side: false
 visuals:
 - type: simple_wall
   opts:

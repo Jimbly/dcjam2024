@@ -1,5 +1,4 @@
 ---
-open_move: false
 open_vis: true
 default_wall: solid
 
@@ -14,9 +13,3 @@ visuals:
   opts:
     spritesheet: ship3
     tile: ceiling1
-- type: simple_billboard
-  opts:
-    spritesheet: ship3
-    tile: capsule
-    offs: [0, 0, 0]
-    face_camera: false # Otherwise faces frustum
