@@ -618,7 +618,7 @@ function doSanity(): void {
     y: bar_y,
     z,
     w: 5,
-    h: 200,
+    h: 201,
     color: temp_color,
   });
   z++;

@@ -41,6 +41,7 @@ Finish up
 * hi score list
 
 Polish
+* fill in empty space in UI with some noise at least
 * show explore percent (and monster count?) on minimap
 * add unlockable doors to get back to the Solitude entrances
 * consistent ability icons
