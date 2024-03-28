@@ -2,7 +2,6 @@
 open_move: true
 open_vis: true
 default_wall: solid
-# map_view_detail_frame: 36
 default_events:
 - dialog terminal MSG
 visuals:
@@ -29,6 +28,3 @@ visuals:
     do_blend: 500
     offs: [0, 0, -0.158]
     face_camera: false # Otherwise faces frustum
-# replace:
-#   - func: ONETIMEDONE
-#     name: ship2_terminal_seen

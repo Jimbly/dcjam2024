@@ -8,21 +8,17 @@ fog_params:
 - 800.0
 cell_swaps:
   open: ship2_open
-  floorswitch: demo_floorswitch
-  floorswitch_on: demo_floorswitch_on
 wall_swaps:
   open: demo_open
   door: ship2_door
-  door_oneway: demo_door
+  door_oneway: ship2_door
   door_locked: demo_door_locked
   door_locked_unlocked: demo_door_locked_unlocked
-  entrance: demo_entrance
   secret_door: ship2_secret_door
   secret_door_unvisited: ship2_secret_door
   solid: ship2_solid1
   stairs_in: ship2_stairs_in
   stairs_out: ship2_stairs_out
-  floorswitch: demo_floorswitch
   ship1_solid1: ship2_solid1
   ship1_solid2: ship2_solid2
   ship1_solid3: ship2_solid3

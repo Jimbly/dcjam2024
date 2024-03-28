@@ -15,7 +15,8 @@ visuals:
   opts:
     spritesheet: ship2
     tile: floor
-- pass: bg
+- pass: default
+  detail_layer: 1
   type: simple_floor
   opts:
     spritesheet: ship2
