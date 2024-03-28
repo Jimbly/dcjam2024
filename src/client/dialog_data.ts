@@ -1,12 +1,18 @@
 import { fontStyle } from 'glov/client/font';
 import { randSimpleSpatial } from 'glov/client/rand_fast';
 import { sprites as ui_sprites } from 'glov/client/ui';
+import { dialogIconsRegister } from '../common/crawler_events';
+import {
+  CrawlerScriptAPI,
+  CrawlerScriptEventMapIcon,
+} from '../common/crawler_script';
 import {
   dialogPush,
   dialogRegister,
 } from './dialog_system';
 import { onetimeEvent } from './jam_events';
 import {
+  giveXP,
   myEnt,
   sanityDamage,
 } from './play';
@@ -23,8 +29,31 @@ const style_note = fontStyle(null, {
   color: 0x141013ff,
 });
 
+dialogIconsRegister({
+  terminal: (param: string, script_api: CrawlerScriptAPI): CrawlerScriptEventMapIcon => {
+    if (onetimeEvent(true)) {
+      return CrawlerScriptEventMapIcon.NOTE;
+    }
+    return CrawlerScriptEventMapIcon.NOTE_SEEN;
+  },
+  note: (param: string, script_api: CrawlerScriptAPI): CrawlerScriptEventMapIcon => {
+    if (onetimeEvent(true)) {
+      return CrawlerScriptEventMapIcon.NOTE;
+    }
+    return CrawlerScriptEventMapIcon.NOTE_SEEN;
+  },
+  medkit: (param: string, script_api: CrawlerScriptAPI): CrawlerScriptEventMapIcon => {
+    if (onetimeEvent(true)) {
+      return CrawlerScriptEventMapIcon.NOTE + 2;
+    }
+    return CrawlerScriptEventMapIcon.NOTE_SEEN + 2;
+  },
+});
 dialogRegister({
   terminal: function (param: string) {
+    if (onetimeEvent()) {
+      giveXP('terminal');
+    }
     dialogPush({
       name: '',
       text: param,
@@ -33,6 +62,9 @@ dialogRegister({
     });
   },
   note: function (param: string) {
+    if (onetimeEvent()) {
+      giveXP('note');
+    }
     let me = myEnt();
     let { pos, heroes } = me.data;
     let rnd = randSimpleSpatial(pos[0], pos[1], 0);

@@ -721,9 +721,16 @@ function doXP(): void {
 const XP_TABLE = [
   1,
   3,
-  5,
-  7,
+  4,
+  6,
   15,
+];
+const XP_TABLE_STORY = [
+  1,
+  2,
+  3,
+  4,
+  25,
 ];
 export function xpCost(tier: number, level: number): number {
   if (level === 2) {
@@ -731,17 +738,23 @@ export function xpCost(tier: number, level: number): number {
   }
   return 2 << (tier * 2 + level);
 }
-export function giveXP(target: Entity | null): void {
-  let is_boss = target?.data?.stats?.encounter.includes('boss');
+export function giveXP(target: Entity | 'note' | 'terminal' | null): void {
   let floor_id = crawlerGameState().floor_id;
   let floor_level = clamp(floor_id - 11, 0, XP_TABLE.length);
-  let data = myEnt().data;
   let delta = XP_TABLE[floor_level] | 3;
-  if (is_boss) {
-    delta *= 2;
+  if (target) {
+    if (target === 'note' || target === 'terminal') {
+      delta = XP_TABLE_STORY[floor_level] | 1;
+    } else {
+      let is_boss = target?.data?.stats?.encounter.includes('boss');
+      if (is_boss) {
+        delta *= 2;
+      }
+    }
   }
   xp_time = getFrameTimestamp();
   xp_msg = `+${delta} xp`;
+  let data = myEnt().data;
   data.xp = (data.xp || 0) + delta;
 }
 export function levelUpAbility(hero_idx: number, ability_idx: number): void {

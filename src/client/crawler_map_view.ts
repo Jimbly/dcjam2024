@@ -351,6 +351,7 @@ export function crawlerMapViewDraw(
       }
       if (detail_visible && cell.events) {
         // Draw any event icons
+        script_api.setPos([xx, yy]);
         let event_icon = crawlerScriptEventsGetIcon(script_api, cell.events);
         if (build_mode && !event_icon && !(detail && detail_visible)) {
           event_icon = CrawlerScriptEventMapIcon.QUESTION;

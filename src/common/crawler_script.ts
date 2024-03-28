@@ -92,6 +92,8 @@ export enum CrawlerScriptEventMapIcon {
   X=24,
   QUESTION=27,
   EXCLAIMATION=28,
+  NOTE=36,
+  NOTE_SEEN=37,
 }
 
 export type CrawlerScriptEvent = (api: CrawlerScriptAPI, cell: CrawlerCell, param: string) => void;

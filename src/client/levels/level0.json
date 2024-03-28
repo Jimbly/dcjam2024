@@ -1059,7 +1059,7 @@
       "id": "solid",
       "walls": [
         "open",
-        "open",
+        "solid",
         "solid",
         "open"
       ]
@@ -1068,7 +1068,7 @@
       "id": "solid",
       "walls": [
         "open",
-        "open",
+        "solid",
         "open",
         "open"
       ]
@@ -1206,29 +1206,35 @@
       ]
     },
     {
-      "id": "solid",
+      "id": "open",
       "walls": [
         "open",
+        "open",
         "solid",
+        "solid"
+      ]
+    },
+    {
+      "id": "ship2_medkit",
+      "walls": [
         "solid",
-        "open"
+        "open",
+        "open",
+        "solid"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "medkit"
+        }
       ]
     },
     {
       "id": "solid",
       "walls": [
         "open",
+        "open",
         "solid",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
         "open"
       ]
     },
@@ -1355,7 +1361,7 @@
         "open",
         "solid",
         "door",
-        "solid"
+        "open"
       ]
     },
     {
@@ -1364,7 +1370,7 @@
         "solid",
         "solid",
         "open",
-        "solid"
+        "open"
       ],
       "events": [
         {

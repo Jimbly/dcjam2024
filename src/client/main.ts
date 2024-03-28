@@ -29,7 +29,7 @@ import { titleInit, titleStartup } from './title';
 
 const crawlertest = require('./img/crawlertest');
 
-const { round } = Math;
+const { max, round } = Math;
 
 Z.BACKGROUND = 1;
 Z.SPRITES = 10;
@@ -41,9 +41,9 @@ Z.COMBAT_SHADE = Z.UI - 1;
 Z.DEAD_FADE = 80;
 Z.BAMF = Z.UI + 10;
 Z.BAMFFADE = Z.BAMF + 20;
-Z.XP = Z.BAMFFADE + 1;
 Z.FLOATERS = 125;
 Z.STATUS = 140;
+Z.XP = max(Z.BAMFFADE, Z.STATUS) + 1;
 Z.CHAT = 300;
 Z.CHAT_FOCUSED = 300;
 

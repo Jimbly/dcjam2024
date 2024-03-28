@@ -3,14 +3,16 @@ import {
   CrawlerScriptAPI,
   CrawlerScriptWhen,
   crawlerScriptRegisterEvent,
+  crawlerScriptRegisterFunc,
 } from '../common/crawler_script';
-import { CrawlerCell } from '../common/crawler_state';
+import { CrawlerCell, DirTypeOrCell } from '../common/crawler_state';
 import { bamfAddRandom } from './bamf';
 import { crawlerEntFactory } from './crawler_entity_client';
+import { crawlerScriptAPI } from './crawler_play';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { dialog, dialogPush } from './dialog_system';
 import { EntityDemoClient, StatsData } from './entity_demo_client';
-import { autosave, myEnt } from './play';
+import { autosave, myEnt, myEntOptional } from './play';
 import { statusPush } from './status';
 
 export function statusShort(text: string): void {
@@ -62,10 +64,10 @@ crawlerScriptRegisterEvent({
   },
 });
 
-export function onetimeEvent(query_only?: boolean): boolean {
-  let me = myEnt();
-  let events_done = me.data.events_done = me.data.events_done || {};
-  let pos_key = me.data.pos.slice(0, 2).join(',');
+function onetimeEventForPos(x: number, y: number, query_only?: boolean): boolean {
+  let me = myEntOptional();
+  let events_done = me ? me.data.events_done = me.data.events_done || {} : {};
+  let pos_key = `${crawlerScriptAPI().getFloor()},${x},${y}`;
   if (events_done[pos_key]) {
     return false;
   }
@@ -74,6 +76,17 @@ export function onetimeEvent(query_only?: boolean): boolean {
   }
   return true;
 }
+
+export function onetimeEvent(query_only?: boolean): boolean {
+  let pos = crawlerScriptAPI().pos;
+  return onetimeEventForPos(pos[0], pos[1], query_only);
+}
+
+crawlerScriptRegisterFunc('ONETIMEDONE', function (
+  script_api: CrawlerScriptAPI, cell: CrawlerCell, dir: DirTypeOrCell
+): boolean {
+  return !onetimeEventForPos(cell.x, cell.y, true);
+});
 
 export function jamTraitsReset(): void {
   last_solitude = null;
