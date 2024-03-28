@@ -1,4 +1,5 @@
 TODO
+* shield block floater is not integer aligned or is the wrong size?
 * draft second level, play through first 2, measure time, check difficulty, put save game aside for later
 * Insanity view
   * party portraits to change to monsters - silhouettes
@@ -41,6 +42,7 @@ Finish up
 * hi score list
 
 Polish
+* controller: can't level up: hit Y to open a dedicated screen?
 * adjust fog colors and settings of all levels
 * fill in empty space in UI with some noise at least
 * show explore percent (and monster count?) on minimap
@@ -64,6 +66,7 @@ Post-game fixes / polish
 * reorganize all of the example entities to use a spritesheet
 * add support for multiple fonts with different heights to dialog system and/or markdown - handwriting font would be cool
 * tooltip width and markdown not playing correctly, probably also height
+* origin in entdef depends heavily on aspect ratio of image, but it shouldn't?
 
 People's games to check out:
 * YouDoYouBuddy - slay the spire

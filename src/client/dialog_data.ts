@@ -24,6 +24,8 @@ import {
   sanityDamage,
 } from './play';
 
+const MEDKIT_AMT = 5;
+
 const spritesheet_faces = require('./img/faces');
 const { sprite_faces } = spritesheet_faces;
 const spritesheet_icons = require('./img/icons');
@@ -171,7 +173,7 @@ dialogRegister({
       return;
     }
     let me = myEnt();
-    let delta = min(15, 100 - me.data.sanity_max);
+    let delta = min(MEDKIT_AMT, 100 - me.data.sanity_max);
     let mushroom = param === 'mushroom';
     if (!delta) {
       dialogPush({
@@ -179,7 +181,7 @@ dialogRegister({
         text: `${mushroom ?
           'These mushrooms might be useful later...' :
           'This medical station may be useful later...'}` +
-          '\n(Restores up to [c=sanity]15 MAX Sanity[/c])',
+          `\n(Restores up to [c=sanity]${MEDKIT_AMT} MAX Sanity[/c])`,
         transient: true,
       });
     } else {
@@ -188,7 +190,7 @@ dialogRegister({
         text: (mushroom ?
           'You find some red and white mushrooms... eat them?' :
           'You rummage through the drawers and see some pills... take them?') +
-          '\n(Restores up to [c=sanity]15 MAX Sanity[/c])',
+          `\n(Restores up to [c=sanity]${MEDKIT_AMT} MAX Sanity[/c])`,
         buttons: [{
           label: 'What\'s the worst that could happen?',
           cb: 'pills',
@@ -200,7 +202,7 @@ dialogRegister({
   },
   pills: function () {
     let me = myEnt();
-    let delta = min(15, 100 - me.data.sanity_max);
+    let delta = min(MEDKIT_AMT, 100 - me.data.sanity_max);
     if (!delta) {
       return;
     }

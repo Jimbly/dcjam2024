@@ -291,10 +291,19 @@ export function aiTraitsClientStartup(): void {
 
         tot = abs(dx) + abs(dy);
         if (!tot) {
-          if (engine.defines.HUNTER) {
-            statusSet(`edbg${this.id}`, `${this.id}: Move wall blocked`).counter = 500;
+          if (can_see) {
+            // keep the target
+            if (engine.defines.HUNTER) {
+              statusSet(`edbg${this.id}`, `${this.id}: Move wall blocked - can see`).counter = 500;
+            }
+          } else if (!can_see) {
+            // give up
+            if (engine.defines.HUNTER) {
+              statusSet(`edbg${this.id}`, `${this.id}: Move wall blocked - giving up`).counter = 500;
+            }
+            playUISound('hunter_lost');
+            this.hunter_state.has_target = false;
           }
-          this.hunter_state.has_target = false;
           return true;
         }
         let do_x = random() * tot < abs(dx);

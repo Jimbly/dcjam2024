@@ -209,10 +209,10 @@ function doCombat(encounter_id: string, tier: number, level: number): void {
   stats.turns_histo[turns] = (stats.turns_histo[turns] || 0) + 1;
 }
 
-// const TESTS = 100;
+// const TESTS = 1000;
 // for (let encounter_id in ENCOUNTERS) {
 //   for (let ii = 0; ii < TESTS; ++ii) {
-//     doCombat(encounter_id, 1, 0);
+//     doCombat(encounter_id, 0, 1);
 //   }
 //   printStats(encounter_id);
 // }

@@ -12,9 +12,9 @@ traits:
 - id: drawable_sprite
   anim_data:
     idle:
-      frames: [L2-balanced-MagiDrageen]
+      frames: [L2-balanced-GreenCyclopsWorm]
       times: 10000
   sprite_data:
     spritesheet: enemies
-    origin: [0.5, 2.2]
-  scale: 0.5
+    origin: [0.5, 0.55]
+  scale: 0.8

@@ -743,11 +743,11 @@ export function xpCost(tier: number, level: number): number {
 }
 export function giveXP(target: Entity | 'note' | 'terminal' | null): void {
   let floor_id = crawlerGameState().floor_id;
-  let floor_level = clamp(floor_id - 11, 0, XP_TABLE.length);
-  let delta = XP_TABLE[floor_level] | 3;
+  let floor_level = clamp(floor_id - 11, 0, XP_TABLE.length - 1);
+  let delta = XP_TABLE[floor_level];
   if (target) {
     if (target === 'note' || target === 'terminal') {
-      delta = XP_TABLE_STORY[floor_level] | 1;
+      delta = XP_TABLE_STORY[floor_level];
     } else {
       let is_boss = target?.data?.stats?.encounter.includes('boss');
       if (is_boss) {
@@ -810,7 +810,8 @@ function playCrawl(): void {
     dialog_viewport.y = 0;
     dialog_viewport.h = game_height - 3;
   }
-  dialogRun(dt, dialog_viewport);
+  let engaged_enemy = engagedEnemy();
+  dialogRun(dt, dialog_viewport, Boolean(engaged_enemy));
 
   const build_mode = buildModeActive();
   let locked_dialog = dialogMoveLocked();

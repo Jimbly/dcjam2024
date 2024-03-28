@@ -149,19 +149,22 @@ export const ENEMIES: TSMap<EnemyDef> = {
 };
 
 const MAPPING = [{
-  level: 1,
   tier: 0,
+  level: 2,
 }, {
-  level: 0,
   tier: 1,
-}, {
   level: 1,
-  tier: 1,
 }, {
-  level: 0,
+  tier: 1,
+  level: 2,
+}, {
   tier: 2,
+  level: 1,
 }];
 const OVERRIDE: TSMap<DataObject> = {
+  aoe2: {
+    damage: 0,
+  },
   armor3: {
     hp: 3,
     shield: 4,
@@ -199,7 +202,7 @@ const OVERRIDE: TSMap<DataObject> = {
 };
 const NAMES: TSMap<string> = {
   aoe2: 'Creep Eye',
-  balanced2: 'Magi Drageen',
+  balanced2: 'Cyclops Worm',
   boss2: 'Skitter Bot',
   damage2: 'Wild Growth',
   armor2: 'Centislide',
@@ -240,6 +243,7 @@ Object.keys(ENEMIES).forEach((enemy_id: string) => {
     new_enemy.hp += floor - 1;
     new_enemy.shield *= floor;
     new_enemy.shield += [0,0,0,1,1,1][floor];
+    new_enemy.enttype = `l${floor}${enemy_id.slice(0, -1)}`;
     let over = OVERRIDE[new_name];
     if (over) {
       for (let key in over) {

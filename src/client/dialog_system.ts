@@ -190,7 +190,9 @@ function dimsSplit(
 const HPAD = 4;
 const BUTTON_HEAD = 4;
 const BUTTON_PAD = 1;
-export function dialogRun(dt: number, viewport: UIBox & { pad_top: number; pad_bottom: number }): boolean {
+export function dialogRun(dt: number, viewport: UIBox & { pad_top: number; pad_bottom: number },
+  suppress_transient: boolean,
+): boolean {
   if (buildModeActive()) {
     active_dialog = null;
   }
@@ -200,6 +202,9 @@ export function dialogRun(dt: number, viewport: UIBox & { pad_top: number; pad_b
     return false;
   }
   let { transient, transient_long, custom_render, text, name, buttons, panel_sprite } = active_dialog;
+  if (transient && suppress_transient) {
+    return false;
+  }
   if (name) {
     text = `${name}: ${text}`;
   }

@@ -196,6 +196,9 @@ export function drawableSpriteDraw2D(this: EntityDrawableSprite, param: EntityDr
   // Perfect centering within the rect - may want to put relative within the rect instead?
   if (sprite.origin[1] > 1) {
     y += h * (sprite.origin[1] - 1);
+    if (h < abs(w) && sprite.origin[1] > 1.5) { // DCJAM24 hack
+      y -= (abs(w) - h) / 2;
+    }
   } else if (sprite.origin[1] < 1) {
     y -= h * (1 - sprite.origin[1]);
   }
