@@ -1,0 +1,2351 @@
+{
+  "special_pos": {
+    "stairs_in": [
+      1,
+      8,
+      0
+    ],
+    "stairs_out": [
+      3,
+      8,
+      2
+    ]
+  },
+  "w": 16,
+  "h": 16,
+  "cells": [
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "stairs_in",
+      "walls": [
+        "door",
+        "solid",
+        "solid",
+        "solid"
+      ],
+      "events": [
+        {
+          "id": "floor_delta",
+          "param": "-1"
+        }
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "stairs_out",
+        "open",
+        "stairs_in",
+        "solid"
+      ]
+    },
+    {
+      "id": "stairs_out",
+      "walls": [
+        "solid",
+        "ship3_pipe_vert",
+        "door",
+        "solid"
+      ],
+      "events": [
+        {
+          "id": "floor_delta",
+          "param": "1"
+        }
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "solid",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "open",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "open",
+        "open",
+        "ship3_window",
+        "open"
+      ]
+    },
+    {
+      "id": "ship3_capsule",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "ship3_pipe_vert"
+      ]
+    },
+    {
+      "id": "ship3_note",
+      "walls": [
+        "ship3_pipe_vert",
+        "open",
+        "open",
+        "solid"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "note MSG"
+        }
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "solid",
+        "solid",
+        "ship3_pipe_vert",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "ship3_floor2",
+      "walls": [
+        "open",
+        "ship3_solitude_door",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "ship3_terminal",
+      "walls": [
+        "open",
+        "ship3_solid3",
+        "open",
+        "open"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "terminal MSG"
+        }
+      ]
+    },
+    {
+      "id": "ship3_floor3",
+      "walls": [
+        "ship3_pipe_horiz",
+        "ship3_solid3",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "solid",
+        "solid",
+        "ship3_pipe_horiz",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "solid",
+        "solid",
+        "solid",
+        "ship3_solitude_door"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "solid",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    }
+  ],
+  "state": {},
+  "vstyle": "ship3",
+  "seed": "32845502",
+  "props": {},
+  "paths": {}
+}

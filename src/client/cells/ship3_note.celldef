@@ -1,0 +1,23 @@
+---
+open_move: true
+open_vis: true
+default_wall: solid
+default_events:
+- dialog note MSG
+visuals:
+- pass: bg
+  type: simple_ceiling
+  opts:
+    spritesheet: ship3
+    tile: ceiling2
+- pass: bg
+  type: simple_floor
+  opts:
+    spritesheet: ship3
+    tile: floor2
+- pass: default
+  detail_layer: 1
+  type: simple_floor
+  opts:
+    spritesheet: ship2
+    tile: note

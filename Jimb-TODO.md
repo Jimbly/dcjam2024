@@ -1,4 +1,6 @@
 TODO
+* put the statue somewhere on level 2
+* same with 3rd level
 * draft second level, play through first 2, measure time, check difficulty, put save game aside for later
   * way too easy second level with ~4 upgrades; was about 30min with some fixes - slot 3!
   * only had ~3 deaths, max sanity restore totally unneeded
@@ -44,7 +46,8 @@ Finish up
 
 Polish
 * controller: can't level up: hit Y to open a dedicated screen?
-* adjust fog colors and settings of all levels
+* add "cheat" to the menu - sets everyone to T2L2 and 100 max sanity and enables the "kill enemy" buttons
+* adjust fog colors and settings of all levels - backdrops too
 * fill in empty space in UI with some noise at least
 * show explore percent (and monster count?) on minimap
 * add unlockable doors to get back to the Solitude entrances

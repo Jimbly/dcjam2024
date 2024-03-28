@@ -20,35 +20,32 @@ const DETAIL = 6;
 const MEDKIT = 7;
 const NOTE = 8;
 const TERMINAL = 9;
-let sheet = 'forest';
+const STAIRS = 10;
+const WALLDETAIL = 11;
+let sheet = 'ship3';
 let files = {
-  floor1: [FLOOR],
-  cavedoor: [DOOR],
-  cavesecret: [SECRETDOOR],
-  mosswall3: [SOLID],
-  cavewall: [SOLID],
-  // ceiling: [CEILING],
-  cliff: [SOLID],
-  cobblestone: [FLOOR, 'ceiling'],
-  deadtree: [DETAIL, 'dirt'],
-  dirt: [FLOOR],
-  floor2: [FLOOR],
-  floor3: [FLOOR],
-  floor4: [FLOOR],
-  mosswall1: [SOLID],
-  mosswall2: [SOLID],
-  mushrooms: [MEDKIT, 'floor1'],
-  statue: [DETAIL, 'dirt'],
-  tree1: [DETAIL, 'floor2'],
-  tree2: [DETAIL, 'floor3'],
-  tree3: [DETAIL, 'floor4'],
+  capsule: [DETAIL, 'floor1'],
+  door: [DOOR],
+  floor1: [FLOOR, 'ceiling1'],
+  floor2: [FLOOR, 'ceiling2'],
+  floor3: [FLOOR,'ceiling3'],
+  pipe_horiz: [WALLDETAIL, 'solid3'],
+  pipe_vert: [WALLDETAIL, 'solid4'],
+  secret: [SECRETDOOR],
+  solid4: [SOLID],
+  solid1: [SOLID],
+  solid2: [SOLID],
+  solid3: [SOLID],
+  stairs_down: [STAIRS],
+  stairs_up: [STAIRS],
+  window: [SOLID],
 };
 
 let vstyle = `
 ---
 fog_color: '#191c0e'
 background_color: '#191c0e'
-background_img: backdrop_forest
+background_img: space1
 fog_params:
 - 0.003
 - 0.0005
@@ -92,6 +89,27 @@ visuals:
     spritesheet: ${sheet}
     tile: ${filename}
 `;
+  } else if (type === WALLDETAIL) {
+    assert(extra1);
+    cat = 'wall';
+    content = `
+---
+open_move: true
+open_vis: false
+advertise_other_side: true
+map_view_wall_frames_from: door
+visuals:
+- type: simple_wall
+  opts:
+    spritesheet: ${sheet}
+    tile: ${extra1}
+- pass: default
+  detail_layer: 1
+  type: simple_wall
+  opts:
+    spritesheet: ${sheet}
+    tile: ${filename}
+`;
   } else if (type === SECRETDOOR) {
     if (!did[type]) {
       vstyle = vstyle.replace(`secret_door: ${sheet}_secret_door`, `secret_door: ${sheet}_${filename}`);
@@ -124,6 +142,19 @@ open_vis: false
 map_view_wall_frames_from: solid
 visuals:
 - type: simple_wall
+  opts:
+    spritesheet: ${sheet}
+    tile: ${filename}
+`;
+  } else if (type === STAIRS) {
+    cat = 'wall';
+    content = `
+---
+open_move: true
+open_vis: false
+map_view_wall_frames_from: 'door'
+visuals:
+  type: simple_wall
   opts:
     spritesheet: ${sheet}
     tile: ${filename}
@@ -190,7 +221,9 @@ visuals:
     face_camera: false # Otherwise faces frustum
 `;
   }
-  did[type] = filename;
+  if (!did[type]) {
+    did[type] = filename;
+  }
 
   output(`src/client/${cat}s/${sheet}_${filename}.${cat}def`, content);
 }

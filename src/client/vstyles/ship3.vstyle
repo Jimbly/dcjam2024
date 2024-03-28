@@ -1,0 +1,21 @@
+---
+fog_color: '#191c0e'
+background_color: '#191c0e'
+background_img: space1
+fog_params:
+- 0.003
+- 0.0005
+- 800.0
+cell_swaps:
+  open: ship3_floor1
+wall_swaps:
+  open: demo_open
+  door: ship3_door
+  door_oneway: ship3_door
+  door_locked: demo_door_locked
+  door_locked_unlocked: demo_door_locked_unlocked
+  secret_door: ship3_secret
+  secret_door_unvisited: ship3_secret
+  solid: ship3_solid4
+  stairs_in: ship3_stairs_in
+  stairs_out: ship3_stairs_out

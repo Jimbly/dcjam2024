@@ -14,6 +14,7 @@ const spritesheet_forest = require('./img/forest');
 const spritesheet_ruins = require('./img/ruins');
 const spritesheet_ship1 = require('./img/ship1');
 const spritesheet_ship2 = require('./img/ship2');
+const spritesheet_ship3 = require('./img/ship3');
 const spritesheet_solitude = require('./img/solitude');
 const spritesheet_whitebox = require('./img/whitebox');
 
@@ -27,6 +28,7 @@ export function renderResetFilter(): void {
   spritesheet_crawlertest.sprite.texs[0].setSamplerState(ss);
   spritesheet_ship1.sprite.texs[0].setSamplerState(ss);
   spritesheet_ship2.sprite.texs[0].setSamplerState(ss);
+  spritesheet_ship3.sprite.texs[0].setSamplerState(ss);
   spritesheet_forest.sprite.texs[0].setSamplerState(ss);
   spritesheet_ruins.sprite.texs[0].setSamplerState(ss);
   spritesheet_cosmic.sprite.texs[0].setSamplerState(ss);
@@ -56,6 +58,7 @@ export function renderAppStartup(): void {
       whitebox: spritesheet_whitebox,
       ship1: spritesheet_ship1,
       ship2: spritesheet_ship2,
+      ship3: spritesheet_ship3,
       forest: spritesheet_forest,
       ruins: spritesheet_ruins,
       cosmic: spritesheet_cosmic,

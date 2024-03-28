@@ -1,0 +1,15 @@
+---
+open_vis: true
+default_wall: ship3_solid3
+
+visuals:
+- pass: bg
+  type: simple_floor
+  opts:
+    spritesheet: ship3
+    tile: floor3
+- pass: bg
+  type: simple_ceiling
+  opts:
+    spritesheet: ship3
+    tile: ceiling3
