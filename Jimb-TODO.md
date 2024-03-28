@@ -1,6 +1,7 @@
 TODO
-* shield block floater is not integer aligned or is the wrong size?
 * draft second level, play through first 2, measure time, check difficulty, put save game aside for later
+  * way too easy second level with ~4 upgrades; was about 30min with some fixes - slot 3!
+  * only had ~3 deaths, max sanity restore totally unneeded
 * Insanity view
   * party portraits to change to monsters - silhouettes
   * ghosts moving through the level
@@ -22,7 +23,7 @@ Balance Plan: conservation of XP
 Floor 1 : T0L0  T0
   T0L0/T0L1 (12 abilities leveled up +1) - (except, we start with effectively +12xp - need 4 less on this floor)
 Floor 2 : T0L1  T0
-  T1L2/T1L3/T2L1 (12 abilities leveled up +2 and 6 deaths @ L3) - (need 8 less on this floor)
+  T0L1/T0L2/T1L0 (12 abilities leveled up +2 and 6 deaths @ L3) - (need 8 less on this floor)
 Floor 3 : T1L0  T1
   T1L0/T1L1 (12+1)
 Floor 4 : T1L1  T1
