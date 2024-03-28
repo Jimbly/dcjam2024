@@ -1,0 +1,21 @@
+---
+fog_color: '#191c0e'
+background_color: '#191c0e'
+background_img: backdrop_forest
+fog_params:
+- 0.003
+- 0.0005
+- 800.0
+cell_swaps:
+  open: forest_floor1
+wall_swaps:
+  open: demo_open
+  door: forest_cavedoor
+  door_oneway: forest_cavedoor
+  door_locked: demo_door_locked
+  door_locked_unlocked: demo_door_locked_unlocked
+  secret_door: forest_cavesecret
+  secret_door_unvisited: forest_cavesecret
+  solid: forest_mosswall3
+  stairs_in: ship2_stairs_in
+  stairs_out: ship2_stairs_out

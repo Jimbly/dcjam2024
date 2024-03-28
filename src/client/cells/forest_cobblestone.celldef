@@ -1,0 +1,15 @@
+---
+open_vis: true
+default_wall: solid
+
+visuals:
+- pass: bg
+  type: simple_floor
+  opts:
+    spritesheet: forest
+    tile: cobblestone
+- pass: bg
+  type: simple_ceiling
+  opts:
+    spritesheet: forest
+    tile: ceiling

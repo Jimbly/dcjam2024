@@ -54,7 +54,7 @@ import {
 } from 'glov/client/textures';
 import * as ui from 'glov/client/ui';
 import { uiTextHeight } from 'glov/client/ui';
-import { dataErrorEx } from 'glov/common/data_error';
+import { dataError, dataErrorEx } from 'glov/common/data_error';
 import { isInteger, lerp, ridx } from 'glov/common/util';
 import {
   ROVec2,
@@ -276,11 +276,18 @@ export function crawlerRenderGetThumbnail(desc: CellDesc | WallDesc): CrawlerThu
     if (visuals) {
       for (let jj = 0; jj < visuals.length; ++jj) {
         let visual = visuals[jj];
-        let thumbnailgetter = thumbnailgetters[visual.type];
-        assert(thumbnailgetter);
-        let pair = thumbnailgetter(visual.opts, desc);
-        if (pair) {
-          ret.push(pair);
+        if (!visual.type) {
+          dataError(`desc "${desc.id}" missing "type" on visual`);
+        } else {
+          let thumbnailgetter = thumbnailgetters[visual.type];
+          if (!thumbnailgetter) {
+            dataError(`desc "${desc.id}", type "${visual.type}" unknown`);
+          } else {
+            let pair = thumbnailgetter(visual.opts, desc);
+            if (pair) {
+              ret.push(pair);
+            }
+          }
         }
       }
     }

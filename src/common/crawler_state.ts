@@ -187,14 +187,20 @@ function crawlerApplyVstyle(vstyle: VstyleDesc): void {
   for (let key in descs.wall) {
     let wall_desc = descs.wall[key]!;
     let swapped = descs.wall[wall_swaps[key] || key];
-    assert(swapped);
-    wall_desc.swapped = swapped;
+    if (swapped) {
+      wall_desc.swapped = swapped;
+    } else {
+      dataError(`vstyle swaps "${key}" to unknown walldef: "${wall_swaps[key]}"`);
+    }
   }
   for (let key in descs.cell) {
     let cell_desc = descs.cell[key]!;
     let swapped = descs.cell[cell_swaps[key] || key];
-    assert(swapped);
-    cell_desc.swapped = swapped;
+    if (swapped) {
+      cell_desc.swapped = swapped;
+    } else {
+      dataError(`vstyle swaps "${key}" to unknown celldef: "${cell_swaps[key]}"`);
+    }
   }
 }
 
