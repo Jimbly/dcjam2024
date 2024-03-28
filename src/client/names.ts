@@ -21,6 +21,21 @@ f Rion
 f Shion
 a Orion
 a Caldera
+f Sylvia
+a Jackson
+f Rachel
+m Marshall
+a Al
+f Rosemary
+m Malachi
+m Jack
+a Gael
+f Anora
+m Winston
+m Joshua
+a Sasha
+m Roman
+m Tommy
 `).split('\n').map((a) => a.trim()).filter((a) => a).map((a) => {
   let p = a.split(' ');
   assert(p.length === 2);

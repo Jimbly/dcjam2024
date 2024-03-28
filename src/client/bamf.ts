@@ -29,13 +29,24 @@ const lines_m: string[] = [
   'NAME has died. His fanfiction magnum opus remains unfinished, although his three followers may continue to check his page for updates.',
   'NAME has died. His three year old daughter is not old enough to understand.',
   'NAME has died. His older sister is very sad he won\'t be at her wedding.',
+  'NAME has died. He leaves no one behind.',
+  'NAME has died. He was waiting for the last season of SUPER COOL VAMPIRES to air.',
+  'NAME has died. His fiance Jackson will be undone by knowing he isn\'t coming home.',
+  'NAME has died. The worms will eat his bones and find them to be delicious.',
 ];
 const lines_f: string[] = [
   'NAME has died. Her daughter Jane is very sad she isn\'t coming home.',
   'NAME has died. She leaves behind no next of kin, but her childhood best friend has been meaning to give her a call lately.',
   'NAME has died. Her father is still waiting to hear back about whether she\'s coming home for the holidays.',
+  'NAME has died. Her Minecraft horses will not miss her because they are not real.',
+  'NAME has died. Her fiance Taylor will be distraught she isn\'t coming home.',
+  'NAME has died. Her younger brothers are not sure if they can delete her game saves.',
+  'NAME has died. She leaves no one behind.',
+  'NAME has died. She was in the middle of a good book.',
 ];
-const lines_a = lines_m.concat(lines_f);
+const lines_a = lines_m.concat(lines_f).concat([
+  'NAME has died. The world may be better off for it.',
+]);
 
 const summons = [
   'It\'s gotta be NAME',
