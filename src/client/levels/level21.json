@@ -2,7 +2,7 @@
   "special_pos": {
     "stairs_in": [
       3,
-      11,
+      12,
       0
     ],
     "stairs_out": [
@@ -1260,6 +1260,15 @@
       "id": "solid",
       "walls": [
         "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
         "solitude_solid9",
         "open",
         "open"
@@ -1395,7 +1404,7 @@
       "id": "solid",
       "walls": [
         "solitude_solid9",
-        "solitude_solid1",
+        "solid",
         "open",
         "open"
       ]
@@ -1486,7 +1495,7 @@
       "id": "solid",
       "walls": [
         "open",
-        "solid",
+        "open",
         "open",
         "open"
       ]
@@ -1495,7 +1504,7 @@
       "id": "solid",
       "walls": [
         "open",
-        "solid",
+        "solitude_solid9",
         "open",
         "open"
       ]
@@ -1503,24 +1512,167 @@
     {
       "id": "solid",
       "walls": [
-        "solitude_solid1",
+        "solid",
         "solid",
         "open",
         "open"
       ]
+    },
+    {
+      "id": "solitude_open3",
+      "walls": [
+        "open",
+        "open",
+        "solitude_solid2",
+        "solitude_solid4"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party This place feels like home."
+        }
+      ],
+      "h": -0.1875
     },
     {
       "id": "solitude_open2",
       "walls": [
         "open",
         "open",
-        "solitude_solid7",
-        "solitude_solid1"
+        "open",
+        "solitude_solid2"
+      ],
+      "h": -0.1875
+    },
+    {
+      "id": "solitude_open2",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "solitude_solid2"
       ],
       "h": -0.1875
     },
     {
       "id": "solitude_open3",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "solitude_solid7"
+      ],
+      "events": [
+        {
+          "id": "solitude_upgrade",
+          "param": ""
+        }
+      ],
+      "h": -0.1875
+    },
+    {
+      "id": "open",
+      "walls": [
+        "solitude_solid2",
+        "open",
+        "open",
+        "open"
+      ],
+      "h": -0.1875
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "solid",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solitude_solid9",
+        "solid",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solitude_fire",
+      "walls": [
+        "open",
+        "open",
+        "solitude_solid9",
+        "solitude_solid9"
+      ],
+      "h": -0.1875
+    },
+    {
+      "id": "solitude_fire",
       "walls": [
         "open",
         "open",
@@ -1530,32 +1682,62 @@
       "h": -0.1875
     },
     {
-      "id": "solitude_open2",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "solitude_solid2"
-      ],
-      "h": -0.1875
-    },
-    {
-      "id": "solitude_open2",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "solitude_solid2"
-      ],
-      "h": -0.1875
-    },
-    {
       "id": "solitude_open3",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ],
+      "h": -0.1875
+    },
+    {
+      "id": "solitude_water",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ],
+      "h": -0.125
+    },
+    {
+      "id": "solitude_water",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ],
+      "h": -0.125
+    },
+    {
+      "id": "solitude_water",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ],
+      "h": -0.125
+    },
+    {
+      "id": "solitude_open1",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ],
+      "h": -0.1875
+    },
+    {
+      "id": "solitude_open2",
       "walls": [
         "solitude_solid9",
         "open",
         "open",
-        "open"
+        "solitude_solid1"
       ],
       "h": -0.1875
     },
@@ -1563,26 +1745,8 @@
       "id": "solid",
       "walls": [
         "open",
-        "solitude_solid1",
-        "solitude_solid1",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
+        "solitude_solid9",
+        "solid",
         "open"
       ]
     },
@@ -1647,32 +1811,26 @@
       ]
     },
     {
-      "id": "solitude_open1",
+      "id": "open",
       "walls": [
         "open",
-        "solitude_solid1",
-        "solitude_exit",
-        "solitude_solid1"
+        "solid",
+        "stairs_in",
+        "solitude_solid2"
       ],
-      "events": [
-        {
-          "id": "solitude",
-          "param": ""
-        }
+      "h": 0.0625
+    },
+    {
+      "id": "open",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
       ]
     },
     {
-      "id": "solitude_open1",
-      "walls": [
-        "open",
-        "solitude_solid4",
-        "open",
-        "solitude_solid4"
-      ],
-      "h": -0.0625
-    },
-    {
-      "id": "solitude_open2",
+      "id": "solitude_open3",
       "walls": [
         "open",
         "open",
@@ -1685,155 +1843,21 @@
           "param": "You feel an otherworldly sense of... solitude?"
         }
       ],
-      "h": -0.1875
+      "h": -0.0625
     },
     {
-      "id": "solitude_water",
+      "id": "open",
       "walls": [
         "open",
         "open",
         "open",
         "open"
       ],
-      "h": -0.125
-    },
-    {
-      "id": "solitude_water",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ],
-      "h": -0.125
-    },
-    {
-      "id": "solitude_water",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ],
-      "h": -0.125
-    },
-    {
-      "id": "solitude_open1",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ],
-      "h": -0.1875
-    },
-    {
-      "id": "solitude_open1",
-      "walls": [
-        "solitude_solid9",
-        "open",
-        "open",
-        "solitude_solid7"
-      ],
-      "h": -0.1875
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "solitude_solid1",
-        "solitude_solid1",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "solid"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "solid"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "solid",
-        "open",
-        "open",
-        "solid"
-      ]
-    },
-    {
-      "id": "solitude_open3",
-      "walls": [
-        "open",
-        "open",
-        "solitude_solid4",
-        "open"
+      "events": [
+        {
+          "id": "sign",
+          "param": "HINT: You can spend [c=xp]XP[/c] in Solitude to level up abilities.  Just select the ability you want to upgrade."
+        }
       ],
       "h": -0.1875
     },
@@ -1878,7 +1902,7 @@
       "h": -0.1875
     },
     {
-      "id": "solitude_open3",
+      "id": "open",
       "walls": [
         "open",
         "open",
@@ -1908,8 +1932,151 @@
       "walls": [
         "open",
         "open",
+        "solitude_solid9",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solitude_solid9",
+        "open",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "solitude_fire",
+      "walls": [
+        "open",
+        "solitude_solid9",
+        "solitude_solid9",
+        "open"
+      ],
+      "h": -0.1875
+    },
+    {
+      "id": "solitude_fire",
+      "walls": [
+        "open",
+        "solitude_solid4",
+        "open",
+        "open"
+      ],
+      "h": -0.1875
+    },
+    {
+      "id": "solitude_open3",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ],
+      "h": -0.1875
+    },
+    {
+      "id": "solitude_water",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ],
+      "h": -0.125
+    },
+    {
+      "id": "solitude_water",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ],
+      "h": -0.125
+    },
+    {
+      "id": "solitude_water",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ],
+      "h": -0.125
+    },
+    {
+      "id": "solitude_open2",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ],
+      "h": -0.1875
+    },
+    {
+      "id": "solitude_open3",
+      "walls": [
+        "solitude_solid9",
         "solitude_solid1",
+        "open",
         "open"
+      ],
+      "h": -0.1875
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "solid",
+        "solitude_solid9"
       ]
     },
     {
@@ -1973,6 +2140,15 @@
         "open",
         "open",
         "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "solitude_solid9"
       ]
     },
     {
@@ -1981,182 +2157,22 @@
         "solid",
         "open",
         "open",
-        "open"
+        "solid"
       ]
     },
     {
-      "id": "solitude_open3",
-      "walls": [
-        "open",
-        "open",
-        "solitude_solid2",
-        "open"
-      ],
-      "h": -0.1875
-    },
-    {
-      "id": "solitude_water",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ],
-      "h": -0.125
-    },
-    {
-      "id": "solitude_water",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ],
-      "h": -0.125
-    },
-    {
-      "id": "solitude_water",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ],
-      "h": -0.125
-    },
-    {
       "id": "solitude_open1",
       "walls": [
         "open",
-        "open",
-        "open",
-        "open"
-      ],
-      "h": -0.1875
-    },
-    {
-      "id": "solitude_open1",
-      "walls": [
         "solitude_solid9",
-        "solitude_solid7",
-        "open",
-        "open"
-      ],
-      "h": -0.1875
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "solitude_solid1",
-        "solitude_solid1"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "solitude_solid1",
-        "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solitude_open1",
-      "walls": [
-        "open",
-        "solitude_solid1",
         "solitude_solid2",
         "open"
       ],
       "events": [
         {
-          "id": "sign",
-          "param": "HINT: You can spend [c=xp]XP[/c] in Solitude to level up abilities.  Just select the ability you want to upgrade."
+          "id": "dialog",
+          "param": "party Do we really have to go back out there?"
         }
-      ],
-      "h": -0.1875
-    },
-    {
-      "id": "solitude_open1",
-      "walls": [
-        "open",
-        "solitude_solid9",
-        "open",
-        "open"
       ],
       "h": -0.1875
     },
@@ -2181,9 +2197,25 @@
       "h": -0.1875
     },
     {
-      "id": "solitude_open1",
+      "id": "solitude_open2",
       "walls": [
+        "open",
         "solitude_solid7",
+        "open",
+        "open"
+      ],
+      "events": [
+        {
+          "id": "solitude_upgrade",
+          "param": ""
+        }
+      ],
+      "h": -0.1875
+    },
+    {
+      "id": "open",
+      "walls": [
+        "solitude_solid4",
         "open",
         "open",
         "open"
@@ -2195,8 +2227,8 @@
       "walls": [
         "open",
         "open",
-        "solitude_solid1",
-        "solitude_solid1"
+        "solid",
+        "solid"
       ]
     },
     {
@@ -2322,7 +2354,7 @@
         "solitude_solid9",
         "open",
         "open",
-        "solitude_solid1"
+        "solid"
       ]
     },
     {
@@ -2476,16 +2508,7 @@
         "open",
         "open",
         "open",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "open"
+        "solitude_solid9"
       ]
     },
     {
@@ -2959,7 +2982,7 @@
   ],
   "initial_entities": [],
   "state": {},
-  "vstyle": "ship2",
+  "vstyle": "solitude",
   "seed": "32845502",
   "props": {
     "title": "Solitude",

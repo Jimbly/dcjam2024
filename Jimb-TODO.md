@@ -1,11 +1,11 @@
 TODO
-* lose people in rooms of solitude to be replaced
 * draft second level, play through first 2, measure time, check difficulty, put save game aside for later
 * Insanity view
   * party portraits to change to monsters - silhouettes
   * ghosts moving through the level
   * dark/postprocess - 16-bit color crunch? - dither?
   * change fog colors and backdrop
+  * outlines of tentacles in space backdrop
 * final battle
   * no bamf after final battle
   * no sanity loss? only lose condition is all heroes are dead?

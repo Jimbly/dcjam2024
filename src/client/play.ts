@@ -543,6 +543,9 @@ const style_sanity = fontStyle(null, {
 markdownSetColorStyle('sanity', fontStyle(style_sanity, {
   glow_color: 0,
 }));
+markdownSetColorStyle('3', fontStyle(null, {
+  color: 0x249fdeff,
+}));
 let sanity_flash_at: number;
 let sanity_flash_major: boolean;
 let fake_sanity: [number, number] | null;
@@ -810,9 +813,9 @@ function playCrawl(): void {
   dialogRun(dt, dialog_viewport);
 
   const build_mode = buildModeActive();
-  const need_bamf = !build_mode && bamfTick();
-  const frame_combat = !need_bamf && engagedEnemy();
   let locked_dialog = dialogMoveLocked();
+  const need_bamf = !build_mode && !locked_dialog && bamfTick();
+  const frame_combat = !need_bamf && engagedEnemy();
   const overlay_menu_up = pause_menu_up; // || inventory_up
   let minimap_display_h = build_mode ? BUTTON_W : MINIMAP_W;
   let show_compass = false; // !build_mode;

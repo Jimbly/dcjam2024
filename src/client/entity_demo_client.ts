@@ -75,6 +75,7 @@ export type Hero = {
   gender: GENDER;
   face?: number;
   dead?: boolean;
+  left?: boolean;
 };
 
 

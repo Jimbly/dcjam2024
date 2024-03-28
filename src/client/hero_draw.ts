@@ -22,6 +22,7 @@ import {
 } from 'glov/client/ui';
 import { WithRequired } from 'glov/common/types';
 import { v4copy, v4set, vec4 } from 'glov/common/vmath';
+import { bamfActive } from './bamf';
 import {
   combatAcitvateAbility,
   combatAnimPaused,
@@ -346,7 +347,8 @@ export function drawHero(idx: number, x0: number, y0: number, z: number, hero_de
       z,
       w: HP_W,
       align: ALIGN.HCENTER,
-      text: dead ? 'DEAD' : preview_hero ? `${preview_hero.hp} / ${class_tier!.hp}` : `${class_tier!.hp}`,
+      text: dead && !hero_def.left ? 'DEAD' :
+        preview_hero ? `${preview_hero.hp} / ${class_tier!.hp}` : `${class_tier!.hp}`,
     });
   }
 
@@ -426,7 +428,7 @@ export function drawHero(idx: number, x0: number, y0: number, z: number, hero_de
   y = y0 + ABILITY_Y;
   let abil_y0 = y;
   let zabil = z;
-  let is_solitude = isSolitude();
+  let is_solitude = isSolitude() && !bamfActive();
   // eslint-disable-next-line no-unmodified-loop-condition
   for (let ability_idx = 0; class_def && ability_idx < 2; ++ability_idx) {
     z = zabil;

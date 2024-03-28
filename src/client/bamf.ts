@@ -159,6 +159,10 @@ export function bamfAddRandom(): void {
   ent_heroes.push(h1);
 }
 
+export function bamfActive(): boolean {
+  return need_bamf;
+}
+
 const PAD = 8;
 export function bamfTick(): boolean {
   if (!need_bamf) {
@@ -214,7 +218,8 @@ Rumor has it that deep within this ruin lie answers to questions about the meani
       font_style: style_death,
       x, y, z, w, h: 104 - y,
       align: ALIGN.HCENTER | ALIGN.HWRAP | ALIGN.VCENTER,
-      text: bamf_state.line.replace('NAME', `[c=2]${hero.name}[/c]`).replace('has died', 'has [c=1]died[/c]'),
+      text: bamf_state.line.replace('NAME', `[c=2]${hero.name}[/c]`).replace('has died',
+        hero.left ? 'has [c=3]decided to remain here[/c]' : 'has [c=1]died[/c]'),
       alpha: alpha_death,
     });
   }

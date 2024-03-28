@@ -1,4 +1,4 @@
-import { clone } from 'glov/common/util';
+import { clamp, clone } from 'glov/common/util';
 import {
   CrawlerScriptAPI,
   CrawlerScriptWhen,
@@ -6,14 +6,17 @@ import {
   crawlerScriptRegisterFunc,
 } from '../common/crawler_script';
 import { CrawlerCell, DirTypeOrCell } from '../common/crawler_state';
-import { bamfAddRandom } from './bamf';
+import { bamfAddRandom, bamfCheck } from './bamf';
 import { crawlerEntFactory } from './crawler_entity_client';
 import { crawlerScriptAPI } from './crawler_play';
+import { doSolitudeLeave } from './dialog_data';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { dialog, dialogPush } from './dialog_system';
 import { EntityDemoClient, StatsData } from './entity_demo_client';
 import { autosave, myEnt, myEntOptional } from './play';
 import { statusPush } from './status';
+
+const { random } = Math;
 
 export function statusShort(text: string): void {
   statusPush(text).counter = 3000;
@@ -64,7 +67,7 @@ crawlerScriptRegisterEvent({
   },
 });
 
-function onetimeEventForPos(x: number, y: number, query_only?: boolean): boolean {
+export function onetimeEventForPos(x: number, y: number, query_only?: boolean): boolean {
   let me = myEntOptional();
   let events_done = me ? me.data.events_done = me.data.events_done || {} : {};
   let pos_key = `${crawlerScriptAPI().getFloor()},${x},${y}`;
@@ -81,6 +84,34 @@ export function onetimeEvent(query_only?: boolean): boolean {
   let pos = crawlerScriptAPI().pos;
   return onetimeEventForPos(pos[0], pos[1], query_only);
 }
+
+crawlerScriptRegisterEvent({
+  key: 'solitude_upgrade',
+  when: CrawlerScriptWhen.POST,
+  func: (api: CrawlerScriptAPI, cell: CrawlerCell, param: string) => {
+    let { heroes } = myEnt().data;
+    let candidate = -1;
+    for (let ii = 1; ii < heroes.length; ++ii) {
+      let hero = heroes[ii];
+      if (hero.tier !== 2 && hero.levels[0] === 2 && hero.levels[1] === 2) {
+        if (candidate === -1 || random() < 0.5) {
+          candidate = ii;
+        }
+      }
+    }
+    let me = myEntOptional();
+    let events_done = me ? me.data.events_done = me.data.events_done || {} : {};
+    let key = `solitude_upgrade_${api.getFloor()}`;
+    if (candidate !== -1 && !events_done[key]) {
+      let hero = heroes[candidate];
+      hero.left = true;
+      hero.dead = true;
+      events_done[key] = hero.name as unknown as true;
+      doSolitudeLeave(clamp(api.getFloor() - 21, 0, 4), hero);
+      bamfCheck();
+    }
+  },
+});
 
 crawlerScriptRegisterFunc('ONETIMEDONE', function (
   script_api: CrawlerScriptAPI, cell: CrawlerCell, dir: DirTypeOrCell

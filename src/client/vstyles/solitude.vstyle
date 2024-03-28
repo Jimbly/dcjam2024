@@ -1,0 +1,14 @@
+---
+fog_color: '#191c0e'
+background_color: '#191c0e'
+background_img: space1
+fog_params:
+- 0.003
+- 0.0005
+- 800.0
+cell_swaps:
+  open: solitude_open1
+wall_swaps:
+  open: demo_open
+  solid: solitude_solid1
+  stairs_in: solitude_exit
