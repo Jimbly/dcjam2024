@@ -225,12 +225,13 @@ export function main(): void {
   }
 
   ui.scaleSizes(13 / 32);
-  ui.setModalSizes(0, round(game_width * 0.8), round(game_height * 0.23), 0, 0);
+  ui.setModalSizes(0, round(game_width * 0.8), round(game_height * 0.23), 0, 16);
   ui.setFontHeight(8);
   ui.setButtonHeight(16);
   ui.setPanelPixelScale(1);
   ui.buttonSetDefaultYOffs({ down: 1, disabled: 1 });
   ui.setFontStyles(null, null, style_modal, null);
+  ui.setTooltipWidth(140, 1);
   uiSetPanelColor([1, 1, 1, 1]);
   // ui.uiSetFontStyleFocused(fontStyle(ui.uiGetFontStyleFocused(), {
   //   outline_width: 2.5,

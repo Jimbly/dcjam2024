@@ -1,4 +1,4 @@
-/* eslint import/order:off */
+/* eslint import/order:off, max-len:off */
 import 'glov/client/test'; // Must be first
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -11,7 +11,7 @@ import {
 import { Hero } from '../../client/entity_demo_client';
 import { randomHero } from '../../client/heroes';
 
-const { floor, random } = Math;
+const { floor, max, random } = Math;
 
 function perc(v: number): string {
   let r = (v * 100).toFixed(0);
@@ -35,12 +35,12 @@ function printHisto(total: number, histo: Record<number, number>): void {
   console.log(output.join('   '));
 }
 
-function printHistoDeaths(total: number, histo: Record<number, number>): void {
+function printHistoDeaths(total: number, histo: Record<number, number>): string {
   let output = [];
   for (let ii = 0; ii <= 6; ++ii) {
-    output.push(`${perc((histo[ii] || 0)/total)}`);
+    output.push(`${ii}=${perc((histo[ii] || 0)/total)}`);
   }
-  console.log(output.join('   '));
+  return output.join('   ');
 }
 
 let stats_base = {
@@ -59,8 +59,7 @@ function printStats(label: string): void {
     let analysis = ((stats.dead_histo[0]||0)/stats.total > 0.4) ? 'EASY' : '';
     console.log(`\n**** ${label} **** Wipe=${perc(loss/stats.total)}` +
       `  1-2D=${perc(onetwodead/stats.total)}  ${analysis}`);
-    console.log(`Average Deaths: ${(stats.dead/stats.total).toFixed(2)}/enc`);
-    printHistoDeaths(stats.total, stats.dead_histo);
+    console.log(`Average Deaths: ${(stats.dead/stats.total).toFixed(2)}/enc  ${printHistoDeaths(stats.total, stats.dead_histo)}`);
     console.log(`Average Turns: ${(stats.turns/stats.total).toFixed(2)}/enc`);
     printHisto(stats.total, stats.turns_histo);
   }
@@ -72,11 +71,11 @@ function printStats(label: string): void {
 }
 printStats('');
 
-function doCombat(encounter_id: string): void {
+function doCombat(encounter_id: string, tier: number): void {
   let encounter = ENCOUNTERS[encounter_id]!;
   let hero_defs: Hero[] = [];
   for (let ii = 0; ii < 6; ++ii) {
-    hero_defs.push(randomHero(ii, (ii === 0) ? 1 : 0, hero_defs, 0, false));
+    hero_defs.push(randomHero(ii, max(tier, (ii === 0) ? 1 : 0), hero_defs, 0, false));
   }
   let combat_state = combatStateInit(hero_defs, encounter);
   let { heroes } = combat_state;
@@ -181,7 +180,7 @@ function doCombat(encounter_id: string): void {
 const TESTS = 500;
 for (let encounter_id in ENCOUNTERS) {
   for (let ii = 0; ii < TESTS; ++ii) {
-    doCombat(encounter_id);
+    doCombat(encounter_id, 0);
   }
   printStats(encounter_id);
 }

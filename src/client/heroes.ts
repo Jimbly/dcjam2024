@@ -1,6 +1,6 @@
 import assert from 'assert';
 import { TSMap } from 'glov/common/types';
-import { AttackType } from './encounters';
+import { AttackDef, AttackType } from './encounters';
 import { AbilityDef, Hero, HeroClassDef, HeroClassTier } from './entity_demo_client';
 import { GENDER, NAMEPAIR, NAMES_BY_GENDER } from './names';
 
@@ -24,31 +24,31 @@ const front_tier_data: [HeroClassTier, HeroClassTier, HeroClassTier] = [{
   hp: 8,
   shield: 1,
 }, {
-  hp: 9,
-  shield: 2,
-}, {
   hp: 10,
   shield: 3,
+}, {
+  hp: 12,
+  shield: 4,
 }];
 const mid_tier_data: [HeroClassTier, HeroClassTier, HeroClassTier] = [{
   hp: 6,
   shield: 0,
 }, {
-  hp: 7,
-  shield: 0,
-}, {
   hp: 8,
   shield: 1,
+}, {
+  hp: 10,
+  shield: 2,
 }];
 const back_tier_data: [HeroClassTier, HeroClassTier, HeroClassTier] = [{
   hp: 5,
   shield: 0,
 }, {
-  hp: 5,
-  shield: 1,
-}, {
   hp: 6,
   shield: 1,
+}, {
+  hp: 7,
+  shield: 2,
 }];
 
 export const CLASSES: TSMap<HeroClassDef> = {
@@ -138,10 +138,10 @@ export const ABILITIES: TSMap<AbilityDef> = {
     aggro: 3,
     effects: [{
       type: AttackType.FRONT,
-      amount: 2,
+      base_amount: 2,
     }, {
       type: AttackType.POISON,
-      amount: 1,
+      base_amount: 1,
     }],
     icon: 'ability_poison1',
   },
@@ -150,7 +150,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     aggro: 2,
     effects: [{
       type: AttackType.FRONT,
-      amount: 2,
+      base_amount: 2,
     }],
     icon: 'ability_gun1',
   },
@@ -159,7 +159,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     aggro: 3,
     effects: [{
       type: AttackType.FRONT,
-      amount: 3,
+      base_amount: 3,
     }],
     icon: 'ability_gun2',
   },
@@ -168,10 +168,10 @@ export const ABILITIES: TSMap<AbilityDef> = {
     aggro: 1,
     effects: [{
       type: AttackType.BACK,
-      amount: 1,
+      base_amount: 1,
     }, {
       type: AttackType.SHIELD_SELF,
-      amount: 1,
+      base_amount: 1,
     }],
     icon: 'ability_back2',
   },
@@ -180,7 +180,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     aggro: 2,
     effects: [{
       type: AttackType.BACK,
-      amount: 2,
+      base_amount: 2,
     }],
     icon: 'ability_back1',
   },
@@ -189,7 +189,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     aggro: 4,
     effects: [{
       type: AttackType.SHIELD_SELF,
-      amount: 2,
+      base_amount: 2,
     }],
     icon: 'ability_shield2',
   },
@@ -198,7 +198,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     aggro: 3,
     effects: [{
       type: AttackType.SHIELD_SELF,
-      amount: 3,
+      base_amount: 3,
     }],
     icon: 'ability_shield1',
   },
@@ -207,7 +207,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     aggro: 1,
     effects: [{
       type: AttackType.POISON,
-      amount: 1,
+      base_amount: 1,
     }],
     icon: 'ability_poison2',
   },
@@ -216,7 +216,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     aggro: 2,
     effects: [{
       type: AttackType.ALL,
-      amount: 1,
+      base_amount: 1,
     }],
     icon: 'ability_ranged_all2',
   },
@@ -225,7 +225,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     aggro: 3,
     effects: [{
       type: AttackType.ALL,
-      amount: 2,
+      base_amount: 2,
     }],
     icon: 'ability_ranged_all1',
   },
@@ -234,10 +234,10 @@ export const ABILITIES: TSMap<AbilityDef> = {
     aggro: 2,
     effects: [{
       type: AttackType.HEAL_ALL,
-      amount: 1,
+      base_amount: 1,
     }, {
       type: AttackType.SHIELD_ALL,
-      amount: 1,
+      base_amount: 1,
     }],
     icon: 'ability_heal_all',
   },
@@ -246,7 +246,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     aggro: 1,
     effects: [{
       type: AttackType.HEAL_ALL,
-      amount: 1,
+      base_amount: 1,
     }],
     icon: 'ability_heal_all',
   },
@@ -255,7 +255,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     aggro: 1,
     effects: [{
       type: AttackType.HEAL,
-      amount: 2,
+      base_amount: 2,
     }],
     icon: 'ability_heal',
   },
@@ -264,7 +264,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     aggro: 2,
     effects: [{
       type: AttackType.HEAL,
-      amount: 3,
+      base_amount: 3,
     }],
     icon: 'ability_heal',
   },
@@ -273,7 +273,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     aggro: 3,
     effects: [{
       type: AttackType.SHIELD_ALL,
-      amount: 1,
+      base_amount: 1,
     }],
     icon: 'ability_shield_all',
   },
@@ -282,7 +282,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     aggro: 2,
     effects: [{
       type: AttackType.SHIELD_ALL,
-      amount: 2,
+      base_amount: 2,
     }],
     icon: 'ability_shield_all',
   },
@@ -358,7 +358,12 @@ export function randomHero(
   return {
     class_id,
     tier,
+    levels: [0,0],
     face,
     ...name,
   };
+}
+
+export function effectGetValue(effect: AttackDef, tier: number, level: number): number {
+  return effect.base_amount + tier + level;
 }

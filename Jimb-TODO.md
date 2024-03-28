@@ -1,8 +1,6 @@
 TODO
 * start balancing combat encounters
 * placeholder one-time world events that display one of your characters in dialog (just hard-coded index in the event, not even random!)
-* spend XP to level up skills or heroes
-  * only in Rooms of Solitude
 * Insanity view
   * party portraits to change to monsters - silhouettes
   * ghosts moving through the level
@@ -14,6 +12,7 @@ TODO
 * dungeon event that tiers-up your leader if still T1 on end of floor 4?
 * lose people in rooms of solitude to be replaced
 * bamf - if player has only 2 attackers in party, give only attack options (if possible)
+* integrate footsteps
 
 Balance Plan: conservation of XP
           level + tier that should get 1-2 deaths in some combats (2/5?) and 2-3 deaths on boss
@@ -41,6 +40,7 @@ Finish up
 
 Polish
 * consistent ability icons
+* tooltip on Sanity and XP displays, explaining mechanics
 * add sanity icon to spritesheet and use in dialogs
 * scroll area for combat log when needed
 * change wander to only wander between 2 spaces, start and random neighbor, then can enable on all
@@ -56,3 +56,4 @@ Post-game fixes / polish
 * bias features for simple billboard details
 * reorganize all of the example entities to use a spritesheet
 * add support for multiple fonts with different heights to dialog system and/or markdown - handwriting font would be cool
+* tooltip width and markdown not playing correctly, probably also H

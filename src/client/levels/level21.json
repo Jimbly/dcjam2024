@@ -2142,6 +2142,12 @@
         "solitude_solid2",
         "open"
       ],
+      "events": [
+        {
+          "id": "sign",
+          "param": "HINT: You can spend [c=xp]XP[/c] in Solitude to level up abilities.  Just select the ability you want to upgrade."
+        }
+      ],
       "h": -0.1875
     },
     {
@@ -2956,7 +2962,8 @@
   "vstyle": "ship2",
   "seed": "32845502",
   "props": {
-    "title": "Solitude"
+    "title": "Solitude",
+    "solitude": "true"
   },
   "paths": {}
 }

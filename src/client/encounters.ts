@@ -45,7 +45,7 @@ export const AttackTypeToFrameEnemies: Record<AttackType, number> = {
 
 export type AttackDef = {
   type: AttackType;
-  amount: number;
+  base_amount: number;
 };
 
 export type EnemyDef = {
@@ -54,6 +54,8 @@ export type EnemyDef = {
   shield: number;
   effects: AttackDef[];
   enttype: string;
+  tier: number;
+  level: number;
 };
 
 export const ENEMIES: TSMap<EnemyDef> = {
@@ -62,9 +64,11 @@ export const ENEMIES: TSMap<EnemyDef> = {
     enttype: 'enemy0',
     hp: 7,
     shield: 0,
+    tier: 0,
+    level: 0,
     effects: [{
       type: AttackType.FRONT,
-      amount: 1,
+      base_amount: 1,
     }],
   },
   damage1: { // L1-damage-GlowBug4
@@ -72,9 +76,11 @@ export const ENEMIES: TSMap<EnemyDef> = {
     enttype: 'enemy1',
     hp: 4,
     shield: 0,
+    tier: 0,
+    level: 0,
     effects: [{
       type: AttackType.FRONT,
-      amount: 4,
+      base_amount: 4,
     }],
   },
   balanced1: { // L1-balanced-AngryStar
@@ -82,9 +88,11 @@ export const ENEMIES: TSMap<EnemyDef> = {
     enttype: 'enemy2',
     hp: 5,
     shield: 0,
+    tier: 0,
+    level: 0,
     effects: [{
       type: AttackType.FRONT,
-      amount: 3,
+      base_amount: 3,
     }],
   },
   aoe1: { // L1-aoe-NeonWiggler
@@ -92,9 +100,11 @@ export const ENEMIES: TSMap<EnemyDef> = {
     enttype: 'enemy3',
     hp: 4,
     shield: 0,
+    tier: 0,
+    level: 0,
     effects: [{
       type: AttackType.ALL,
-      amount: 1,
+      base_amount: 1,
     }],
   },
   boss1: { // L1-boss-HexBot
@@ -102,11 +112,15 @@ export const ENEMIES: TSMap<EnemyDef> = {
     enttype: 'l1boss',
     hp: 17,
     shield: 1,
+    tier: 0,
+    level: 0,
     effects: [{
       type: AttackType.FRONT,
-      amount: 3,
+      base_amount: 3,
     }],
   },
+
+
 };
 
 export const ENCOUNTERS: TSMap<Encounter> = {

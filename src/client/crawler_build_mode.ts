@@ -1088,6 +1088,7 @@ let cell_prop_key_items: MenuItem[] = [
 ].map((name) => ({ name, tag: name }));
 let level_prop_key_items: MenuItem[] = [
   'title',
+  'solitude',
   'new',
 ].map((name) => ({ name, tag: name }));
 

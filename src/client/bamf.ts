@@ -107,10 +107,16 @@ export function bamfCheck(): void {
             return true;
           }
         });
-        let tier = max(tierFromFloor(), hero.tier);
+        let tier = max(tierFromFloor(), hero.tier, isBootstrap() ? 1 : 0);
         let h1 = randomHero(ii, tier, heroes_temp, 0, isBootstrap(), dead_names);
+        if (hero.levels) {
+          h1.levels = hero.levels.slice(0) as [number, number];
+        }
         heroes_temp.push(h1);
         let h2 = randomHero(ii, tier, heroes_temp, 1, isBootstrap(), dead_names);
+        if (hero.levels) {
+          h2.levels = hero.levels.slice(0) as [number, number];
+        }
         bamf_state = {
           hero_idx: ii,
           hero,
@@ -244,8 +250,8 @@ Rumor has it that deep within this ruin lie answers to questions about the meani
       y += uiButtonHeight() + PAD;
     }
 
-    if (!isBootstrap() || true) {
-      showAbilityTooltip(28, y - HERO_H * 2 - uiButtonHeight());
+    if (!isBootstrap()) {
+      showAbilityTooltip(28, y - HERO_H * 2 - uiButtonHeight(), false);
     }
   }
 

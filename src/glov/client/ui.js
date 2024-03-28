@@ -834,7 +834,7 @@ export function drawTooltip(param) {
       x + eff_tooltip_pad, y + tooltip_text_offs, z+1, w, 0, ui_style_current.text_height,
       tooltip);
   } else {
-    y += markdownAuto({
+    let mddims = markdownAuto({
       font_style: font_style_modal,
       x: x + eff_tooltip_pad,
       y: y + tooltip_text_offs,
@@ -843,7 +843,9 @@ export function drawTooltip(param) {
       align: ALIGN.HWRAP,
       text_height: ui_style_current.text_height,
       text: tooltip
-    }).h;
+    });
+    eff_tooltip_w = max(mddims.w + eff_tooltip_pad * 2, eff_tooltip_w);
+    y += mddims.h;
   }
   y += eff_tooltip_pad;
   let pixel_scale = param.pixel_scale || tooltip_panel_pixel_scale;

@@ -39,4 +39,7 @@ export const SOUND_DATA: Partial<Record<string, {
 
   hunter_seen: { file: 'hunter_seen', volume: 1 },
   hunter_lost: { file: 'hunter_lost', volume: 1 },
+
+  victory: { file: 'victory', volume: 1 },
+  level_up: { file: 'level_up', volume: 1 },
 };

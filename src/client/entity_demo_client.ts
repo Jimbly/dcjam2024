@@ -70,6 +70,7 @@ export type HeroClassDef = {
 export type Hero = {
   class_id: string;
   tier: number;
+  levels: [number, number];
   name: string;
   gender: GENDER;
   face?: number;
@@ -84,6 +85,7 @@ export type EntityDataClient = {
   floor: number;
   stats: StatsData;
   // Player:
+  xp?: number;
   sanity: number;
   sanity_max: number;
   heroes: Hero[];

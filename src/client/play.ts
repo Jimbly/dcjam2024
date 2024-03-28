@@ -147,7 +147,10 @@ import {
 import { hasSaveData } from './title';
 
 const spritesheet_icons = require('./img/icons');
-const { FRAME_SANITY24 } = spritesheet_icons;
+const {
+  FRAME_SANITY24,
+  FRAME_XPBAR,
+} = spritesheet_icons;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const { abs, floor, max, min, round, sin } = Math;
@@ -519,6 +522,14 @@ export function isBootstrap(): boolean {
   return false;
 }
 
+export function isSolitude(): boolean {
+  let level = crawlerGameState().level;
+  if (level && level.getProp('solitude')) {
+    return true;
+  }
+  return false;
+}
+
 const SANITY_H = 38;
 const SANITY_X = game_width - SANITY_W;
 const SANITY_Y = game_height - SANITY_H;
@@ -545,9 +556,6 @@ export function sanityDamage(perm: number, temp: number, delay: number, major: b
 
 function doSanity(): void {
   let me = myEnt();
-  if (!me || isBootstrap()) {
-    return;
-  }
   if (me.data.sanity === undefined) { // REMOVEME
     me.data.sanity = me.data.sanity_max = 100;
   }
@@ -645,6 +653,74 @@ function doSanity(): void {
       ui_sprites.sanity_bar_blocked.draw(draw_param);
     }
   }
+}
+
+const XP_X = 442;
+const XP_Y = 201;
+const XP_W = 33;
+const XP_H = 29;
+const XP_TEXT_OFFS = 16;
+const style_xp = fontStyle(null, {
+  color: 0xfffc40ff,
+  outline_color: 0x5b3138ff,
+  outline_width: 2.5,
+});
+markdownSetColorStyle('xp', style_xp);
+function doXP(): void {
+  let me = myEnt();
+  let { xp } = me.data;
+  if (xp === undefined) {
+    // never got any
+    return;
+  }
+
+  let z = Z.UI;
+  spritesheet_icons.sprite.draw({
+    x: XP_X,
+    y: XP_Y,
+    z,
+    w: XP_W,
+    h: XP_H,
+    frame: FRAME_XPBAR,
+  });
+
+  font.draw({
+    style: style_xp,
+    x: XP_X + 3,
+    y: XP_Y + XP_TEXT_OFFS,
+    w: XP_W - 3,
+    align: ALIGN.HCENTER,
+    text: `${xp}`,
+  });
+}
+const XP_TABLE = [
+  1,
+  2,
+  3,
+  4,
+  5,
+];
+export function xpCost(tier: number, level: number): number {
+  if (level === 2) {
+    return Infinity;
+  }
+  return 1 << (tier + level);
+}
+export function giveXP(target: Entity): void {
+  let floor_id = crawlerGameState().floor_id;
+  let floor_level = clamp(floor_id - 11, 0, XP_TABLE.length);
+  let data = myEnt().data;
+  let delta = XP_TABLE[floor_level];
+  statusPush(`+${delta} xp`, style_xp);
+  data.xp = (data.xp || 0) + delta;
+}
+export function levelUpAbility(hero_idx: number, ability_idx: number): void {
+  let data = myEnt().data;
+  let hero = data.heroes[hero_idx];
+  let cost = xpCost(hero.tier, hero.levels[ability_idx]);
+  assert(data.xp && data.xp >= cost);
+  data.xp -= cost;
+  hero.levels[ability_idx]++;
 }
 
 let movement_disabled_last_frame = false;
@@ -807,8 +883,9 @@ function playCrawl(): void {
   //   inventory_up = !inventory_up;
   // }
 
-  if (!build_mode) {
+  if (!build_mode && !isBootstrap()) {
     doSanity();
+    doXP();
   }
 
   if (frame_combat) {
@@ -993,7 +1070,7 @@ function playInitEarly(room: ClientChannelWorker): void {
 
 export function autosave(): void {
   crawlerSaveGame('auto');
-  statusPush('Auto-saved.');
+  statusPush('Auto-saved.').counter = 2000;
   autosave_pos = myEnt().data.pos.slice(0) as JSVec3;
 }
 

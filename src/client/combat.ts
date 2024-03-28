@@ -70,8 +70,8 @@ import {
   getAbiltiyTooltip,
   heroDrawPos,
 } from './hero_draw';
-import { ABILITIES, CLASSES, DICE_SLOTS } from './heroes';
-import { drawHealthBar, myEnt, myEntOptional, sanityDamage } from './play';
+import { ABILITIES, CLASSES, DICE_SLOTS, effectGetValue } from './heroes';
+import { drawHealthBar, giveXP, myEnt, myEntOptional, sanityDamage } from './play';
 
 const spritesheet_icons = require('./img/icons');
 const { sprite_icons } = spritesheet_icons;
@@ -119,6 +119,8 @@ export class CombatHero {
   name!: string;
   temp_shield: number = 0;
   aggro: number = 0;
+  tier!: number;
+  levels!: [number, number];
   class_ref!: HeroClassDef;
   tier_ref!: HeroClassTier;
   ability_refs!: [AbilityDef, AbilityDef];
@@ -250,8 +252,9 @@ export class CombatState {
 
     let { heroes } = this;
     let hero = heroes[hero_idx];
-    let { ability_refs } = hero;
+    let { ability_refs, tier, levels } = hero;
     let ability = ability_refs[ability_idx];
+    let level = levels[ability_idx];
 
     hero.aggro += ability.aggro;
     if (hero.aggro > MAX_AGGRO) {
@@ -263,20 +266,21 @@ export class CombatState {
     let living_enemies = this.livingEnemies();
     for (let ii = 0; ii < effects.length; ++ii) {
       let effect = effects[ii];
+      let amount = effectGetValue(effect, tier, level);
       switch (effect.type) {
         case AttackType.FRONT:
-          this.damage(living_enemies[0], effect.type, effect.amount + this.damage_bonus, animator);
+          this.damage(living_enemies[0], effect.type, amount + this.damage_bonus, animator);
           break;
         case AttackType.POISON:
-          this.poison(living_enemies[0], effect.amount, animator);
+          this.poison(living_enemies[0], amount, animator);
           break;
         case AttackType.BACK:
           this.damage(living_enemies[living_enemies.length - 1], effect.type,
-            effect.amount + this.damage_bonus, animator);
+            amount + this.damage_bonus, animator);
           break;
         case AttackType.ALL:
           for (let jj = 0; jj < living_enemies.length; ++jj) {
-            this.damage(living_enemies[jj], effect.type, effect.amount + this.damage_bonus, animator);
+            this.damage(living_enemies[jj], effect.type, amount + this.damage_bonus, animator);
           }
           break;
         case AttackType.SHIELD_SELF:
@@ -284,10 +288,10 @@ export class CombatState {
             animator?.addFloater({
               hero_idx,
               attack_type: effect.type,
-              msg: `${effect.amount}[img=shield]`,
+              msg: `${amount}[img=shield]`,
             });
           }
-          hero.temp_shield += effect.amount;
+          hero.temp_shield += amount;
           if (hero.temp_shield > MAX_SHIELD) {
             hero.temp_shield = MAX_SHIELD;
           }
@@ -302,10 +306,10 @@ export class CombatState {
               animator?.addFloater({
                 hero_idx: jj,
                 attack_type: AttackType.SHIELD_SELF,
-                msg: `${effect.amount}[img=shield]`,
+                msg: `${amount}[img=shield]`,
               });
             }
-            target_hero.temp_shield += effect.amount;
+            target_hero.temp_shield += amount;
             if (target_hero.temp_shield > MAX_SHIELD) {
               target_hero.temp_shield = MAX_SHIELD;
             }
@@ -321,7 +325,7 @@ export class CombatState {
             if (!target_hero.hp) {
               continue;
             }
-            let missing_hp = min(target_hero.tier_ref.hp - target_hero.hp, effect.amount);
+            let missing_hp = min(target_hero.tier_ref.hp - target_hero.hp, amount);
             if (missing_hp > best_missing_hp || missing_hp === best_missing_hp && target_hero.hp < best_total_hp) {
               best = jj;
               best_missing_hp = missing_hp;
@@ -330,7 +334,7 @@ export class CombatState {
           }
           if (best !== -1) {
             let target_hero = heroes[best];
-            let dhp = min(effect.amount, target_hero.tier_ref.hp - target_hero.hp);
+            let dhp = min(amount, target_hero.tier_ref.hp - target_hero.hp);
             target_hero.hp += dhp;
             animator?.addFloater({
               hero_idx: best,
@@ -345,7 +349,7 @@ export class CombatState {
             if (!target_hero.hp) {
               continue;
             }
-            let dhp = min(effect.amount, target_hero.tier_ref.hp - target_hero.hp);
+            let dhp = min(amount, target_hero.tier_ref.hp - target_hero.hp);
             if (dhp) {
               animator?.addFloater({
                 hero_idx: jj,
@@ -430,6 +434,7 @@ export class CombatState {
     let enemy = enemies[enemy_idx];
     assert(enemy.hp);
     let { def, poison } = enemy;
+    let { tier, level } = def;
     if (poison) {
       animator?.addFloater({
         enemy_idx,
@@ -448,6 +453,7 @@ export class CombatState {
     }
     for (let jj = 0; jj < def.effects.length; ++jj) {
       let effect = def.effects[jj];
+      let amount = effectGetValue(effect, tier, level);
       switch (effect.type) {
         case AttackType.FRONT: {
           let best: number[] = [];
@@ -464,7 +470,7 @@ export class CombatState {
             }
           }
           let any_damaged = false;
-          let base_damage = effect.amount + this.damage_bonus;
+          let base_damage = amount + this.damage_bonus;
           let damage = floor(base_damage / best.length);
           let log: string | null = null;
           if (best.length > 1) {
@@ -490,7 +496,7 @@ export class CombatState {
         } break;
         case AttackType.ALL: {
           animator?.animateAttack(enemy_idx, -1);
-          let damage = effect.amount + this.damage_bonus;
+          let damage = amount + this.damage_bonus;
           let any_damaged = false;
           let num_killed = 0;
           for (let kk = 0; kk < heroes.length; ++kk) {
@@ -622,7 +628,7 @@ export function combatStateInit(heroes: Hero[], encounter: Encounter): CombatSta
   }
   for (let ii = 0; ii < heroes.length; ++ii) {
     let hero_ref = heroes[ii];
-    let { class_id, tier } = hero_ref;
+    let { class_id, tier, levels } = hero_ref;
     let class_def = CLASSES[class_id]!;
     let { abilities } = class_def;
     let class_tier = class_def.tier[tier];
@@ -636,6 +642,8 @@ export function combatStateInit(heroes: Hero[], encounter: Encounter): CombatSta
     assert(a1);
     hero.ability_refs = [a0, a1];
     hero.hp = hero_ref.dead ? 0 : class_tier.hp;
+    hero.tier = tier;
+    hero.levels = levels;
     combat_state.heroes.push(hero);
   }
 
@@ -961,8 +969,8 @@ export function combatPreviewAlpha(): number {
 const DIE_W = 20;
 const DIE_PAD = 3;
 const COMBAT_TOOLTIP_W = render_width - SANITY_W - DIE_W - DIE_PAD * 2;
-export function showAbilityTooltip(x: number, y: number): void {
-  let ability_tooltip = getAbiltiyTooltip();
+export function showAbilityTooltip(x: number, y: number, for_levelup: boolean): void {
+  let ability_tooltip = getAbiltiyTooltip(for_levelup);
   if (ability_tooltip) {
     const PAD = 5;
     let h = markdownAuto({
@@ -1157,7 +1165,7 @@ export function doCombat(target: Entity, dt: number): void {
       });
     }
 
-    let { effects } = def;
+    let { effects, tier, level } = def;
     assert.equal(effects.length, 1);
     let attack = effects[0];
     let frame = AttackTypeToFrameEnemies[attack.type];
@@ -1178,7 +1186,7 @@ export function doCombat(target: Entity, dt: number): void {
     });
     font.drawSized(preview_as_dead ? style_attack_dead_preview : style_attack,
       x_mid + 1, enemy_y + ENEMY_ATTACK_YOFFS + 1, z,
-      8, `${attack.amount}`);
+      8, `${effectGetValue(attack, tier, level)}`);
   }
 
   // draw dice
@@ -1246,7 +1254,7 @@ export function doCombat(target: Entity, dt: number): void {
       num_left++;
     }
   }
-  let ability_tooltip = getAbiltiyTooltip();
+  let ability_tooltip = getAbiltiyTooltip(false);
   if (ability_tooltip) {
     hint = ability_tooltip;
   } else if (combat_scene.last_log) {
@@ -1312,8 +1320,8 @@ export function doCombat(target: Entity, dt: number): void {
     // victory!
     combat_scene.did_victory = true;
     playUISound('victory');
+    giveXP(target);
     entityManager().deleteEntity(target.id, 'killed');
-    // TODO: give loot
     bamfCheck();
   }
   combat_scene.player_is_done = false;

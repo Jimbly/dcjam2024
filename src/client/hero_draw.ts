@@ -29,6 +29,7 @@ import {
   combatIsPlayerTurn,
   combatReadyForEnemyTurn,
   combatSetPreviewState,
+  showAbilityTooltip,
 } from './combat';
 import {
   AttackType,
@@ -41,8 +42,9 @@ import {
   ABILITIES,
   CLASSES,
   DICE_SLOTS,
+  effectGetValue,
 } from './heroes';
-import { isBootstrap, myEnt } from './play';
+import { isBootstrap, isSolitude, levelUpAbility, myEnt, xpCost } from './play';
 
 const spritesheet_faces = require('./img/faces');
 const { sprite_faces } = spritesheet_faces;
@@ -53,13 +55,15 @@ const {
   FRAME_HERO_BG_EMPTY,
   FRAME_HEALTHBAR_LEFT,
   FRAME_HEALTHBAR_RIGHT,
+  FRAME_RANK1,
+  FRAME_RANK2,
   FRAME_SHIELD_ON_BLACK,
   FRAME_STAR,
   FRAME_SKULL,
   sprite_icons,
 } = spritesheet_icons;
 
-const { abs, floor, max, round, sin } = Math;
+const { abs, floor, max, min, round, sin } = Math;
 let font_tiny: Font;
 let font: Font;
 
@@ -128,8 +132,10 @@ const color_dead_portrait = vec4(0, 0, 0, 1);
 const color_temp = vec4();
 
 let ability_tooltip: string | null = null;
-let ability_tooltip_frame: number = -1;
-export function getAbiltiyTooltip(): string | null {
+let ability_tooltip_level = -1;
+let ability_tooltip_tier = -1;
+let ability_tooltip_frame = -1;
+export function getAbiltiyTooltip(for_levelup: boolean): string | null {
   if (getFrameIndex() !== ability_tooltip_frame) {
     return null;
   }
@@ -137,13 +143,26 @@ export function getAbiltiyTooltip(): string | null {
   let ability = ABILITIES[ability_tooltip]!;
   let { name, aggro, effects } = ability;
   let ret = [];
-  ret.push(`**${name}**`);
+  if (for_levelup) {
+    ret.push(`[c=xp]Level up![/c] **${name}** ` +
+      `L${ability_tooltip_level}${ability_tooltip_level ? `[img=rank${ability_tooltip_level}md]` : ''}` +
+      `→L${ability_tooltip_level+1}[img=rank${ability_tooltip_level+1}md]`);
+    ret.push(`Cost = [c=xp]${xpCost(ability_tooltip_tier, ability_tooltip_level)}xp[/c]`);
+  } else {
+    ret.push(`**${name}**`);
+  }
 
   for (let ii = 0; ii < effects.length; ++ii) {
     let effect = effects[ii];
-    let { type, amount } = effect;
+    let { type } = effect;
+    let amount = effectGetValue(effect, ability_tooltip_tier, ability_tooltip_level);
     let frame = AttackTypeToMDHeroes[type];
-    let msg = `${amount}${frame} - `;
+    let msg = `${amount}${frame}`;
+    if (for_levelup) {
+      amount = effectGetValue(effect, ability_tooltip_tier, ability_tooltip_level + 1);
+      msg += `→${amount}${frame}`;
+    }
+    msg += ' - ';
     switch (type) {
       case AttackType.FRONT:
         msg += `attack the [c=3]front[/c] monster for [c=1]${amount}[/c]`;
@@ -183,19 +202,23 @@ export function getAbiltiyTooltip(): string | null {
 
   return ret.join('\n');
 }
-function abilitySetTooltip(ability_id: string): void {
+function abilitySetTooltip(ability_id: string, tier: number, level: number): void {
   ability_tooltip_frame = getFrameIndex();
   ability_tooltip = ability_id;
+  ability_tooltip_level = level;
+  ability_tooltip_tier = tier;
 }
 
 const placeholder_hero: Hero = {
   name: '',
 } as Hero;
 
+let any_level_up_available: [number, number] | null = null;
+
 export function heroDrawPos(hero_idx: number): [number, number] {
   return [0 + PORTRAIT_X + PORTRAIT_SIZE / 2, hero_idx * HERO_H + PORTRAIT_Y + PORTRAIT_SIZE/2];
 }
-export function drawHero(idx: number, x0: number, y0: number, z: number, hero_def: Hero): void {
+export function drawHero(idx: number, x0: number, y0: number, z: number, hero_def: Hero, xp_avail?: number): void {
   let combat_states = combatGetStates();
   let combat_hero = combat_states && combat_states.combat_state.heroes[idx] || null;
   let preview_hero = combat_states && combat_states.preview_state.heroes[idx] || null;
@@ -398,6 +421,7 @@ export function drawHero(idx: number, x0: number, y0: number, z: number, hero_de
   y = y0 + ABILITY_Y;
   let abil_y0 = y;
   let zabil = z;
+  let is_solitude = isSolitude();
   // eslint-disable-next-line no-unmodified-loop-condition
   for (let ability_idx = 0; class_def && ability_idx < 2; ++ability_idx) {
     z = zabil;
@@ -408,6 +432,24 @@ export function drawHero(idx: number, x0: number, y0: number, z: number, hero_de
     let die = DICE_SLOTS[idx][ability_idx];
     let x = x0 + ABILITY_X[ability_idx];
     let disabled = Boolean(!combat_hero || !dice_avail[die] || hero_def.dead || dead || !combatIsPlayerTurn());
+    let level_up_available = false;
+    let tooltip: string | undefined;
+    if (is_solitude) {
+      if (!hero_def.levels) {
+        hero_def.levels = [0,0];
+      }
+      let xp_for_level_up = xpCost(tier, hero_def.levels[ability_idx]);
+      if (xp_avail && xp_avail >= xp_for_level_up) {
+        level_up_available = true;
+        disabled = false;
+      } else {
+        if (isFinite(xp_for_level_up)) {
+          tooltip = `[c=xp]${xp_for_level_up}xp[/c] needed to level up`;
+        } else {
+          tooltip = 'Ability is at maximum level';
+        }
+      }
+    }
 
     // Don't do this, force them to use each die, they may want to _not_ generate aggro on another ability
     // if (effects.length === 0 && ability.aggro < 0 && !hero.aggro) {
@@ -426,11 +468,16 @@ export function drawHero(idx: number, x0: number, y0: number, z: number, hero_de
       base_name: 'abilitybutton',
       disabled,
       sound_rollover: disabled ? null : undefined,
-      sound_button: icon,
+      sound_button: level_up_available ? 'level_up' : icon,
       disabled_focusable: true,
+      tooltip,
     };
     if (buttonText(button_param)) {
-      combatAcitvateAbility(idx, ability_idx);
+      if (level_up_available) {
+        levelUpAbility(idx, ability_idx);
+      } else {
+        combatAcitvateAbility(idx, ability_idx);
+      }
     } else if (buttonWasFocused() && !combatAnimPaused()) {
       if (disabled) {
         drawBox({
@@ -438,12 +485,16 @@ export function drawHero(idx: number, x0: number, y0: number, z: number, hero_de
           z: z + 0.05,
         }, ui_sprites.abilitybutton_disabled_focused, 1);
       } else {
-        assert(combat_states);
-        let new_state = combat_states.combat_state.clone();
-        new_state.activateAbility(idx, ability_idx);
-        combatSetPreviewState(new_state);
+        if (level_up_available) {
+          any_level_up_available = [idx, ability_idx];
+        } else {
+          assert(combat_states);
+          let new_state = combat_states.combat_state.clone();
+          new_state.activateAbility(idx, ability_idx);
+          combatSetPreviewState(new_state);
+        }
       }
-      abilitySetTooltip(ability_id);
+      abilitySetTooltip(ability_id, tier, hero_def.levels?.[ability_idx] || 0);
     }
 
     z++;
@@ -472,6 +523,15 @@ export function drawHero(idx: number, x0: number, y0: number, z: number, hero_de
       frame: spritesheet_icons[`FRAME_${icon.toUpperCase()}`],
       color: dead ? color_dead : undefined,
     });
+    let abil_level = hero_def.levels?.[ability_idx] || 0;
+    if (abil_level) {
+      sprite_icons.draw({
+        x: x + 3, y: y + 18, z: z + 0.5,
+        w: 9, h: 11,
+        frame: abil_level === 1 ? FRAME_RANK1 : FRAME_RANK2,
+        color: dead ? color_dead : undefined,
+      });
+    }
 
     x += 30;
     y += 18;
@@ -483,7 +543,8 @@ export function drawHero(idx: number, x0: number, y0: number, z: number, hero_de
     x += padleft;
     for (let effect_idx = 0; effect_idx < effects.length; ++effect_idx) {
       let effect = effects[effect_idx];
-      font.drawSized(dead ? style_effect_dead : style_effect, x, y + 1, z, 8, `${effect.amount}`);
+      let amount = effectGetValue(effect, tier, abil_level);
+      font.drawSized(dead ? style_effect_dead : style_effect, x, y + 1, z, 8, `${amount}`);
       let frame = AttackTypeToFrameHeroes[effect.type];
       aspect = sprite_icons.uidata.aspect[frame];
       let icon_w = ICON_SIZE * aspect;
@@ -555,17 +616,21 @@ export function drawHero(idx: number, x0: number, y0: number, z: number, hero_de
 export function heroesDraw(is_combat: boolean): void {
   let me = myEnt();
   assert(me);
-  let { heroes } = me.data;
+  let { heroes, xp } = me.data;
   if (!heroes) {
     return;
   }
+  any_level_up_available = null;
   dice_usable = {};
   for (let ii = 0; ii < max(6, heroes.length); ++ii) {
     let x0 = 0;
     let y0 = ii * HERO_H;
-    drawHero(ii, x0, y0, Z.UI, heroes[ii] || placeholder_hero);
+    drawHero(ii, x0, y0, Z.UI, heroes[ii] || placeholder_hero, xp);
   }
   if (is_combat) {
     combatReadyForEnemyTurn(dice_usable);
+  } else if (any_level_up_available) {
+    let hero_idx = any_level_up_available[0];
+    showAbilityTooltip(HERO_W, min(game_height - 68, round(HERO_H * hero_idx) + 12), true);
   }
 }

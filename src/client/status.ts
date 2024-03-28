@@ -8,7 +8,7 @@ import {
 } from 'glov/client/ui';
 import { vec4 } from 'glov/common/vmath';
 
-const { round } = Math;
+const { max, round } = Math;
 
 class StatusMessage {
   counter = 0;
@@ -98,6 +98,7 @@ export function statusTick(viewport: UIBox & { pad_top: number; pad_bottom: numb
     });
     let text_w = dims.w;
     text_w += 6;
+    text_w = max(text_w, 48); // DCJ24 HACK: panel size
     temp_color[3] = alpha;
     ui.panel({
       x: x + round((w - text_w)/2) - 1,
