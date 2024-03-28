@@ -812,6 +812,7 @@ class CombatScene {
         z: Z.FLOATERS,
         w: 100,
         align: ALIGN.HCENTER,
+        line_height: 9,
         text: floater.msg,
       });
       let damage_size = 40;
