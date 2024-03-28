@@ -1,5 +1,4 @@
 TODO
-* bamf - automatically swap up tiers of they were level=2
 * give XP for finding notes / terminals
 * draft second level, play through first 2, measure time, check difficulty, put save game aside for later
 * placeholder one-time world events that display one of your characters in dialog (just hard-coded index in the event, not even random!)

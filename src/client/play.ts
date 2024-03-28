@@ -731,11 +731,15 @@ export function xpCost(tier: number, level: number): number {
   }
   return 2 << (tier * 2 + level);
 }
-export function giveXP(target: Entity): void {
+export function giveXP(target: Entity | null): void {
+  let is_boss = target?.data?.stats?.encounter.includes('boss');
   let floor_id = crawlerGameState().floor_id;
   let floor_level = clamp(floor_id - 11, 0, XP_TABLE.length);
   let data = myEnt().data;
-  let delta = XP_TABLE[floor_level];
+  let delta = XP_TABLE[floor_level] | 3;
+  if (is_boss) {
+    delta *= 2;
+  }
   xp_time = getFrameTimestamp();
   xp_msg = `+${delta} xp`;
   data.xp = (data.xp || 0) + delta;
@@ -988,6 +992,9 @@ function playCrawl(): void {
   }
   if (engine.DEBUG && keyDownEdge(KEYS.I)) {
     sanityDamage(1, 10, 0, true);
+  }
+  if (engine.DEBUG && keyDownEdge(KEYS.X)) {
+    giveXP(null);
   }
   if (!overlay_menu_up && !frame_combat && (keyDownEdge(KEYS.M) || padButtonUpEdge(PAD.BACK))) {
     playUISound('button_click');
