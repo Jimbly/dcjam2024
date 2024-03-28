@@ -1806,7 +1806,7 @@
       "events": [
         {
           "id": "floor_abs",
-          "param": "11 7 3 1"
+          "param": "12 20 7 2"
         }
       ]
     },
@@ -1843,12 +1843,6 @@
         "open",
         "open"
       ],
-      "events": [
-        {
-          "id": "sign",
-          "param": "You feel an otherworldly sense of... solitude?"
-        }
-      ],
       "h": -0.0625
     },
     {
@@ -1859,13 +1853,13 @@
         "open",
         "open"
       ],
+      "h": -0.1875,
       "events": [
         {
           "id": "sign",
-          "param": "HINT: You can spend [c=xp]XP[/c] in Solitude to level up abilities.  Just select the ability you want to upgrade."
+          "param": "You feel an otherworldly sense of... solitude?"
         }
-      ],
-      "h": -0.1875
+      ]
     },
     {
       "id": "solitude_water",

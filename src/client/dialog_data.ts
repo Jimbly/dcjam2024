@@ -217,11 +217,11 @@ dialogRegister({
 });
 
 const LEAVE_TEXT = `
-I'm too scared to go forward, and too lost to find my way out of this place alone...
-This place is perfect, I'm sorry, but I'm going to stay behind here...
-I'm out. This is my home now. Tell my roommates back home they'll have to put up with their subletter on a more permanent basis, but that's better than being dead.
-I... can't take it anymore. What are those things? I'm just going to stay here.
-This is the end for me, this is where I rest.
+I'm too scared to go forward, and too lost to find my way out of this place alone. I'm not leaving this room.
+I think I like it here. This place is perfect... I'm sorry, but I'm going to stay behind here...
+I'm out. This is my home now. Tell my roommates back home they'll have to put up with their subletter on a more permanent basis. Beats being dead.
+I... can't take it anymore. What are those things? Who are you guys? I'm just going to stay here. Sorry.
+I barely even remember my own name. This is the end for me, this is where I rest.
 `.trim().split('\n');
 
 export function doSolitudeLeave(floor_idx: number, hero: Hero): void {

@@ -41,11 +41,21 @@ crawlerScriptRegisterEvent({
     let is_solitude = cell.desc.id.startsWith('solitude');
     if (last_solitude === null) {
       last_solitude = is_solitude;
+      let me = myEntOptional();
+      let events_done = me ? me.data.events_done = me.data.events_done || {} : {};
+      let key = `solitude_upgrade_${api.getFloor()}`;
+      if (events_done[key]) {
+        dialog('sign', (
+          'Slumped against the tree, NAME seems to be asleep. You think it best' +
+          ' not to disturb them.'
+        ).replace('NAME', `[c=3]${events_done[key]}[/c]`));
+      }
     } else if (last_solitude !== is_solitude) {
       last_solitude = is_solitude;
       //autosave();
     }
     autosave();
+
   },
 });
 
