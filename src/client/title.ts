@@ -1,6 +1,8 @@
 
 import * as engine from 'glov/client/engine.js';
 import { ALIGN } from 'glov/client/font.js';
+import { fscreenAvailable, fscreenEnter } from 'glov/client/fscreen';
+import { inputTouchMode } from 'glov/client/input.js';
 import { localStorageGetJSON } from 'glov/client/local_storage.js';
 import {
   buttonText,
@@ -12,6 +14,7 @@ import {
   uiTextHeight,
 } from 'glov/client/ui';
 import * as urlhash from 'glov/client/urlhash.js';
+import { TSMap } from 'glov/common/types.js';
 import { createAccountUI } from './account_ui.js';
 import {
   crawlerCommStart,
@@ -36,6 +39,17 @@ export function hasSaveData(slot: number): boolean {
   let manual_data = localStorageGetJSON<SavedGameData>(`savedgame_${slot}.manual`, { timestamp: 0 });
   let auto_data = localStorageGetJSON<SavedGameData>(`savedgame_${slot}.auto`, { timestamp: 0 });
   return Boolean(manual_data.timestamp || auto_data.timestamp);
+}
+
+let fs_did: TSMap<number> = {};
+function fullscreenGo(key: string): void {
+  if (inputTouchMode() && fscreenAvailable()) {
+    fscreenEnter();
+  }
+  fs_did[key] = engine.getFrameIndex();
+}
+function fullscreenDid(key: string): boolean {
+  return (fs_did[key] && fs_did[key]! >= engine.getFrameIndex() - 1) || false;
 }
 
 function title(dt: number): void {
@@ -74,10 +88,12 @@ function title(dt: number): void {
     let yy = y;
     print(null, x, yy, Z.UI, `Slot ${slot}`);
     yy += uiButtonHeight();
+    let key = `lg${ii}`;
     if (buttonText({
       x, y: yy, text: 'Load Game',
-      disabled: !hasSaveData(slot)
-    })) {
+      disabled: !hasSaveData(slot),
+      in_event_cb: fullscreenGo.bind(null, key),
+    }) || fullscreenDid(key)) {
       crawlerPlayWantMode('recent');
       urlhash.go(`?c=local&slot=${slot}`);
     }
@@ -91,9 +107,11 @@ function title(dt: number): void {
       });
     }
     yy += uiTextHeight() + 2;
+    key = `ng${ii}`;
     if (buttonText({
       x, y: yy, text: 'New Game',
-    })) {
+      in_event_cb: fullscreenGo.bind(null, key),
+    }) || fullscreenDid(key)) {
       if (manual_data.timestamp) {
         modalDialog({
           text: 'This will overwrite your existing game.  Continue?',
