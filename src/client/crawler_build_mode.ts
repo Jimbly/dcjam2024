@@ -1262,7 +1262,8 @@ function showCurrentCell(param: {
           colors: colors_event,
         })) {
           crawlerBuildModeBegin();
-          events.splice(ii, 1);
+          let removed = events.splice(ii, 1)[0];
+          setLastEvent(removed);
           if (!events.length) {
             delete target_cell.events;
           }

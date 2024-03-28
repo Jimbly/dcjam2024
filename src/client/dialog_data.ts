@@ -1,6 +1,6 @@
 import { fontStyle } from 'glov/client/font';
 import { randSimpleSpatial } from 'glov/client/rand_fast';
-import { sprites as ui_sprites } from 'glov/client/ui';
+import { PanelParam, sprites as ui_sprites } from 'glov/client/ui';
 import { dialogIconsRegister } from '../common/crawler_events';
 import {
   CrawlerScriptAPI,
@@ -10,6 +10,12 @@ import {
   dialogPush,
   dialogRegister,
 } from './dialog_system';
+import { Hero } from './entity_demo_client';
+import {
+  PORTRAIT_SIZE,
+  drawHeroName,
+} from './hero_draw';
+import { CLASSES } from './heroes';
 import { onetimeEvent } from './jam_events';
 import {
   giveXP,
@@ -17,7 +23,15 @@ import {
   sanityDamage,
 } from './play';
 
-const { min, floor } = Math;
+const spritesheet_faces = require('./img/faces');
+const { sprite_faces } = spritesheet_faces;
+const spritesheet_icons = require('./img/icons');
+const {
+  FRAME_HERO_BG_CHAT,
+  sprite_icons,
+} = spritesheet_icons;
+
+const { min, floor, round } = Math;
 
 const style_terminal = fontStyle(null, {
   color: 0x59c135ff,
@@ -49,6 +63,49 @@ dialogIconsRegister({
     return CrawlerScriptEventMapIcon.NOTE_SEEN + 2;
   },
 });
+
+const CHAT_BG_H = 44;
+function drawFace(name: string, face_id: string, param: PanelParam): void {
+  let { x, y } = param;
+  x += 2;
+  y -= CHAT_BG_H - 3;
+  let z = Z.STATUS + 4;
+  let aspect = sprite_icons.uidata.aspect[FRAME_HERO_BG_CHAT];
+  sprite_icons.draw({
+    x,
+    y,
+    z,
+    h: CHAT_BG_H,
+    w: aspect * CHAT_BG_H,
+    frame: FRAME_HERO_BG_CHAT,
+    color: param.color,
+  });
+  z++;
+  let face_frame = spritesheet_faces[`FRAME_${face_id.toUpperCase()}`];
+  let face_aspect = sprite_faces.uidata.aspect[face_frame] || 1;
+  let face_w = round(PORTRAIT_SIZE * face_aspect);
+  let px = x + 8;
+  let py = y + 5;
+  sprite_faces.draw({
+    x: px + floor((PORTRAIT_SIZE - face_w) / 2),
+    y: py,
+    z,
+    w: face_w,
+    h: PORTRAIT_SIZE,
+    frame: face_frame,
+    color: param.color,
+  });
+  if (name) {
+    drawHeroName(px + 1, py + PORTRAIT_SIZE + 1, z, name, param.color ? param.color[3] : 1);
+  }
+}
+function randomHeroSpatial(): Hero {
+  let me = myEnt();
+  let { pos, heroes } = me.data;
+  let rnd = randSimpleSpatial(pos[0], pos[1], 0);
+  let choice = heroes[floor(rnd * heroes.length)];
+  return choice;
+}
 dialogRegister({
   terminal: function (param: string) {
     if (onetimeEvent()) {
@@ -65,10 +122,7 @@ dialogRegister({
     if (onetimeEvent()) {
       giveXP('note');
     }
-    let me = myEnt();
-    let { pos, heroes } = me.data;
-    let rnd = randSimpleSpatial(pos[0], pos[1], 0);
-    let name = heroes[floor(rnd * heroes.length)].name;
+    let name = randomHeroSpatial().name;
     dialogPush({
       name: '',
       text: `*NAME finds a little piece of paper on the ground.*\n\n${param}`.replace('NAME', name),
@@ -77,6 +131,21 @@ dialogRegister({
       instant: true,
       panel_sprite: ui_sprites.panel_note,
     });
+  },
+  party: function (param: string) {
+    if (onetimeEvent()) {
+      let hero = randomHeroSpatial();
+      let { class_id, face, name } = hero;
+      let class_def = CLASSES[class_id];
+      let face_id = class_def ? (class_def.faces[face || 0] || class_def.faces[0]) : '';
+      dialogPush({
+        name: '',
+        text: param,
+        transient: true,
+        transient_long: true,
+        custom_render: face_id ? drawFace.bind(null, name, face_id[1]) : undefined,
+      });
+    }
   },
   sanity_restore: function (param: string) {
     let me = myEnt();

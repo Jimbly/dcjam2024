@@ -2,6 +2,7 @@ export const HERO_W = 204;
 // eslint-disable-next-line import/order
 import { game_height } from './globals';
 export const HERO_H = Math.floor(game_height / 6);
+export const PORTRAIT_SIZE = 32;
 
 import assert from 'assert';
 import * as engine from 'glov/client/engine';
@@ -112,6 +113,19 @@ const style_name = fontStyle(null, {
   outline_color: 0x4a546255,
 });
 
+export function drawHeroName(x: number, y: number, z: number, name: string, alpha: number): void {
+  font_tiny.draw({
+    style: style_name,
+    x,
+    y,
+    z,
+    w: PORTRAIT_SIZE,
+    align: ALIGN.HCENTER,
+    text: name,
+    alpha,
+  });
+}
+
 const HP_W = 91;
 const HP_X = 50;
 const HP_Y = 4;
@@ -121,7 +135,6 @@ const AGGRO_X = 194;
 const ICON_SIZE = 9;
 const PORTRAIT_X = 8;
 const PORTRAIT_Y = 6;
-const PORTRAIT_SIZE = 32;
 const ABILITY_X = [48,126];
 const ABILITY_Y = 12;
 const ABILITY_W = 76;
@@ -280,15 +293,7 @@ export function drawHero(idx: number, x0: number, y0: number, z: number, hero_de
   }
   z++;
   if (hero_def.name) {
-    font_tiny.draw({
-      style: style_name,
-      x: x0 + PORTRAIT_X,
-      y: y0 + PORTRAIT_Y + PORTRAIT_SIZE + 1,
-      z,
-      w: PORTRAIT_SIZE,
-      align: ALIGN.HCENTER,
-      text: hero_def.name,
-    });
+    drawHeroName(x0 + PORTRAIT_X, y0 + PORTRAIT_Y + PORTRAIT_SIZE + 1, z, hero_def.name, 1);
   }
   for (let ii = 0; ii < tier; ++ii) {
     sprite_icons.draw({

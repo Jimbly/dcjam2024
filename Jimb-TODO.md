@@ -1,6 +1,5 @@
 TODO
 * draft second level, play through first 2, measure time, check difficulty, put save game aside for later
-* placeholder one-time world events that display one of your characters in dialog (just hard-coded index in the event, not even random!)
 * Insanity view
   * party portraits to change to monsters - silhouettes
   * ghosts moving through the level

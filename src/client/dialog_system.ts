@@ -26,6 +26,7 @@ import {
 } from 'glov/client/markdown_parse';
 import { Sprite } from 'glov/client/sprites';
 import {
+  PanelParam,
   UIBox,
   buttonText,
   panel,
@@ -45,10 +46,10 @@ import { buildModeActive } from './crawler_build_mode';
 import { crawlerMyEnt } from './crawler_entity_client';
 import { crawlerScriptAPI } from './crawler_play';
 
-const { ceil, round } = Math;
+const { ceil, min, round } = Math;
 
 const FADE_TIME = 1000;
-const MS_PER_CHARACTER = 12;
+const MS_PER_CHARACTER = 6;
 
 export type DialogButton = {
   label: string;
@@ -59,6 +60,8 @@ export type DialogParam = {
   text: string;
   font_style?: FontStyle;
   transient?: boolean;
+  transient_long?: boolean;
+  custom_render?: (param: PanelParam) => void;
   instant?: boolean;
   buttons?: DialogButton[];
   panel_sprite?: Sprite;
@@ -196,7 +199,7 @@ export function dialogRun(dt: number, viewport: UIBox & { pad_top: number; pad_b
   if (!active_dialog) {
     return false;
   }
-  let { transient, text, name, buttons, panel_sprite } = active_dialog;
+  let { transient, transient_long, custom_render, text, name, buttons, panel_sprite } = active_dialog;
   if (name) {
     text = `${name}: ${text}`;
   }
@@ -205,7 +208,7 @@ export function dialogRun(dt: number, viewport: UIBox & { pad_top: number; pad_b
   if (transient && !active_state.fade_time) {
     let my_pos = crawlerMyEnt().getData<JSVec3>('pos')!;
     if (!v2same(my_pos, active_state.pos)) {
-      active_state.fade_time = FADE_TIME;
+      active_state.fade_time = transient_long ? 3000 : FADE_TIME;
     }
   }
   let alpha = 1;
@@ -215,7 +218,7 @@ export function dialogRun(dt: number, viewport: UIBox & { pad_top: number; pad_b
       return false;
     }
     active_state.fade_time -= dt;
-    alpha = active_state.fade_time / FADE_TIME;
+    alpha = min(1, active_state.fade_time / FADE_TIME);
   }
 
   let num_buttons = buttons && buttons.length || 0;
@@ -298,26 +301,29 @@ export function dialogRun(dt: number, viewport: UIBox & { pad_top: number; pad_b
   }
 
   temp_color[3] = alpha;
+  let panel_param: PanelParam;
   if (transient && dims.h === text_height) {
     let text_w = dims.w;
-    panel({
+    panel_param = {
       x: x + round((w - text_w)/2) - HPAD,
       y: y - pad_top, z: z - 1,
       w: text_w + HPAD * 2,
       h: dims.h + pad_top + pad_bottom,
       color: temp_color,
       sprite: panel_sprite,
-    });
+    };
   } else {
-    panel({
+    panel_param = {
       x,
       y: y - pad_top, z: z - 1,
       w,
       h: dims.h + pad_top + pad_bottom + buttons_h,
       color: temp_color,
       sprite: panel_sprite,
-    });
+    };
   }
+  custom_render?.(panel_param);
+  panel(panel_param);
 
   if (!transient) {
     eatAllInput();
