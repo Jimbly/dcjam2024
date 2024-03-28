@@ -9,10 +9,11 @@ visuals:
   type: simple_floor
   opts:
     spritesheet: forest
-    tile: floor1
+    tile: floor3
 - type: simple_billboard
   opts:
     spritesheet: forest
     tile: mushrooms
     offs: [0, 0, 0]
     face_camera: false # Otherwise faces frustum
+    do_alpha: true

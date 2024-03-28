@@ -1,8 +1,8 @@
 ---
-open_move: true
+open_move: false
 open_vis: true
 default_wall: solid
-
+map_view_detail_frame: 40
 visuals:
 - pass: bg
   type: simple_floor
@@ -13,5 +13,8 @@ visuals:
   opts:
     spritesheet: forest
     tile: deadtree
-    offs: [0, 0, 0]
-    face_camera: false # Otherwise faces frustum
+    offs: [0, 0, -0.1]
+    width: 2
+    height: 2
+    face_camera: true # Otherwise faces frustum
+    # do_alpha: true

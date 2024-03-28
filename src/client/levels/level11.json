@@ -814,7 +814,7 @@
       "events": [
         {
           "id": "dialog",
-          "param": "terminal LOG 3.5: Hector says there’s a handprint on the outside of his window."
+          "param": "terminal LOG 3.03: Hector says there’s a handprint on the outside of his window."
         }
       ]
     },
@@ -1240,7 +1240,7 @@
       "events": [
         {
           "id": "dialog",
-          "param": "terminal LOG 7.1: Causalities shuffled. On track. Vector spikes irregular. Looking into it."
+          "param": "terminal LOG 7.12: Causalities shuffled. On track. Vector spikes irregular. Looking into it."
         }
       ]
     },
@@ -1300,7 +1300,7 @@
       "events": [
         {
           "id": "dialog",
-          "param": "terminal LOG 5.2: Patrick reported seeing something walking through the wall near here, impossible!"
+          "param": "terminal LOG 5.17: Patrick reported seeing something walking through the wall near here, impossible!"
         }
       ]
     },

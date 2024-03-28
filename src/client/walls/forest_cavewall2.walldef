@@ -6,7 +6,7 @@ visuals:
 - type: simple_wall
   opts:
     spritesheet: forest
-    tile: cavewall
+    tile: cavewall2
 # - type: simple_wall
 #   opts:
 #     spritesheet: forest

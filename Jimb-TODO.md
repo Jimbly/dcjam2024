@@ -1,15 +1,16 @@
 TODO
+* lose people in rooms of solitude to be replaced
 * draft second level, play through first 2, measure time, check difficulty, put save game aside for later
 * Insanity view
   * party portraits to change to monsters - silhouettes
   * ghosts moving through the level
   * dark/postprocess - 16-bit color crunch? - dither?
+  * change fog colors and backdrop
 * final battle
   * no bamf after final battle
   * no sanity loss? only lose condition is all heroes are dead?
 * more humanoid choices for front1, since the player picks that!
 * dungeon event that tiers-up your leader if still T1 on end of floor 4?
-* lose people in rooms of solitude to be replaced
 * bamf - if player has only 2 attackers in party, give only attack options (if possible)
 * integrate footsteps
 * scale sound volume for hunter sounds based on distance
@@ -40,6 +41,7 @@ Finish up
 * hi score list
 
 Polish
+* adjust fog colors and settings of all levels
 * fill in empty space in UI with some noise at least
 * show explore percent (and monster count?) on minimap
 * add unlockable doors to get back to the Solitude entrances

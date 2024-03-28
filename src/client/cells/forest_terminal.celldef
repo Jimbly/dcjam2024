@@ -14,7 +14,7 @@ visuals:
   type: simple_floor
   opts:
     spritesheet: forest
-    tile: floor4
+    tile: floor1
 - type: simple_billboard
   opts:
     spritesheet: ship2

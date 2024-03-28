@@ -1,3 +1,4 @@
+/* eslint prefer-template:off */
 import { fontStyle } from 'glov/client/font';
 import { randSimpleSpatial } from 'glov/client/rand_fast';
 import { PanelParam, sprites as ui_sprites } from 'glov/client/ui';
@@ -165,23 +166,29 @@ dialogRegister({
       });
     }
   },
-  medkit: function () {
+  medkit: function (param) {
     if (!onetimeEvent(true)) {
       return;
     }
     let me = myEnt();
     let delta = min(15, 100 - me.data.sanity_max);
+    let mushroom = param === 'mushroom';
     if (!delta) {
       dialogPush({
         name: '',
-        text: 'This medical station may be useful later...\n(Restores up to [c=sanity]15 MAX Sanity[/c])',
+        text: `${mushroom ?
+          'These mushrooms might be useful later...' :
+          'This medical station may be useful later...'}` +
+          '\n(Restores up to [c=sanity]15 MAX Sanity[/c])',
         transient: true,
       });
     } else {
       dialogPush({
-        name: 'Medical Station',
-        text: 'You rummage through the drawers and see some pills... take them?\n' +
-          '(Restores up to [c=sanity]15 MAX Sanity[/c])',
+        name: mushroom ? '' : 'Medical Station',
+        text: (mushroom ?
+          'You find some red and white mushrooms... eat them?' :
+          'You rummage through the drawers and see some pills... take them?') +
+          '\n(Restores up to [c=sanity]15 MAX Sanity[/c])',
         buttons: [{
           label: 'What\'s the worst that could happen?',
           cb: 'pills',

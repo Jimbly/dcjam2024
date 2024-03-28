@@ -1,6 +1,8 @@
 ---
 open_vis: true
 default_wall: forest_cavewall2
+default_events:
+- dialog note MSG
 visuals:
 - pass: bg
   type: simple_floor
@@ -12,3 +14,9 @@ visuals:
   opts:
     spritesheet: forest
     tile: cobblestone
+- pass: default
+  detail_layer: 1
+  type: simple_floor
+  opts:
+    spritesheet: ship2
+    tile: note

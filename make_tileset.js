@@ -284,5 +284,21 @@ visuals:
     face_camera: false # Otherwise faces frustum
 `);
 }
+output(`src/client/walls/${sheet}_solitude_door.walldef`, `
+---
+open_move: true
+open_vis: false
+advertise_other_side: true
+map_view_wall_frames_from: door
+visuals:
+- type: simple_wall
+  opts:
+    spritesheet: ${sheet}
+    tile: ${did[SOLID]}
+- type: simple_wall
+  opts:
+    spritesheet: solitude
+    tile: gateway
+`);
 
 output(`src/client/vstyles/${sheet}.vstyle`, vstyle);
