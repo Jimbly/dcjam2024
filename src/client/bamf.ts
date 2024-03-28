@@ -227,7 +227,7 @@ Rumor has it that deep within this ruin lie answers to questions about the meani
 
     let hero_x = x + floor((w - HERO_W)/2);
     if (alpha_choices < 1) {
-      drawRect(hero_x, y, hero_x + HERO_W, y + (HERO_H + uiButtonHeight()) * 2 + PAD, z + 100,
+      drawRect(hero_x, y, hero_x + HERO_W, y + (HERO_H + uiButtonHeight()) * 2 + PAD, Z.BAMFFADE,
         [32/255, 27/255, 37/255, 1 - alpha_choices]);
     }
     for (let ii = 0; ii < bamf_state.replacements.length; ++ii) {

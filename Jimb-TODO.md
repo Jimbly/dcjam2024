@@ -1,7 +1,8 @@
 TODO
-* start balancing combat encounters
-* placeholder one-time world events that display one of your characters in dialog (just hard-coded index in the event, not even random!)
+* bamf - automatically swap up tiers of they were level=2
 * give XP for finding notes / terminals
+* draft second level, play through first 2, measure time, check difficulty, put save game aside for later
+* placeholder one-time world events that display one of your characters in dialog (just hard-coded index in the event, not even random!)
 * Insanity view
   * party portraits to change to monsters - silhouettes
   * ghosts moving through the level
@@ -14,6 +15,7 @@ TODO
 * lose people in rooms of solitude to be replaced
 * bamf - if player has only 2 attackers in party, give only attack options (if possible)
 * integrate footsteps
+* scale sound volume for hunter sounds based on distance
 
 Balance Plan: conservation of XP
           level + tier that should get 1-2 deaths in some combats (2/5?) and 2-3 deaths on boss
@@ -41,7 +43,10 @@ Finish up
 * hi score list
 
 Polish
+* show explore percent (and monster count?) on minimap
+* add unlockable doors to get back to the Solitude entrances
 * consistent ability icons
+* more player faces
 * tooltip on Sanity and XP displays, explaining mechanics
 * add sanity icon to spritesheet and use in dialogs
 * scroll area for combat log when needed
@@ -62,3 +67,4 @@ Post-game fixes / polish
 
 People's games to check out:
 * YouDoYouBuddy - slay the spire
+* Yomigael - https://surt-r.itch.io/dragon-ruins

@@ -59,6 +59,9 @@ function median(total: number, histo: Record<number, number>): number {
 function pad(str: string): string {
   return (`${str}     `).slice(0, 10);
 }
+function pad2(v: number): string {
+  return ` ${v}`.slice(-2);
+}
 
 let stats_base = {
   total: 0,
@@ -84,7 +87,7 @@ function printStats(label: string): void {
     if (loss/stats.total > 0.02 || zerodead/stats.total<0.2) {
       analysis += 'HARD';
     }
-    console.log(`# ${pad(label).toUpperCase()}  ${turns_median}T  -  Wipe=${perc(loss/stats.total, true)}` +
+    console.log(`# ${pad(label).toUpperCase()}  ${pad2(turns_median)}T  -  Wipe=${perc(loss/stats.total, true)}` +
       `  -  0D=${perc(zerodead/stats.total)}  -  1-2D=${perc(onetwodead/stats.total)}  ${analysis}`);
     //console.log(`Deaths: Avg=${(stats.dead/stats.total).toFixed(2)}/enc  ${printHistoDeaths(stats.total, stats.dead_histo)}`);
     // console.log(`Turns: Avg=${(stats.turns/stats.total).toFixed(2)}/enc  Median=${turns_median}`);
@@ -206,10 +209,10 @@ function doCombat(encounter_id: string, tier: number, level: number): void {
   stats.turns_histo[turns] = (stats.turns_histo[turns] || 0) + 1;
 }
 
-const TESTS = 10;
-for (let encounter_id in ENCOUNTERS) {
-  for (let ii = 0; ii < TESTS; ++ii) {
-    doCombat(encounter_id, 2, 0);
-  }
-  printStats(encounter_id);
-}
+// const TESTS = 100;
+// for (let encounter_id in ENCOUNTERS) {
+//   for (let ii = 0; ii < TESTS; ++ii) {
+//     doCombat(encounter_id, 1, 0);
+//   }
+//   printStats(encounter_id);
+// }

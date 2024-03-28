@@ -244,10 +244,10 @@ Object.keys(ENEMIES).forEach((enemy_id: string) => {
     if (over) {
       for (let key in over) {
         if (key === 'damage') {
-          console.log(`${new_name}.${key}: ${new_enemy.effects[0].base_amount} -> ${over[key]}`);
+          // console.log(`${new_name}.${key}: ${new_enemy.effects[0].base_amount} -> ${over[key]}`);
           new_enemy.effects[0].base_amount = over[key] as number;
         } else {
-          console.log(`${new_name}.${key}: ${(new_enemy as DataObject)[key]} -> ${over[key]}`);
+          // console.log(`${new_name}.${key}: ${(new_enemy as DataObject)[key]} -> ${over[key]}`);
           (new_enemy as DataObject)[key] = over[key];
         }
       }

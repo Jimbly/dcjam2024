@@ -96,7 +96,7 @@ function title(dt: number): void {
     })) {
       if (manual_data.timestamp) {
         modalDialog({
-          text: 'This will overwrite your existing game when you next save.  Continue?',
+          text: 'This will overwrite your existing game.  Continue?',
           buttons: {
             yes: function () {
               crawlerPlayWantNewGame();

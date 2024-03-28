@@ -10,6 +10,7 @@ import {
   Font,
   FontStyle,
   fontStyle,
+  fontStyleAlpha,
 } from 'glov/client/font';
 import * as input from 'glov/client/input';
 import {
@@ -34,6 +35,7 @@ import {
   buttonText,
   drawBox,
   menuUp,
+  panel,
   playUISound,
   uiButtonHeight,
   uiButtonWidth,
@@ -660,11 +662,14 @@ const XP_Y = 201;
 const XP_W = 33;
 const XP_H = 29;
 const XP_TEXT_OFFS = 16;
+const XPPAD = 5;
 const style_xp = fontStyle(null, {
   color: 0xfffc40ff,
   outline_color: 0x5b3138ff,
   outline_width: 2.5,
 });
+let xp_time = 0;
+let xp_msg = '';
 markdownSetColorStyle('xp', style_xp);
 function doXP(): void {
   let me = myEnt();
@@ -683,15 +688,35 @@ function doXP(): void {
     h: XP_H,
     frame: FRAME_XPBAR,
   });
+  z++;
 
   font.draw({
     style: style_xp,
     x: XP_X + 3,
     y: XP_Y + XP_TEXT_OFFS,
+    z,
     w: XP_W - 3,
     align: ALIGN.HCENTER,
     text: `${xp}`,
   });
+
+  z = Z.XP;
+
+  let now = getFrameTimestamp();
+  if (xp_time && now - xp_time < 2000) {
+    let t = (now - xp_time) / 2000;
+    let a = 1 - (t - 0.75) * 4;
+    let text_w = font.getStringWidth(style_xp, uiTextHeight(), xp_msg);
+    let x = min(XP_X + XP_W / 2 - text_w/2, game_width - text_w - XPPAD);
+    let y = round(XP_Y - t * XP_H);
+    font.drawSized(fontStyleAlpha(style_xp, a), x, y, z, uiTextHeight(), xp_msg);
+    panel({
+      x: x - XPPAD, y: y - XPPAD, z: z - 0.5,
+      w: text_w + XPPAD * 2,
+      h: uiTextHeight() + XPPAD * 2,
+      color: [1,1,1,a],
+    });
+  }
 }
 const XP_TABLE = [
   1,
@@ -711,7 +736,8 @@ export function giveXP(target: Entity): void {
   let floor_level = clamp(floor_id - 11, 0, XP_TABLE.length);
   let data = myEnt().data;
   let delta = XP_TABLE[floor_level];
-  statusPush(`+${delta} xp`, style_xp);
+  xp_time = getFrameTimestamp();
+  xp_msg = `+${delta} xp`;
   data.xp = (data.xp || 0) + delta;
 }
 export function levelUpAbility(hero_idx: number, ability_idx: number): void {
