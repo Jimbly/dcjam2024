@@ -1,6 +1,7 @@
 TODO
 * start balancing combat encounters
 * placeholder one-time world events that display one of your characters in dialog (just hard-coded index in the event, not even random!)
+* give XP for finding notes / terminals
 * Insanity view
   * party portraits to change to monsters - silhouettes
   * ghosts moving through the level
@@ -16,19 +17,20 @@ TODO
 
 Balance Plan: conservation of XP
           level + tier that should get 1-2 deaths in some combats (2/5?) and 2-3 deaths on boss
-                replacement tier (even if not L3)
-Floor 1 : T1L1  T1
-Floor 2 : T1L3  T1
-Floor 3 : T2L1  T2
-Floor 4 : T2L3  T2
-Floor 5 : T3L1  T3
-Boss fight : T3L3
+                replacement tier (even if not L2)
+Floor 1 : T0L0  T0
+  T0L0/T0L1 (12 abilities leveled up +1) - (except, we start with effectively +12xp - need 4 less on this floor)
+Floor 2 : T0L1  T0
+  T1L2/T1L3/T2L1 (12 abilities leveled up +2 and 6 deaths @ L3) - (need 8 less on this floor)
+Floor 3 : T1L0  T1
+  T1L0/T1L1 (12+1)
+Floor 4 : T1L1  T1
+  T1L1/T1L2/T2L0 (12+2 / 6d)
+Floor 5 : T2L0  T2
+  T2L0/T2L1/T2L2 (12+1, 12+2)
+Boss fight : T2L2
 
-XP Cost
-T1 0 / 1 / 3   (+1/2)
-T2 3 / 5 / 9   (+2/4)
-T3 9 / 13 / 21 (+4/8)
-
+XP Cost - see doc
 
 Playtest Feedback
 * too many monsters on first floor - maybe aim for ~7 encounters per floor? or more avoidable?
@@ -56,4 +58,7 @@ Post-game fixes / polish
 * bias features for simple billboard details
 * reorganize all of the example entities to use a spritesheet
 * add support for multiple fonts with different heights to dialog system and/or markdown - handwriting font would be cool
-* tooltip width and markdown not playing correctly, probably also H
+* tooltip width and markdown not playing correctly, probably also height
+
+People's games to check out:
+* YouDoYouBuddy - slay the spire

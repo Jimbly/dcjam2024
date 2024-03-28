@@ -1,4 +1,4 @@
-/* eslint import/order:off, max-len:off */
+/* eslint import/order:off, max-len:off, @typescript-eslint/no-unused-vars:off */
 import 'glov/client/test'; // Must be first
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -13,9 +13,9 @@ import { randomHero } from '../../client/heroes';
 
 const { floor, max, random } = Math;
 
-function perc(v: number): string {
+function perc(v: number, force_prec?: boolean): string {
   let r = (v * 100).toFixed(0);
-  if (v && r === '0') {
+  if (v && r === '0' || force_prec) {
     return `${(v * 100).toFixed(2)}%`;
   }
   if (v !== 1 && r === '100') {
@@ -43,6 +43,23 @@ function printHistoDeaths(total: number, histo: Record<number, number>): string 
   return output.join('   ');
 }
 
+function median(total: number, histo: Record<number, number>): number {
+  let cutoff = total * 0.5;
+  let keys = Object.keys(histo).map((a) => Number(a));
+  keys.sort((a, b) => a - b);
+  for (let ii = 0; ii < keys.length; ++ii) {
+    cutoff -= histo[keys[ii]];
+    if (cutoff <= 0) {
+      return Number(keys[ii]);
+    }
+  }
+  assert(false);
+}
+
+function pad(str: string): string {
+  return (`${str}     `).slice(0, 10);
+}
+
 let stats_base = {
   total: 0,
   wins: 0,
@@ -52,16 +69,26 @@ let stats_base = {
   turns_histo: {} as Record<number, number>,
 };
 let stats: typeof stats_base;
+let last_label = '';
 function printStats(label: string): void {
+  if (last_label && last_label.slice(0,2) !== label.slice(0,2)) {
+    console.log('');
+  }
+  last_label = label;
   if (stats) {
     let loss = stats.total - stats.wins;
+    let zerodead = (stats.dead_histo[0]||0);
     let onetwodead = (stats.dead_histo[1]||0) + (stats.dead_histo[2]||0);
-    let analysis = ((stats.dead_histo[0]||0)/stats.total > 0.4) ? 'EASY' : '';
-    console.log(`\n**** ${label} **** Wipe=${perc(loss/stats.total)}` +
-      `  1-2D=${perc(onetwodead/stats.total)}  ${analysis}`);
-    console.log(`Average Deaths: ${(stats.dead/stats.total).toFixed(2)}/enc  ${printHistoDeaths(stats.total, stats.dead_histo)}`);
-    console.log(`Average Turns: ${(stats.turns/stats.total).toFixed(2)}/enc`);
-    printHisto(stats.total, stats.turns_histo);
+    let turns_median = median(stats.total, stats.turns_histo);
+    let analysis = (zerodead/stats.total > 0.4) ? 'EASY' : '';
+    if (loss/stats.total > 0.02 || zerodead/stats.total<0.2) {
+      analysis += 'HARD';
+    }
+    console.log(`# ${pad(label).toUpperCase()}  ${turns_median}T  -  Wipe=${perc(loss/stats.total, true)}` +
+      `  -  0D=${perc(zerodead/stats.total)}  -  1-2D=${perc(onetwodead/stats.total)}  ${analysis}`);
+    //console.log(`Deaths: Avg=${(stats.dead/stats.total).toFixed(2)}/enc  ${printHistoDeaths(stats.total, stats.dead_histo)}`);
+    // console.log(`Turns: Avg=${(stats.turns/stats.total).toFixed(2)}/enc  Median=${turns_median}`);
+    // printHisto(stats.total, stats.turns_histo);
   }
   stats = {
     ...stats_base,
@@ -71,11 +98,13 @@ function printStats(label: string): void {
 }
 printStats('');
 
-function doCombat(encounter_id: string, tier: number): void {
+function doCombat(encounter_id: string, tier: number, level: number): void {
   let encounter = ENCOUNTERS[encounter_id]!;
   let hero_defs: Hero[] = [];
   for (let ii = 0; ii < 6; ++ii) {
-    hero_defs.push(randomHero(ii, max(tier, (ii === 0) ? 1 : 0), hero_defs, 0, false));
+    let hero = randomHero(ii, max(tier, (ii === 0) ? 1 : 0), hero_defs, 0, false);
+    hero.levels[0] = hero.levels[1] = level;
+    hero_defs.push(hero);
   }
   let combat_state = combatStateInit(hero_defs, encounter);
   let { heroes } = combat_state;
@@ -177,10 +206,10 @@ function doCombat(encounter_id: string, tier: number): void {
   stats.turns_histo[turns] = (stats.turns_histo[turns] || 0) + 1;
 }
 
-const TESTS = 500;
+const TESTS = 10;
 for (let encounter_id in ENCOUNTERS) {
   for (let ii = 0; ii < TESTS; ++ii) {
-    doCombat(encounter_id, 0);
+    doCombat(encounter_id, 2, 0);
   }
   printStats(encounter_id);
 }

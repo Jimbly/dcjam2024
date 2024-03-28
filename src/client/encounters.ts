@@ -1,4 +1,5 @@
-import { TSMap } from 'glov/common/types';
+import { DataObject, TSMap } from 'glov/common/types';
+import { clone } from 'glov/common/util';
 
 export type Encounter = {
   enemies: string[];
@@ -107,6 +108,18 @@ export const ENEMIES: TSMap<EnemyDef> = {
       base_amount: 1,
     }],
   },
+  armor1: { // not used, just for templating
+    name: 'ArmorAuto',
+    enttype: 'enemy2',
+    hp: 5,
+    shield: 1,
+    tier: 0,
+    level: 0,
+    effects: [{
+      type: AttackType.FRONT,
+      base_amount: 2,
+    }],
+  },
   boss1: { // L1-boss-HexBot
     name: 'Hex Bot',
     enttype: 'l1boss',
@@ -120,8 +133,99 @@ export const ENEMIES: TSMap<EnemyDef> = {
     }],
   },
 
-
+  boss6: { // ?
+    name: 'The End',
+    enttype: 'l6boss',
+    hp: 32,
+    shield: 6,
+    tier: 2,
+    level: 2,
+    effects: [{
+      type: AttackType.FRONT,
+      base_amount: 3,
+    }],
+  },
 };
+
+const MAPPING = [{
+  level: 1,
+  tier: 0,
+}, {
+  level: 0,
+  tier: 1,
+}, {
+  level: 1,
+  tier: 1,
+}, {
+  level: 0,
+  tier: 2,
+}];
+const OVERRIDE: TSMap<DataObject> = {
+  armor3: {
+    hp: 3,
+    shield: 4,
+  },
+  armor4: {
+    hp: 3,
+    shield: 4,
+  },
+  damage4: {
+    hp: 6,
+  },
+  sponge4: {
+    hp: 12,
+  },
+  damage5: {
+    damage: 7,
+  },
+  balanced5: {
+    damage: 5,
+  },
+  sponge5: {
+    hp: 15,
+    damage: 3,
+  },
+  armor5: {
+    hp: 4,
+    shield: 4,
+    damage: 3,
+  },
+  boss5: {
+    hp: 99,
+    damage: 4,
+    shield: 0,
+  },
+};
+Object.keys(ENEMIES).forEach((enemy_id: string) => {
+  if (!enemy_id.endsWith('1')) {
+    return;
+  }
+  for (let floor = 2; floor <= 5; ++floor) {
+    let new_name = `${enemy_id.slice(0, -1)}${floor}`;
+    if (ENEMIES[new_name]) {
+      continue;
+    }
+    let new_enemy = clone(ENEMIES[enemy_id]!);
+    new_enemy.hp += floor - 1;
+    new_enemy.shield *= floor;
+    new_enemy.shield += [0,0,0,1,1,1][floor];
+    let over = OVERRIDE[new_name];
+    if (over) {
+      for (let key in over) {
+        if (key === 'damage') {
+          console.log(`${new_name}.${key}: ${new_enemy.effects[0].base_amount} -> ${over[key]}`);
+          new_enemy.effects[0].base_amount = over[key] as number;
+        } else {
+          console.log(`${new_name}.${key}: ${(new_enemy as DataObject)[key]} -> ${over[key]}`);
+          (new_enemy as DataObject)[key] = over[key];
+        }
+      }
+    }
+    new_enemy.level = MAPPING[floor-2].level;
+    new_enemy.tier = MAPPING[floor-2].tier;
+    ENEMIES[new_name] = new_enemy;
+  }
+});
 
 export const ENCOUNTERS: TSMap<Encounter> = {
   l1sponge: {
@@ -138,5 +242,85 @@ export const ENCOUNTERS: TSMap<Encounter> = {
   },
   l1boss: {
     enemies: ['boss1', 'aoe1'],
+  },
+
+  l2armor: {
+    enemies: ['armor2', 'armor2', 'balanced2'],
+  },
+  l2sponge: {
+    enemies: ['sponge2', 'balanced2', 'damage2'],
+  },
+  l2damage: {
+    enemies: ['damage2', 'damage2', 'aoe2'],
+  },
+  l2aoe: {
+    enemies: ['balanced2', 'sponge2', 'aoe2'],
+  },
+  l2balanced: {
+    enemies: ['damage2', 'balanced2', 'balanced2'],
+  },
+  l2boss: {
+    enemies: ['damage2', 'damage2', 'boss2'],
+  },
+
+  l3armor: {
+    enemies: ['armor3', 'armor3', 'balanced3'],
+  },
+  l3sponge: {
+    enemies: ['sponge3', 'balanced3', 'damage3'],
+  },
+  l3damage: {
+    enemies: ['damage3', 'damage3', 'aoe3'],
+  },
+  l3aoe: {
+    enemies: ['balanced3', 'sponge3', 'aoe3'],
+  },
+  l3balanced: {
+    enemies: ['damage3', 'balanced3', 'balanced3'],
+  },
+  l3boss: {
+    enemies: ['balanced3', 'boss3', 'balanced3'],
+  },
+
+  l4armor: {
+    enemies: ['balanced4', 'armor4', 'armor4'],
+  },
+  l4sponge: {
+    enemies: ['sponge4', 'damage4', 'sponge4'],
+  },
+  l4damage: {
+    enemies: ['damage4', 'damage4', 'aoe4'],
+  },
+  l4aoe: {
+    enemies: ['balanced4', 'sponge4', 'aoe4'],
+  },
+  l4balanced: {
+    enemies: ['damage4', 'balanced4', 'balanced4'],
+  },
+  l4boss: {
+    enemies: ['sponge4', 'boss4', 'sponge4'],
+  },
+
+  l5armor: {
+    enemies: ['balanced5', 'armor5', 'armor5'],
+  },
+  l5sponge: {
+    enemies: ['sponge5', 'damage5', 'sponge5'],
+  },
+  l5damage: {
+    enemies: ['damage5', 'damage5', 'aoe5'],
+  },
+  l5aoe: {
+    enemies: ['balanced5', 'sponge5', 'aoe5'],
+  },
+  l5balanced: {
+    enemies: ['damage5', 'balanced5', 'balanced5'],
+  },
+  l5boss: {
+    enemies: ['armor5', 'boss5', 'aoe5'],
+  },
+
+  l6boss: {
+    enemies: ['boss6'],
   },
 };

@@ -695,16 +695,16 @@ function doXP(): void {
 }
 const XP_TABLE = [
   1,
-  2,
   3,
-  4,
   5,
+  7,
+  15,
 ];
 export function xpCost(tier: number, level: number): number {
   if (level === 2) {
     return Infinity;
   }
-  return 1 << (tier + level);
+  return 2 << (tier * 2 + level);
 }
 export function giveXP(target: Entity): void {
   let floor_id = crawlerGameState().floor_id;
