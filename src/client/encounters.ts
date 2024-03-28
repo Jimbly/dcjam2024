@@ -1,3 +1,4 @@
+import assert from 'assert';
 import { DataObject, TSMap } from 'glov/common/types';
 import { clone } from 'glov/common/util';
 
@@ -196,6 +197,33 @@ const OVERRIDE: TSMap<DataObject> = {
     shield: 0,
   },
 };
+const NAMES: TSMap<string> = {
+  aoe2: 'Creep Eye',
+  balanced2: 'Magi Drageen',
+  boss2: 'Skitter Bot',
+  damage2: 'Wild Growth',
+  armor2: 'Centislide',
+  sponge2: 'Flayer',
+  aoe3: 'Sickum',
+  balanced3: 'Smoke Eye',
+  boss3: 'Metal Crab',
+  damage3: 'GlowBug',
+  armor3: 'BeeOhm',
+  sponge3: 'Flayer',
+  aoe4: 'Green Beholder',
+  balanced4: 'Chaos Orb',
+  boss4: 'Alien Explorer',
+  damage4: 'GlowBug',
+  armor4: 'Shell Shy',
+  sponge4: 'Flayer',
+  aoe5: 'Virus',
+  balanced5: 'Spider',
+  boss5: 'Garbage Can',
+  damage5: 'Snake',
+  armor5: 'Turtle',
+  sponge5: 'Squirrel',
+  boss6: 'Octopot',
+};
 Object.keys(ENEMIES).forEach((enemy_id: string) => {
   if (!enemy_id.endsWith('1')) {
     return;
@@ -206,6 +234,9 @@ Object.keys(ENEMIES).forEach((enemy_id: string) => {
       continue;
     }
     let new_enemy = clone(ENEMIES[enemy_id]!);
+    let name = NAMES[new_name];
+    assert(name, new_name);
+    new_enemy.name = name;
     new_enemy.hp += floor - 1;
     new_enemy.shield *= floor;
     new_enemy.shield += [0,0,0,1,1,1][floor];
