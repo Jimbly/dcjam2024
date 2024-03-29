@@ -681,12 +681,18 @@
       ]
     },
     {
-      "id": "ship3_floor3",
+      "id": "ship3_note3",
       "walls": [
         "ship3_solid3",
         "open",
         "ship3_solid3",
         "ship3_solid3"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "note This page has an unsettling portrait."
+        }
       ]
     },
     {
@@ -807,12 +813,18 @@
       ]
     },
     {
-      "id": "ship3_floor3",
+      "id": "ship3_note3",
       "walls": [
         "open",
         "open",
         "ship3_solid3",
         "ship3_solid3"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "note I tried to draw you. It came out wrong. I miss you."
+        }
       ]
     },
     {
@@ -1293,12 +1305,18 @@
       ]
     },
     {
-      "id": "ship3_floor1e",
+      "id": "ship2_terminal",
       "walls": [
         "ship3_solid1",
         "open",
         "open",
         "ship3_solid1"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "terminal LOG 60.22: Attempt to rescue Hector resulted in disaster. By the time we gave up searching, we’d lost track of the cockpit."
+        }
       ]
     },
     {
@@ -1602,7 +1620,7 @@
       "id": "ship3_floor3",
       "walls": [
         "open",
-        "solid",
+        "ship3_solid3",
         "ship3_solid3",
         "open"
       ]
@@ -1611,7 +1629,7 @@
       "id": "ship3_medkit",
       "walls": [
         "ship3_solid3",
-        "solid",
+        "ship3_solid3",
         "open",
         "open"
       ],
@@ -1740,12 +1758,18 @@
       ]
     },
     {
-      "id": "ship3_floor1e",
+      "id": "ship2_terminal",
       "walls": [
         "open",
         "ship3_window",
         "ship3_window",
         "ship3_window"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "terminal LOG 89.01: The only thing I know for sure is we all want to go home."
+        }
       ]
     },
     {
@@ -1826,25 +1850,31 @@
         "open",
         "open",
         "ship3_solid3",
-        "ship3_solid3"
+        "ship3_pipe_horiz"
       ]
     },
     {
       "id": "ship3_floor3",
       "walls": [
-        "ship3_solid3",
+        "ship3_pipe_horiz",
         "open",
         "open",
-        "ship3_solid3"
+        "ship3_pipe_horiz"
       ]
     },
     {
-      "id": "ship3_floor2",
+      "id": "ship3_note",
       "walls": [
         "open",
         "solid",
         "solid",
         "ship3_pipe_vert"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "note This page has a shocking drawing of a person with no face. The marks are shaky and deep-cut."
+        }
       ]
     },
     {
@@ -1887,6 +1917,12 @@
         "open",
         "stairs_in",
         "open"
+      ],
+      "events": [
+        {
+          "id": "sign",
+          "param": "Either this part of the ship disintegrated, or something powerful ripped it apart. Though the ship’s engines have long cooled, bare bulbs flicker, casting twisted shadows through the torn up hallways."
+        }
       ]
     },
     {
@@ -2027,7 +2063,7 @@
     {
       "id": "ship3_floor3",
       "walls": [
-        "ship3_solid3",
+        "ship3_pipe_horiz",
         "open",
         "open",
         "open"
@@ -2043,12 +2079,18 @@
       ]
     },
     {
-      "id": "ship3_floor2",
+      "id": "ship3_note",
       "walls": [
         "solid",
         "open",
         "open",
         "solid"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "note Sam looked up at me and their face was gone. I had to do it. I keep telling myself it wasn’t Sam anymore, it was that splintery darkness. I’ve been avoiding windows since I did it, because I’m scared of what I’ll notice."
+        }
       ]
     },
     {
@@ -2175,12 +2217,18 @@
       ]
     },
     {
-      "id": "ship3_floor2",
+      "id": "ship3_note",
       "walls": [
         "open",
         "solid",
         "solid",
         "open"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "note Would you be proud of me now? You were always the strong one. I was so sensitive. But look what I did."
+        }
       ]
     },
     {
@@ -2226,12 +2274,18 @@
         "ship3_door3",
         "ship3_solid3",
         "open"
+      ],
+      "events": [
+        {
+          "id": "sign",
+          "param": "Pipes and wires spill from the walls and ceiling like the spoiled guts of a monster. Things in dark corners click, rumble, and hiss."
+        }
       ]
     },
     {
       "id": "ship3_floor3",
       "walls": [
-        "ship3_solid3",
+        "ship3_pipe_horiz",
         "ship3_solid3",
         "open",
         "open"
@@ -2609,7 +2663,7 @@
         "ship3_solid5",
         "open",
         "open",
-        "solid"
+        "ship3_solid3"
       ]
     },
     {
@@ -2790,6 +2844,12 @@
         "open",
         "open",
         "open"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party Did I just see that pipe move?"
+        }
       ]
     },
     {
@@ -2811,12 +2871,18 @@
       ]
     },
     {
-      "id": "ship3_floor1e",
+      "id": "ship2_terminal",
       "walls": [
         "ship3_window",
         "ship3_solid1",
         "open",
         "open"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "terminal LOG 87.11: Excuse my language. This place is fucked up. Everything seems to go missing here. The cockpit is long gone, and so is Hector, and even my own sanity may be taking a leave of absence. I no longer recognize my crewmates."
+        }
       ]
     },
     {
@@ -2937,12 +3003,18 @@
       ]
     },
     {
-      "id": "open",
+      "id": "ship3_note3",
       "walls": [
         "ship3_pipe_horiz",
         "ship3_pipe_horiz",
         "ship3_pipe_horiz",
         "ship3_door3"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "note I don’t know if I told you I brought along the mixtape you made me when we first started hanging out again. You might hate that, I’m not sure. There are weird sounds in the walls down here, and I’ve taken to walking around with headphones on."
+        }
       ]
     },
     {
