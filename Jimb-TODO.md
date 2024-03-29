@@ -1,5 +1,7 @@
 TODO
 * play all levels
+* NPC dialog
+* track for high score - total number of times XP was awarded; then sanity, then time
 * Insanity view
   * party portraits to change to monsters - silhouettes
   * ghosts moving through the level
@@ -37,7 +39,12 @@ Playtest Feedback
   * way too easy second level with ~4 upgrades; was about 30min with some fixes - slot 3!
   * only had ~3 deaths, max sanity restore totally unneeded
 * playtest 2
-  *
+  * second level still slightly too easy, not sure I lost anyone?
+  * third level, lost 2 in one fight, so far, otherwise fine
+  * forth level, without nerfing aoe4, would have lost 2
+    * didn't lose anyone though, bump balanced damage by 1, sponge by a couple more HP
+  * last level, lost 2 getting to solitude
+    * was underleveled due to wrong XP values!  ended T2L1
 
 Finish up
 * remove dbg:kill buttons!
@@ -45,6 +52,8 @@ Finish up
 * hi score list
 
 Polish
+* final level could use a bunch of unlockable shortcuts
+* bug: when emeny dies to poison damage, the floater moves down halfway through the anim
 * enemy plays blocked sound and does shield floater if 0 damage
 * controller: can't level up: hit Y to open a dedicated screen?
 * add "cheat" to the menu - sets everyone to T2L2 and 100 max sanity and enables the "kill enemy" buttons

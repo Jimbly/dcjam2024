@@ -167,7 +167,7 @@ dialogRegister({
       sanityDamage(0, -delta, 1000, true);
       dialogPush({
         name: '',
-        text: 'You take a moment in solitude to regain some [c=sanity]sanity[/c]...',
+        text: 'You take a moment in solitude and regain some [c=sanity]sanity[/c]...',
         transient: true,
       });
     } else {
@@ -350,7 +350,7 @@ dialogRegister({
     });
   },
   end: function () {
-    // TODO
+    // TODO: submit high score
   },
 });
 

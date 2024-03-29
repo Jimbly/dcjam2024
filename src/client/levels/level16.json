@@ -2374,7 +2374,7 @@
       "events": [
         {
           "id": "sign",
-          "param": "Your party soon faces the scariest thing in the entire universe. If your party can withstand just looking at this guy, massive rewards are sure to come."
+          "param": "Your party soon faces the scariest thing in the entire universe. If you can withstand just looking at this guy, massive rewards are sure to come."
         }
       ]
     },
@@ -2488,8 +2488,8 @@
       ],
       "events": [
         {
-          "id": "dialog",
-          "param": "finale"
+          "id": "sign",
+          "param": "Hey, you're not supposed to be back here."
         }
       ],
       "h": -0.125

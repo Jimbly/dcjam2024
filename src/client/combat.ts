@@ -563,7 +563,7 @@ export class CombatState {
     this.doEnemyTurnFinish();
   }
 
-  roll(animator?: Animatable): void {
+  private doRollInternal(): void {
     let num_dice = 2 + this.deaths;
     this.dice = [];
     let count_per_slot: Record<number, number> = {};
@@ -578,6 +578,21 @@ export class CombatState {
       count_per_slot[slot] = (count_per_slot[slot] || 0) + 1;
       this.dice.push(v);
     }
+  }
+
+  private dieString(): string {
+    let dice = this.dice.slice(0);
+    dice.sort();
+    return dice.join(',');
+  }
+
+  roll(animator?: Animatable): void {
+    let last_dice = this.dieString();
+    let rerolls = 10;
+    do {
+      this.doRollInternal();
+      --rerolls;
+    } while (last_dice === this.dieString() && rerolls);
 
     //this.dice[1] = 5;
     this.dice_used = this.dice.map((a) => false);

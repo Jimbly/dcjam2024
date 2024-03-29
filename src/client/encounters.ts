@@ -137,13 +137,13 @@ export const ENEMIES: TSMap<EnemyDef> = {
   boss6: { // ?
     name: 'The End',
     enttype: 'l6boss',
-    hp: 32,
-    shield: 6,
+    hp: 42,
+    shield: 5,
     tier: 2,
     level: 2,
     effects: [{
       type: AttackType.FRONT,
-      base_amount: 3,
+      base_amount: 4,
     }],
   },
 };
@@ -163,14 +163,17 @@ const MAPPING = [{
 }];
 const OVERRIDE: TSMap<DataObject> = {
   aoe2: {
-    damage: 0,
+    damage: 0, // - 1
   },
   aoe3: {
-    damage: 0,
+    damage: 0, // - 1
   },
   armor3: {
     hp: 3,
     shield: 3,
+  },
+  aoe4: {
+    damage: 0, // - 1
   },
   armor4: {
     hp: 3,
@@ -178,9 +181,13 @@ const OVERRIDE: TSMap<DataObject> = {
   },
   damage4: {
     hp: 6,
+    damage: 5, // +1 = 8
   },
   sponge4: {
     hp: 12,
+  },
+  balanced4: {
+    damage: 4, // +1 = 7
   },
   damage5: {
     damage: 7,

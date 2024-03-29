@@ -196,7 +196,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
 
   attack_back: {
     name: 'Snipe',
-    aggro: 2,
+    aggro: 3,
     effects: [{
       type: AttackType.BACK,
       base_amount: 4,

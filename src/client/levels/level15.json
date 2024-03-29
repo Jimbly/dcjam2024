@@ -2195,6 +2195,10 @@
         {
           "id": "sign",
           "param": "The very fabric of reality seems to be peeling apart. The great laws of physics have clocked out for the day and left your party behind in a splintering kaleidoscope."
+        },
+        {
+          "id": "autosave",
+          "param": ""
         }
       ]
     },

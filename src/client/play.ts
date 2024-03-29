@@ -771,7 +771,7 @@ export function xpCost(tier: number, level: number): number {
   if (level === 2) {
     return Infinity;
   }
-  return 2 << (tier * 2 + level);
+  return 2 * (tier * 2 + level + 1);
 }
 export function giveXP(target: Entity | 'note' | 'terminal' | null): void {
   let floor_id = crawlerGameState().floor_id;
