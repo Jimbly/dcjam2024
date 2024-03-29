@@ -710,7 +710,7 @@ class CombatScene {
   }
 
   onHeroDeath(hero_idx: number): void {
-    sanityDamage(1, 8, ATTACK_TIME, true);
+    sanityDamage(2, 8, ATTACK_TIME, true);
   }
   onPartyDamaged(): void {
     sanityDamage(0, 1, ATTACK_TIME, false);

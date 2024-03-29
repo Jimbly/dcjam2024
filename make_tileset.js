@@ -97,6 +97,7 @@ visuals:
 open_move: false
 open_vis: false
 advertise_other_side: false
+map_view_wall_frames_from: solid
 visuals:
 - type: simple_wall
   opts:

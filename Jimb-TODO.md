@@ -1,6 +1,5 @@
 TODO
-* put the statue somewhere on level 2
-* same with 3rd level
+* play first 3 levels
 * draft second level, play through first 2, measure time, check difficulty, put save game aside for later
   * way too easy second level with ~4 upgrades; was about 30min with some fixes - slot 3!
   * only had ~3 deaths, max sanity restore totally unneeded
@@ -13,6 +12,8 @@ TODO
 * final battle
   * no bamf after final battle
   * no sanity loss? only lose condition is all heroes are dead?
+* lighting flicker l3 (after insanity)
+* locked doors on L1/2
 * more humanoid choices for front1, since the player picks that!
 * dungeon event that tiers-up your leader if still T1 on end of floor 4?
 * bamf - if player has only 2 attackers in party, give only attack options (if possible)

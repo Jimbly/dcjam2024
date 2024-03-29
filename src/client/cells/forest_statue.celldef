@@ -1,5 +1,5 @@
 ---
-open_move: true
+open_move: false
 open_vis: true
 default_wall: solid
 
@@ -8,10 +8,10 @@ visuals:
   type: simple_floor
   opts:
     spritesheet: forest
-    tile: dirt
+    tile: floor2
 - type: simple_billboard
   opts:
     spritesheet: forest
     tile: statue
     offs: [0, 0, 0]
-    face_camera: false # Otherwise faces frustum
+    face_camera: true # Otherwise faces frustum

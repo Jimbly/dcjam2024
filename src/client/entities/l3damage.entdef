@@ -9,7 +9,7 @@ traits:
   biasL: [-0.25, 0.3]
   biasF: [0, -0.25]
   biasR: [-0.25, 0.2]
-  biasIn: [0, 0.3, 0.14]
+  biasIn: [0, 0.3, 0.13]
 - id: drawable_sprite
   anim_data:
     idle:
@@ -17,5 +17,5 @@ traits:
       times: 10000
   sprite_data:
     spritesheet: enemies
-    origin: [0.5, 1.2]
+    origin: [0.5, 1.15]
   scale: 0.6
