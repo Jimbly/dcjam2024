@@ -261,7 +261,7 @@ function autoSavedHere(): boolean {
   return v2same(ent.data.pos, autosave_pos);
 }
 
-const allow_manual_save = false;
+const allow_manual_save = true;
 let pause_menu: SimpleMenu;
 function pauseMenu(): void {
   if (!pause_menu) {
@@ -302,6 +302,7 @@ function pauseMenu(): void {
       cb: function () {
         crawlerSaveGame('manual');
         statusPush('Game saved.');
+        autosave_pos = myEnt().data.pos.slice(0) as JSVec3;
         pause_menu_up = false;
       },
     });

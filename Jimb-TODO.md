@@ -8,7 +8,6 @@ TODO
   * outlines of tentacles in space backdrop
 * lighting flicker l3 (after insanity)
 * roll credits after finale
-* allow saving anywhere
 
 Balance Plan: conservation of XP
           level + tier that should get 1-2 deaths in some combats (2/5?) and 2-3 deaths on boss
