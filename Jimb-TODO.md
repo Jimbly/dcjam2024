@@ -7,7 +7,6 @@ TODO
   * change fog colors and backdrop
   * outlines of tentacles in space backdrop
 * lighting flicker l3 (after insanity)
-* scale sound volume for hunter sounds based on distance
 * roll credits after finale
 * allow saving anywhere
 

@@ -5,7 +5,7 @@ import * as engine from 'glov/client/engine';
 import { getFrameTimestamp } from 'glov/client/engine';
 import { playUISound } from 'glov/client/ui';
 import { EntityManager } from 'glov/common/entity_base_common';
-import { sign } from 'glov/common/util';
+import { lerp, sign } from 'glov/common/util';
 import {
   Vec2,
   v2copy,
@@ -30,7 +30,7 @@ import { statusSet } from './status';
 
 import type { CrawlerScriptAPI } from '../common/crawler_script';
 
-const { abs, floor, random } = Math;
+const { abs, floor, min, random } = Math;
 
 type Entity = EntityDemoClient;
 
@@ -226,6 +226,7 @@ export function aiTraitsClientStartup(): void {
         assert(typeof floor_id === 'number');
         let level = game_state.levels[floor_id];
         let distance = v2dist(player_pos, pos);
+        let volume = lerp(min(distance/5, 1), 1, 0.25);
         let can_see = false;
         if (distance <= this.hunter_opts.radius) {
 
@@ -236,7 +237,7 @@ export function aiTraitsClientStartup(): void {
                 if (engine.defines.HUNTER) {
                   statusSet(`edbg${this.id}`, `${this.id}: New target: ${this.hunter_state.target_pos}`).counter = 500;
                 }
-                playUISound('hunter_seen');
+                playUISound('hunter_seen', volume);
               }
             } else if (v2dist(this.hunter_state.target_pos, player_pos)) {
               if (engine.defines.HUNTER) {
@@ -264,7 +265,7 @@ export function aiTraitsClientStartup(): void {
             if (engine.defines.HUNTER) {
               statusSet(`edbg${this.id}`, `${this.id}: Reached last known target`).counter = 500;
             }
-            playUISound('hunter_lost');
+            playUISound('hunter_lost', volume);
           } else {
             // at target, and player is there, don't move, combat should trigger
             if (engine.defines.HUNTER) {
@@ -301,7 +302,7 @@ export function aiTraitsClientStartup(): void {
             if (engine.defines.HUNTER) {
               statusSet(`edbg${this.id}`, `${this.id}: Move wall blocked - giving up`).counter = 500;
             }
-            playUISound('hunter_lost');
+            playUISound('hunter_lost', volume);
             this.hunter_state.has_target = false;
           }
           return true;
