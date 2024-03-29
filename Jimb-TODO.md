@@ -3,7 +3,6 @@ TODO
 * draft second level, play through first 2, measure time, check difficulty, put save game aside for later
   * way too easy second level with ~4 upgrades; was about 30min with some fixes - slot 3!
   * only had ~3 deaths, max sanity restore totally unneeded
-* bug: combat while in map view
 * Insanity view
   * party portraits to change to monsters - silhouettes
   * ghosts moving through the level

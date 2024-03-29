@@ -42,6 +42,7 @@ import {
 } from 'glov/common/vmath';
 import { bamfCheck } from './bamf';
 import { crawlerEntFactory } from './crawler_entity_client';
+import { mapViewSetActive } from './crawler_map_view';
 import { dialog } from './dialog_system';
 import {
   AttackType,
@@ -1005,6 +1006,7 @@ let color_die_revenge = vec4(1, 0, 0, 1);
 let color_die_revenge_used = vec4(0.25, 0, 0, 1);
 let color_white = vec4(1, 1, 1, 1);
 export function doCombat(target: Entity, dt: number): void {
+  mapViewSetActive(false);
   let me = myEnt();
   assert(me);
   let reset = last_combat_frame !== getFrameIndex() - 1 || target !== last_combat_ent;
