@@ -1529,7 +1529,7 @@
       "events": [
         {
           "id": "dialog",
-          "param": "party This place feels like home."
+          "param": "party Is this the end?"
         }
       ],
       "h": -0.1875
@@ -1677,7 +1677,7 @@
         "open",
         "open",
         "open",
-        "solitude_mazemap"
+        "solitude_solid4"
       ],
       "h": -0.1875
     },
@@ -1806,7 +1806,7 @@
       "events": [
         {
           "id": "floor_abs",
-          "param": "14 5 19 3"
+          "param": "15 1 11 0"
         }
       ]
     },
@@ -1856,7 +1856,7 @@
       "events": [
         {
           "id": "sign",
-          "param": "Solitude again."
+          "param": "You feel an otherworldly sense of Solitude."
         }
       ],
       "h": -0.1875
@@ -2004,7 +2004,7 @@
       "id": "solitude_fire",
       "walls": [
         "open",
-        "solitude_mazemap",
+        "solitude_solid4",
         "open",
         "open"
       ],
@@ -2171,7 +2171,7 @@
       "events": [
         {
           "id": "dialog",
-          "param": "party I miss Nilo."
+          "param": "party Do we really have to go back out there?"
         }
       ],
       "h": -0.1875

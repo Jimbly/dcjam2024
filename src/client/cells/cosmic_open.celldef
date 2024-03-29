@@ -1,0 +1,17 @@
+---
+open_vis: true
+default_wall: solid
+
+visuals:
+- pass: bg
+  type: simple_floor
+  opts:
+    spritesheet: cosmic
+    tile:
+    - floor1
+    - floor1b
+    times:
+    - 500
+    - 120
+
+corners: # pillars and floor/ceiling details

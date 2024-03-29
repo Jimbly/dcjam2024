@@ -1,0 +1,19 @@
+---
+open_move: false
+open_vis: true
+map_view_wall_frame_north: 3
+map_view_wall_frame_east: 2
+map_view_wall_frame_priority: -1
+visuals:
+- type: simple_wall
+  opts:
+    spritesheet: cosmic
+    tile:
+    - anim1
+    - anim2
+    - anim3
+    - anim4
+    - anim5
+    times: 3200
+    do_blend: 3200
+    do_alpha: true

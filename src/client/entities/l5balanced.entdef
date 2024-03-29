@@ -17,4 +17,4 @@ traits:
   sprite_data:
     spritesheet: enemies
     origin: [0.5, 1.01]
-  scale: 0.6
+  scale: 0.9

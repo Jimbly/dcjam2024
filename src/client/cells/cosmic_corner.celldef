@@ -1,0 +1,27 @@
+---
+open_vis: true
+default_wall: solid
+
+visuals:
+- pass: bg
+  type: simple_floor
+  opts:
+    spritesheet: cosmic
+    tile:
+    - star11
+    - star10
+    - star9
+    - star8
+    - star7
+    - star6
+    - star5
+    - star5
+    - star4
+    - star3
+    - star2
+    - star1
+    times: 300
+    do_blend: 300
+    do_alpha: true
+
+corners: # pillars and floor/ceiling details

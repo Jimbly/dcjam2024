@@ -112,8 +112,10 @@ export function pathTo(target_x: number, target_y: number): void {
 
 function percLabel(cur: number, total: number): string {
   let perc = max(1, round(cur/total * 100));
-  if (cur !== total) {
+  if (cur < total) {
     perc = min(perc, 99);
+  } else if (cur > total) {
+    perc = 100;
   }
   return `${perc}%`;
 }
@@ -220,9 +222,11 @@ export function crawlerMapViewDraw(
         ui.font.ALIGN.HCENTER, w, 0, `${level.seen_cells}/${level.total_cells}`);
     } else {
       ui.font.drawSizedAligned(null, x, y + h - (text_height + 2)*2, z + 1, text_height,
-        ui.font.ALIGN.HCENTER, w, 0, `${num_enemies} enemies remaining`);
-      ui.font.drawSizedAligned(null, x, y + h - (text_height + 2), z + 1, text_height,
-        ui.font.ALIGN.HCENTER, w, 0, `${percLabel(level.seen_cells, level.total_cells)} explored`);
+        ui.font.ALIGN.HCENTER, w, 0, `${num_enemies} ${num_enemies === 1 ? 'enemy' : 'enemies'} remaining`);
+      if (game_state.floor_id < 15) {
+        ui.font.drawSizedAligned(null, x, y + h - (text_height + 2), z + 1, text_height,
+          ui.font.ALIGN.HCENTER, w, 0, `${percLabel(level.seen_cells, level.total_cells)} explored`);
+      }
     }
   }
 

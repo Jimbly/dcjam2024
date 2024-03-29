@@ -726,14 +726,14 @@ const XP_TABLE = [
   3,
   4,
   6,
-  15,
+  20,
 ];
 const XP_TABLE_STORY = [
   1,
   2,
   3,
   4,
-  25,
+  42,
 ];
 export function xpCost(tier: number, level: number): number {
   if (level === 2) {

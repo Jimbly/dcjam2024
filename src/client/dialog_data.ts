@@ -102,11 +102,11 @@ function drawFace(name: string, face_id: string, param: PanelParam): void {
     drawHeroName(px + 1, py + PORTRAIT_SIZE + 1, z, name, param.color ? param.color[3] : 1);
   }
 }
-function randomHeroSpatial(): Hero {
+function randomHeroSpatial(offset?: number): Hero {
   let me = myEnt();
   let { pos, heroes } = me.data;
   let rnd = randSimpleSpatial(pos[0], pos[1], 0);
-  let choice = heroes[floor(rnd * heroes.length)];
+  let choice = heroes[(floor(rnd * heroes.length) + (offset || 0)) % heroes.length];
   return choice;
 }
 dialogRegister({
@@ -126,9 +126,13 @@ dialogRegister({
       giveXP('note');
     }
     let name = randomHeroSpatial().name;
+    let text = `*NAME finds a little piece of paper on the ground.*\n\n${param}`.replace('NAME', name);
+    if (param.startsWith('NAME')) {
+      text = `*${param}*`.replace('NAME', name);
+    }
     dialogPush({
       name: '',
-      text: `*NAME finds a little piece of paper on the ground.*\n\n${param}`.replace('NAME', name),
+      text: text,
       font_style: style_note,
       transient: true,
       instant: true,
@@ -137,7 +141,12 @@ dialogRegister({
   },
   party: function (param: string) {
     if (onetimeEvent()) {
-      let hero = randomHeroSpatial();
+      let offset = 0;
+      if (param.startsWith('1 ')) {
+        offset = 1;
+        param = param.slice(2);
+      }
+      let hero = randomHeroSpatial(offset);
       let { class_id, face, name } = hero;
       let class_def = CLASSES[class_id];
       let face_id = class_def ? (class_def.faces[face || 0] || class_def.faces[0]) : '';

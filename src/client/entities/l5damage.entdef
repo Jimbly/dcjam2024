@@ -2,7 +2,7 @@
 traits:
 - id: enemy
 - id: hunter
-  radius: 9
+  radius: 5
 - id: stats_default
   encounter: l5damage
 - id: drawable
@@ -18,4 +18,4 @@ traits:
   sprite_data:
     spritesheet: enemies
     origin: [0.5, 1.01]
-  scale: 0.6
+  scale: 0.8
