@@ -93,6 +93,7 @@ export type EntityDataClient = {
   events_done?: TSMap<true>;
   score_xp_gain?: number;
   score_sanity_loss?: number;
+  cheat?: boolean;
 } & EntityCrawlerDataCommon;
 
 

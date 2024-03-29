@@ -1251,7 +1251,7 @@
       "id": "solid",
       "walls": [
         "open",
-        "open",
+        "solid",
         "open",
         "open"
       ]
@@ -1397,27 +1397,34 @@
     {
       "id": "solid",
       "walls": [
-        "open",
+        "solid",
         "solitude_solid1",
         "open",
         "open"
       ]
     },
     {
-      "id": "solid",
+      "id": "open",
       "walls": [
+        "cosmic_solid_vis",
         "open",
-        "solitude_solid1",
-        "open",
-        "open"
-      ]
+        "cosmic_solid_vis",
+        "cosmic_solid_vis"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "saplingstay"
+        }
+      ],
+      "h": -0.1875
     },
     {
       "id": "solid",
       "walls": [
         "open",
         "solitude_solid1",
-        "open",
+        "solid",
         "open"
       ]
     },
@@ -1561,7 +1568,7 @@
         "open",
         "open",
         "open",
-        "solitude_solid4"
+        "open"
       ],
       "h": -0.1875
     },

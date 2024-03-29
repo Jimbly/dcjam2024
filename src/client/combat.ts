@@ -1334,19 +1334,11 @@ export function doCombat(target: Entity, dt: number): void {
     });
   }
 
-  if (/*engine.DEBUG && */myEntOptional()?.isAlive()) {
+  if (myEntOptional()?.isAlive() && myEnt().data.cheat) {
     if (buttonText({
       x: VIEWPORT_X0 + 4 + DIE_W,
       y: VIEWPORT_Y0 + 4,
-      text: 'DBG:SKIP',
-      disabled: combat_scene.state_id !== CSID.PlayerTurn,
-    })) {
-      combatStartEnemyTurn();
-    }
-    if (buttonText({
-      x: VIEWPORT_X0 + 8 + DIE_W + uiButtonWidth(),
-      y: VIEWPORT_Y0 + 4,
-      text: 'DBG:KILL',
+      text: 'CHEAT:Kill',
       sound_button: 'ability_gun1',
     })) {
       for (let ii = 0; ii < enemies.length; ++ii) {
@@ -1356,6 +1348,14 @@ export function doCombat(target: Entity, dt: number): void {
           break;
         }
       }
+    }
+    if (buttonText({
+      x: VIEWPORT_X0 + 8 + DIE_W + uiButtonWidth(),
+      y: VIEWPORT_Y0 + 4,
+      text: 'CHEAT:Skip',
+      disabled: combat_scene.state_id !== CSID.PlayerTurn,
+    })) {
+      combatStartEnemyTurn();
     }
   }
 

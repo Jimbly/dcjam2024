@@ -36,6 +36,7 @@ import {
   drawBox,
   drawRect,
   menuUp,
+  modalDialog,
   panel,
   playUISound,
   uiButtonHeight,
@@ -295,6 +296,45 @@ function pauseMenu(): void {
       settings.set('turn_toggle', 1 - settings.turn_toggle);
     },
   }];
+  if (!myEntOptional()?.data.cheat) {
+    items.push({
+      name: 'Cheat',
+      cb: () => {
+        pause_menu_up = false;
+        modalDialog({
+          title: 'Enter Cheat Mode?',
+          text: 'Too difficult?  This will add insta-kill and skip turn buttons to the combat screen.\n\n' +
+            'This should let you experience all game content, however it will disable high scores.  Really cheat?',
+          buttons: {
+            yes: () => {
+              let { data } = myEnt();
+              data.cheat = true;
+            },
+            no: null,
+          },
+        });
+      },
+    });
+  } else {
+    items.push({
+      name: 'Cheat More',
+      cb: () => {
+        pause_menu_up = false;
+        modalDialog({
+          title: 'Free XP?',
+          text: 'This will give you lots of XP.  Killing enemies and finding secrets is ' +
+            'enough to max out your heroes, but why not.\n\nReally cheat?',
+          buttons: {
+            yes: () => {
+              // eslint-disable-next-line @typescript-eslint/no-use-before-define
+              giveXP('cheat');
+            },
+            no: null,
+          },
+        });
+      },
+    });
+  }
   // TODO: add "load from last autosave / restart in Room of Solitude" option
   if (isLocal() && allow_manual_save) {
     items.push({
@@ -777,12 +817,14 @@ export function xpCost(tier: number, level: number): number {
   }
   return 2 * (tier * 2 + level + 1);
 }
-export function giveXP(target: Entity | 'note' | 'terminal' | null): void {
+export function giveXP(target: Entity | 'note' | 'terminal' | 'cheat' | null): void {
   let floor_id = crawlerGameState().floor_id;
   let floor_level = clamp(floor_id - 11, 0, XP_TABLE.length - 1);
   let delta = XP_TABLE[floor_level];
   if (target) {
-    if (target === 'note' || target === 'terminal') {
+    if (target === 'cheat') {
+      delta = 100;
+    } else if (target === 'note' || target === 'terminal') {
       delta = XP_TABLE_STORY[floor_level];
     } else {
       let is_boss = target?.data?.stats?.encounter.includes('boss');

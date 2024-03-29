@@ -51,7 +51,6 @@ Polish
 * bug: when emeny dies to poison damage, the floater moves down halfway through the anim
 * enemy plays blocked sound and does shield floater if 0 damage
 * controller: can't level up: hit Y to open a dedicated screen?
-* add "cheat" to the menu - sets everyone to T2L2 and 100 max sanity and enables the "kill enemy" buttons
 * adjust fog colors and settings of all levels - backdrops too
 * fill in empty space in UI with some noise at least
 * show explore percent (and monster count?) on minimap
