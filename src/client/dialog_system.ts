@@ -203,6 +203,7 @@ export function dialogRun(dt: number, viewport: UIBox & { pad_top: number; pad_b
   }
   let { transient, transient_long, custom_render, text, name, buttons, panel_sprite } = active_dialog;
   if (transient && suppress_transient) {
+    active_dialog = null;
     return false;
   }
   if (name) {
