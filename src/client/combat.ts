@@ -832,6 +832,7 @@ class CombatScene {
           color: temp_color,
         });
       }
+      y -= damage_size/2;
     }
     return blink < 1 ? easeOut(blink, 2) : 1;
   }

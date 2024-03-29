@@ -125,12 +125,12 @@ export function bamfCheck(): void {
           levels = [0, 0];
         }
         let tier = max(tierFromFloor(), dead_tier, isBootstrap() ? 1 : 0);
-        let h1 = randomHero(ii, tier, heroes_temp, 0, isBootstrap(), dead_names);
+        let h1 = randomHero(ii, tier, heroes_temp, heroes_temp.length, isBootstrap(), dead_names);
         if (hero.levels) {
           h1.levels = levels;
         }
         heroes_temp.push(h1);
-        let h2 = randomHero(ii, tier, heroes_temp, 1, isBootstrap(), dead_names);
+        let h2 = randomHero(ii, tier, heroes_temp, heroes_temp.length, isBootstrap(), dead_names);
         if (hero.levels) {
           h2.levels = levels;
         }

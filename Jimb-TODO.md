@@ -1,8 +1,6 @@
 TODO
 * bug: walking out of closet with a note, get in combat, combat goes away, note reappears and finishes fading out
-* never offer two of the same classes
 * play first 3 levels
-* bug: damage + poison attack does two overlapping floaters
 * draft second level, play through first 2, measure time, check difficulty, put save game aside for later
   * way too easy second level with ~4 upgrades; was about 30min with some fixes - slot 3!
   * only had ~3 deaths, max sanity restore totally unneeded
