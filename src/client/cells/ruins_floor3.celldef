@@ -1,0 +1,14 @@
+---
+open_vis: true
+default_wall: ruins_wall3
+visuals:
+- pass: bg
+  type: simple_floor
+  opts:
+    spritesheet: ruins
+    tile: floor3
+- pass: bg
+  type: simple_ceiling
+  opts:
+    spritesheet: ruins
+    tile: ceiling3

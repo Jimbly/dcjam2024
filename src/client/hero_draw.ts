@@ -110,8 +110,8 @@ const style_attack_blocked = fontStyleAlpha(style_attack, 0.25);
 
 const style_name = fontStyle(null, {
   color: 0x141013ff,
-  outline_width: 4,
-  outline_color: 0x4a546255,
+  outline_width: 3.5,
+  outline_color: 0x4a546265,
 });
 
 export function drawHeroName(x: number, y: number, z: number, name: string, alpha: number): void {

@@ -4,8 +4,8 @@ open_vis: true
 visuals:
 - type: simple_filler
   opts:
-    spritesheet: ship3
-    tile: filler
+    spritesheet: demo
+    tile: grey_dirt0
 - type: simple_filler
   opts:
     spritesheet: demo

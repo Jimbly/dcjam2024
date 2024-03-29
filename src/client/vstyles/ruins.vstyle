@@ -1,0 +1,23 @@
+---
+fog_color: '#261622'
+background_color: '#261622'
+background_img: space1
+fog_params:
+- 0.005
+- 0.003
+- 270.0
+cell_swaps:
+  open: ruins_floor1a
+  floorswitch: ruins_floorswitch
+  floorswitch_on: ruins_floorswitch
+wall_swaps:
+  open: demo_open
+  door: ruins_door1
+  door_oneway: ruins_door1
+  door_locked: ruins_door_locked
+  door_locked_unlocked: ruins_door_unlocked
+  secret_door: ruins_secret1
+  secret_door_unvisited: ruins_secret1
+  solid: ruins_wall1
+  stairs_in: ship2_stairs_in
+  stairs_out: ship2_stairs_out

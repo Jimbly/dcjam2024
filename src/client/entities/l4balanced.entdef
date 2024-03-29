@@ -16,5 +16,5 @@ traits:
       times: 10000
   sprite_data:
     spritesheet: enemies
-    origin: [0.5, 1.01]
-  scale: 0.6
+    origin: [0.5, 1.51]
+  scale: 0.66

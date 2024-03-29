@@ -1,0 +1,4536 @@
+{
+  "special_pos": {
+    "stairs_in": [
+      1,
+      12,
+      0
+    ],
+    "stairs_out": [
+      22,
+      11,
+      2
+    ]
+  },
+  "w": 23,
+  "h": 21,
+  "cells": [
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall3",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "open",
+        "open",
+        "ruins_wall3",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "ruins_wall3",
+        "open",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "open",
+        "ruins_wall3",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_terminal",
+      "walls": [
+        "solid",
+        "open",
+        "solid",
+        "solid"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "terminal LOG 124.12: Excuse my French, but screw these cowards. Patrick and I are leaving the other three behind, and we’re either finding a way out or we’re gonna die trying."
+        }
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall3",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "ruins_wall3",
+        "open",
+        "ruins_wall3",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall3",
+        "open",
+        "solid",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "ruins_wall3",
+        "open",
+        "ruins_wall3",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "ruins_wall3",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "ruins_wall2",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "ruins_wall3",
+        "ruins_door3",
+        "ruins_wall3",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "open",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "solid",
+        "open",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall3",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "ruins_wall3",
+        "open",
+        "ruins_wall3",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall3",
+        "open",
+        "ruins_wall3",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_note",
+      "walls": [
+        "ruins_wall3",
+        "open",
+        "ruins_wall3",
+        "open"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "note I forgot to say, Edison died a few days ago. I’m the last original party member left. I guess that means everyone else was weaker than me. I wonder sometimes how you’d do down here. I think you might be weaker than you think you are."
+        }
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "ruins_wall3",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "ruins_wall2",
+        "ruins_wall2"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party Huh, this dead end actually has nothing in it."
+        }
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "ruins_wall2",
+        "ruins_wall2",
+        "open",
+        "ruins_door2"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "open",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "solid",
+        "open",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall3",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "ruins_wall3",
+        "open",
+        "ruins_wall3",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall3",
+        "ruins_wall3",
+        "ruins_wall3",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "ruins_wall3",
+        "open",
+        "ruins_wall3",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "ruins_wall3",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "ruins_wall2",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "solid",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "solid",
+        "open",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall3",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "open",
+        "open",
+        "ruins_wall3",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "ruins_wall3",
+        "open",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "ruins_wall3",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "open",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_note1",
+      "walls": [
+        "open",
+        "ruins_wall1",
+        "ruins_wall1",
+        "ruins_wall1"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "note These new guys are weird. I don’t like them. Their faces are wrong. Their eyes and noses are in the wrong places. They might be monsters but I don’t even know. This place reaches into our minds and twists up the information that’s already there. I don’t know what people are supposed to be like anymore."
+        }
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "secret_door",
+        "solid",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "open",
+        "open",
+        "secret_door",
+        "solid"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "solid",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall3",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "ruins_wall3",
+        "open",
+        "ruins_wall3",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "ruins_wall3",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall3",
+        "ruins_wall3",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "ruins_wall3",
+        "open",
+        "ruins_wall3",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "ruins_wall3",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "solid",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "solid",
+        "open",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "open",
+        "solid",
+        "solid"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "solid",
+        "open",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall3",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_note",
+      "walls": [
+        "ruins_wall3",
+        "ruins_wall3",
+        "ruins_wall3",
+        "open"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "note The craigslist listing said this place had all the answers. I don’t even remember what questions I was asking. That’s a dirty trick."
+        }
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "open",
+        "ruins_wall3",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "open",
+        "open",
+        "ruins_wall3",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "ruins_wall3",
+        "ruins_wall3",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "ruins_wall3",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "open",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "open",
+        "open",
+        "solid",
+        "solid"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "solid",
+        "solid",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "open",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "solid",
+        "open",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "solid",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "solid",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "open",
+        "open",
+        "ship2_solid2",
+        "solid"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "solid",
+        "open",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "solid",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "solid",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "ruins_wall3",
+        "ruins_door3",
+        "ruins_wall3",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "solid",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "ruins_wall3",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_medkit",
+      "walls": [
+        "ruins_wall3",
+        "open",
+        "ruins_wall3",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "ruins_wall3",
+        "solid",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "ruins_wall2",
+        "ruins_door2",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "solid",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "solid",
+        "open",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "solid",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "solid",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "open",
+        "open",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "stairs_out",
+        "solid",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "stairs_out",
+      "walls": [
+        "solid",
+        "solid",
+        "door",
+        "solid"
+      ],
+      "events": [
+        {
+          "id": "floor_delta",
+          "param": "1"
+        }
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "stairs_in",
+      "walls": [
+        "door",
+        "solid",
+        "solid",
+        "solid"
+      ],
+      "events": [
+        {
+          "id": "floor_delta",
+          "param": "-1"
+        }
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "open",
+        "open",
+        "stairs_in",
+        "open"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "door",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "ruins_door2",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "ruins_wall2",
+        "ruins_wall2",
+        "open",
+        "ruins_door2"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall3",
+        "open",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "door_locked",
+        "open",
+        "ruins_wall3",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "floorswitch",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "door_locked",
+        "ruins_wall3"
+      ],
+      "props": {
+        "key_cell": "l4d2"
+      },
+      "events": [
+        {
+          "id": "key_set",
+          "param": "l4d2"
+        }
+      ]
+    },
+    {
+      "id": "ruins_detail",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "ruins_door3",
+        "ruins_wall3",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "open",
+        "solid",
+        "door",
+        "door"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "solid",
+        "solid",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "open",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "open",
+        "door",
+        "solid",
+        "solid"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "solid",
+        "solid",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "solid",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "open",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "open",
+        "solid",
+        "ship2_solid2",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_terminal",
+      "walls": [
+        "solid",
+        "solid",
+        "open",
+        "open"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "terminal LOG 100.7: Ancient ruins? You have got to be kidding me. What’s next, the mall? Am I going to go down a stairway and find a Spencer’s next to a Cinnabon? Who’s dumb idea was this place? "
+        }
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "solid",
+        "solid"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "ruins_wall2",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall3",
+        "ruins_wall3",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "ruins_wall3",
+        "open",
+        "ruins_wall3",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall3",
+        "open",
+        "ruins_wall3",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "floorswitch",
+      "walls": [
+        "ruins_wall3",
+        "door_locked",
+        "ruins_wall3",
+        "open"
+      ],
+      "props": {
+        "key_cell": "l4d1"
+      },
+      "events": [
+        {
+          "id": "key_set",
+          "param": "l4d1"
+        }
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "ruins_wall3",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "ruins_wall2",
+        "ruins_door3"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "ruins_wall2",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall3",
+        "open",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "open",
+        "open",
+        "ruins_wall3",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "ruins_wall3",
+        "ruins_wall3",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall3",
+        "open",
+        "ruins_wall3",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "ruins_wall3",
+        "open",
+        "ruins_wall3",
+        "door_locked"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "ruins_wall3",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "open",
+        "open",
+        "ruins_wall2",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "ruins_note2",
+      "walls": [
+        "ruins_wall2",
+        "ruins_wall2",
+        "open",
+        "ruins_wall2"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "note *This page has a crude drawing of a monster.*"
+        }
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall3",
+        "solid",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "ruins_wall3",
+        "open",
+        "ruins_wall3",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "ruins_wall3",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall3",
+        "solid",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "ruins_wall3",
+        "ruins_door3",
+        "ruins_wall3",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "ruins_wall3",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "ruins_wall2",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "ruins_door2",
+        "ruins_door2",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "open",
+        "ruins_wall3",
+        "ruins_door3",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "ruins_floor3",
+      "walls": [
+        "ruins_wall3",
+        "ruins_wall3",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "open",
+        "ruins_wall3",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor1b",
+      "walls": [
+        "open",
+        "open",
+        "solid",
+        "solid"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "ruins_floor1b",
+      "walls": [
+        "solid",
+        "open",
+        "open",
+        "door"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "ruins_wall3",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "open",
+        "open",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor1b",
+      "walls": [
+        "solid",
+        "open",
+        "solid",
+        "door"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "solid",
+        "solid",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "ruins_wall3"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "solid",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "solid",
+        "open",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "open",
+        "solid",
+        "solid"
+      ]
+    },
+    {
+      "id": "ruins_floor1b",
+      "walls": [
+        "solid",
+        "open",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall2",
+        "solid",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "ruins_wall2",
+        "ruins_door2",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "ruins_wall2",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall2",
+        "ruins_wall2",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "open",
+        "ruins_solitude_door",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "ruins_terminal",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "solid"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "terminal LOG 123.19: We found another one of those strangely peaceful rooms and put it to a vote. It was decided 3 to 2, that we stay here forever."
+        }
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "open",
+        "solid",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "ruins_floor1b",
+      "walls": [
+        "solid",
+        "solid",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "open",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "door",
+        "solid",
+        "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "open",
+        "solid",
+        "door",
+        "solid"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "secret_door",
+        "solid",
+        "open",
+        "door"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "secret_door",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "ruins_note2",
+      "walls": [
+        "ruins_wall2",
+        "ruins_wall2",
+        "open",
+        "ruins_wall2"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "note You know what, I may have lost my marbles, but the one thing this place has given me is a sense of humor. When we first started off on this adventure we were sooo serious. Now everything cracks me up. Blood is hilarious. Monsters are a riot. I’ve never had this much fun."
+        }
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "ruins_wall2",
+        "open",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "open",
+        "ruins_wall2",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "ruins_floor2",
+      "walls": [
+        "ruins_wall2",
+        "ruins_wall2",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "ruins_wall2",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "solid",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "stairs_out",
+      "walls": [
+        "solid",
+        "solid",
+        "solid",
+        "ruins_solitude_door"
+      ],
+      "events": [
+        {
+          "id": "floor_delta",
+          "param": "10"
+        }
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "solid",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "ruins_wall2"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "solid"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    },
+    {
+      "id": "solid",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "open"
+      ]
+    }
+  ],
+  "initial_entities": [
+    {
+      "type": "l4boss",
+      "pos": [
+        21,
+        11,
+        2
+      ]
+    },
+    {
+      "type": "l4aoe",
+      "pos": [
+        11,
+        10,
+        0
+      ]
+    },
+    {
+      "type": "l4balanced",
+      "pos": [
+        7,
+        6,
+        3
+      ]
+    },
+    {
+      "type": "l4sponge",
+      "pos": [
+        17,
+        13,
+        1
+      ]
+    },
+    {
+      "type": "l4damage",
+      "pos": [
+        13,
+        4,
+        0
+      ]
+    },
+    {
+      "type": "l4balanced",
+      "pos": [
+        9,
+        14,
+        3
+      ]
+    },
+    {
+      "type": "l4aoe",
+      "pos": [
+        15,
+        12,
+        3
+      ]
+    },
+    {
+      "type": "l4armor",
+      "pos": [
+        17,
+        16,
+        2
+      ]
+    },
+    {
+      "type": "l4damage",
+      "pos": [
+        9,
+        16,
+        0
+      ]
+    }
+  ],
+  "state": {},
+  "vstyle": "ruins",
+  "seed": "32845502",
+  "props": {
+    "title": "Temple Ruins"
+  },
+  "paths": {}
+}

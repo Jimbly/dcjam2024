@@ -22,23 +22,22 @@ const NOTE = 8;
 const TERMINAL = 9;
 const STAIRS = 10;
 const WALLDETAIL = 11;
-let sheet = 'ship3';
+let sheet = 'ruins';
 let files = {
-  capsule: [DETAIL, 'floor1'],
-  door: [DOOR],
-  floor1: [FLOOR, 'ceiling1'],
+  door1: [DOOR],
+  door2: [DOOR],
+  door3: [DOOR],
+  wall1: [SOLID],
+  door_locked: [SOLID],
+  door_unlocked: [SOLID],
+  floor1a: [FLOOR, 'ceiling1'],
+  floor1b: [FLOOR, 'ceiling1'],
+  floor3: [FLOOR, 'ceiling3'],
   floor2: [FLOOR, 'ceiling2'],
-  floor3: [FLOOR,'ceiling3'],
-  pipe_horiz: [WALLDETAIL, 'solid3'],
-  pipe_vert: [WALLDETAIL, 'solid4'],
-  secret: [SECRETDOOR],
-  solid4: [SOLID],
-  solid1: [SOLID],
-  solid2: [SOLID],
-  solid3: [SOLID],
-  stairs_down: [STAIRS],
-  stairs_up: [STAIRS],
-  window: [SOLID],
+  secret1: [SECRETDOOR],
+  wall1b: [SOLID],
+  wall2: [SOLID],
+  wall3: [SOLID],
 };
 
 let vstyle = `

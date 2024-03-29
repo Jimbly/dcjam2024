@@ -5,7 +5,7 @@ visuals:
 - type: simple_filler
   opts:
     spritesheet: ship3
-    tile: ceiling3
+    tile: filler
 - type: simple_filler
   opts:
     spritesheet: ship3

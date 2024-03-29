@@ -1,0 +1,23 @@
+---
+open_move: true
+open_vis: true
+default_wall: ruins_wall2
+default_events:
+- dialog note MSG
+visuals:
+- pass: bg
+  type: simple_ceiling
+  opts:
+    spritesheet: ruins
+    tile: ceiling2
+- pass: bg
+  type: simple_floor
+  opts:
+    spritesheet: ruins
+    tile: floor2
+- pass: default
+  detail_layer: 1
+  type: simple_floor
+  opts:
+    spritesheet: ship2
+    tile: note
