@@ -64,7 +64,7 @@ export const CLASSES: TSMap<HeroClassDef> = {
   },
   front3: {
     tier: front_tier_data,
-    abilities: ['shield_slow', 'attack_light'],
+    abilities: ['shield_slow', 'attack_lighter'],
     faces: [['a', 'steelslime'], ['m', 'ifrit']],
   },
   front4: {
@@ -80,7 +80,7 @@ export const CLASSES: TSMap<HeroClassDef> = {
   },
   mid2: {
     tier: mid_tier_data,
-    abilities: ['attack_area_light', 'attack_area_med'],
+    abilities: ['attack_area_med', 'attack_area_light'],
     faces: [['f', 'icelady'], ['a', 'phoenix'], ['a', 'mageslime2']],
   },
   mid3: {
@@ -96,7 +96,7 @@ export const CLASSES: TSMap<HeroClassDef> = {
 
   back1: {
     tier: back_tier_data,
-    abilities: ['heal_med', 'heal_all_light'],
+    abilities: ['heal_all_light', 'heal_med'],
     faces: [['a', 'healer2'], ['f', 'succubus'], ['a', 'nebulan']],
   },
   back2: {
@@ -106,12 +106,12 @@ export const CLASSES: TSMap<HeroClassDef> = {
   },
   back3: {
     tier: back_tier_data,
-    abilities: ['heal_shield_all', 'attack_area_light'],
+    abilities: ['heal_shield_all', 'attack_area_light2'],
     faces: [['a', 'wizardblack'], ['a', 'stonegolem']],
   },
   back4: {
     tier: back_tier_data,
-    abilities: ['heal_light', 'shield_other2'],
+    abilities: ['shield_other2', 'heal_light'],
     faces: [['m', 'calm'], ['f', 'pinkslimev2']],
   },
 };
@@ -133,17 +133,14 @@ for (let key in CLASSES) {
 }
 
 export const ABILITIES: TSMap<AbilityDef> = {
-  attack_poison_light: {
-    name: 'Poisoned Blade',
+  attack_heavy: {
+    name: 'Heavy Attack',
     aggro: 3,
     effects: [{
       type: AttackType.FRONT,
-      base_amount: 2,
-    }, {
-      type: AttackType.POISON,
-      base_amount: 1,
+      base_amount: 3,
     }],
-    icon: 'ability_poison1',
+    icon: 'ability_gun2',
   },
   attack_light: {
     name: 'Light Attack',
@@ -154,36 +151,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     }],
     icon: 'ability_gun1',
   },
-  attack_heavy: {
-    name: 'Heavy Attack',
-    aggro: 3,
-    effects: [{
-      type: AttackType.FRONT,
-      base_amount: 3,
-    }],
-    icon: 'ability_gun2',
-  },
-  attack_back_light: {
-    name: 'Distracting Shot',
-    aggro: 1,
-    effects: [{
-      type: AttackType.BACK,
-      base_amount: 1,
-    }, {
-      type: AttackType.SHIELD_SELF,
-      base_amount: 1,
-    }],
-    icon: 'ability_back2',
-  },
-  attack_back: {
-    name: 'Snipe',
-    aggro: 2,
-    effects: [{
-      type: AttackType.BACK,
-      base_amount: 2,
-    }],
-    icon: 'ability_back1',
-  },
+
   shield_aggro: {
     name: 'Taunt',
     aggro: 4,
@@ -202,6 +170,39 @@ export const ABILITIES: TSMap<AbilityDef> = {
     }],
     icon: 'ability_shield1',
   },
+
+  attack_lighter: {
+    name: 'Lighter Attack',
+    aggro: 1,
+    effects: [{
+      type: AttackType.FRONT,
+      base_amount: 2,
+    }],
+    icon: 'ability_gun1',
+  },
+
+  attack_poison_light: {
+    name: 'Poisoned Blade',
+    aggro: 3,
+    effects: [{
+      type: AttackType.FRONT,
+      base_amount: 2,
+    }, {
+      type: AttackType.POISON,
+      base_amount: 1,
+    }],
+    icon: 'ability_poison1',
+  },
+
+  attack_back: {
+    name: 'Snipe',
+    aggro: 2,
+    effects: [{
+      type: AttackType.BACK,
+      base_amount: 2,
+    }],
+    icon: 'ability_back1',
+  },
   poison: {
     name: 'Poison',
     aggro: 1,
@@ -211,9 +212,19 @@ export const ABILITIES: TSMap<AbilityDef> = {
     }],
     icon: 'ability_poison2',
   },
+
   attack_area_light: {
     name: 'Light Blast',
     aggro: 2,
+    effects: [{
+      type: AttackType.ALL,
+      base_amount: 1,
+    }],
+    icon: 'ability_ranged_all2',
+  },
+  attack_area_light2: {
+    name: 'Light Blast',
+    aggro: 3,
     effects: [{
       type: AttackType.ALL,
       base_amount: 1,
@@ -229,6 +240,20 @@ export const ABILITIES: TSMap<AbilityDef> = {
     }],
     icon: 'ability_ranged_all1',
   },
+
+  attack_back_light: {
+    name: 'Distracting Shot',
+    aggro: 1,
+    effects: [{
+      type: AttackType.BACK,
+      base_amount: 1,
+    }, {
+      type: AttackType.SHIELD_SELF,
+      base_amount: 1,
+    }],
+    icon: 'ability_back2',
+  },
+
   heal_shield_all: {
     name: 'Mighty Guard',
     aggro: 2,
