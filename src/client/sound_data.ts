@@ -1,6 +1,6 @@
 import { UISoundID } from 'glov/client/ui';
 
-export const SOUND_DATA: Partial<Record<string, UISoundID | string | string[]>> = {
+export const SOUND_DATA: Partial<Record<string, UISoundID | string | string[] | UISoundID[]>> = {
   // online multiplayer sounds, ignore these
   user_join: 'user_join',
   user_leave: 'user_leave',
@@ -42,4 +42,22 @@ export const SOUND_DATA: Partial<Record<string, UISoundID | string | string[]>> 
   victory: { file: 'victory', volume: 1 },
   level_up: { file: 'level_up', volume: 1 },
   heartbeat: { file: 'heartbeat', volume: 1, opts: { loop: true } },
+
+  footstep: [{
+    file: 'footstep/footstep1',
+    volume: 0.25,
+  }, {
+    file: 'footstep/footstep2',
+    volume: 1,
+  }, {
+    file: 'footstep/footstep3',
+    volume: 1,
+  }, {
+    file: 'footstep/footstep4',
+    volume: 0.5,
+  }],
+  footstep_cosmic: [
+    { file: 'footstep/footstep_cosmic', volume: 0.125 },
+    { file: 'footstep/footstep_cosmic2', volume: 0.08 },
+  ]
 };

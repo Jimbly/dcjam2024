@@ -7,9 +7,6 @@ TODO
   * change fog colors and backdrop
   * outlines of tentacles in space backdrop
 * lighting flicker l3 (after insanity)
-* more humanoid choices for front1, since the player picks that!
-* ? bamf - if player has only 2 attackers in party, give only attack options (if possible)
-* integrate footsteps
 * scale sound volume for hunter sounds based on distance
 * roll credits after finale
 * allow saving anywhere
