@@ -91,6 +91,7 @@ export type EntityDataClient = {
   sanity_max: number;
   heroes: Hero[];
   events_done?: TSMap<true>;
+  score_won?: boolean;
   score_xp_gain?: number;
   score_sanity_loss?: number;
   cheat?: boolean;

@@ -22,6 +22,10 @@ import {
 } from 'glov/client/input';
 import { markdownSetColorStyle } from 'glov/client/markdown_renderables';
 import { ClientChannelWorker } from 'glov/client/net';
+import {
+  ScoreSystem,
+  scoreAlloc,
+} from 'glov/client/score';
 import { MenuItem } from 'glov/client/selection_box';
 import * as settings from 'glov/client/settings';
 import { SimpleMenu, simpleMenuCreate } from 'glov/client/simple_menu';
@@ -97,6 +101,7 @@ import {
 import {
   crawlerBuildModeActivate,
   crawlerController,
+  crawlerCurSavePlayTime,
   crawlerGameState,
   crawlerPlayBottomOfFrame,
   crawlerPlayInitOffline,
@@ -838,6 +843,8 @@ export function giveXP(target: Entity | 'note' | 'terminal' | 'cheat' | null): v
   let data = myEnt().data;
   data.xp = (data.xp || 0) + delta;
   data.score_xp_gain = (data.score_xp_gain || 0) + 1;
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  setScore();
 }
 export function levelUpAbility(hero_idx: number, ability_idx: number): void {
   let data = myEnt().data;
@@ -846,6 +853,69 @@ export function levelUpAbility(hero_idx: number, ability_idx: number): void {
   assert(data.xp && data.xp >= cost);
   data.xp -= cost;
   hero.levels[ability_idx]++;
+}
+
+export type Score = {
+  victory: number;
+  xp: number;
+  sanity: number;
+  seconds: number;
+};
+export type LevelDef = {
+  name: string;
+};
+const level_def: LevelDef = {
+  name: 'the',
+};
+const level_defs: LevelDef[] = [level_def];
+export function getLevelList(): LevelDef[] {
+  return level_defs;
+}
+
+let score_system: ScoreSystem<Score>;
+
+const ENCODE_SEC = 100000;
+const ENCODE_XP = 1000;
+const ENCODE_SANITY = 1000;
+function encodeScore(score: Score): number {
+  let spart = max(0, ENCODE_SEC - 1 - score.seconds);
+  let sanpart = max(0, ENCODE_SANITY - 1 - score.sanity) * ENCODE_SEC;
+  let xpart = min(ENCODE_XP - 1, score.xp) * ENCODE_SEC * ENCODE_SANITY;
+  let vpart = score.victory * ENCODE_XP * ENCODE_SEC * ENCODE_SANITY;
+  return vpart + xpart + sanpart + spart;
+}
+
+function parseScore(value: number): Score {
+  let seconds = value % ENCODE_SEC;
+  value = (value - seconds) / ENCODE_SEC;
+  seconds = ENCODE_SEC - 1 - seconds;
+  let sanity = value % ENCODE_SANITY;
+  value = (value - sanity) / ENCODE_SANITY;
+  sanity = ENCODE_SANITY - 1 - sanity;
+  let xp = value % ENCODE_XP;
+  value = (value - xp) / ENCODE_XP;
+  let victory = value;
+  return {
+    victory,
+    xp,
+    sanity,
+    seconds,
+  };
+}
+
+
+export function setScore(): void {
+  let { data } = myEnt();
+  if (data.cheat) {
+    return;
+  }
+  let score: Score = {
+    seconds: round(crawlerCurSavePlayTime() / 1000),
+    xp: data.score_xp_gain || 0,
+    sanity: data.score_sanity_loss || 0,
+    victory: data.score_won ? 1 : 0,
+  };
+  score_system.setScore(0, score);
 }
 
 let movement_disabled_last_frame = false;
@@ -1380,6 +1450,18 @@ export function playStartup(font_tiny_in: Font): void {
       }),
     },
   };
+
+  score_system = scoreAlloc({
+    score_to_value: encodeScore,
+    value_to_score: parseScore,
+    level_defs: level_defs,
+    score_key: 'DCJ24',
+    ls_key: 'dcj24',
+    asc: false,
+    rel: 8,
+    num_names: 3,
+    histogram: false,
+  });
 
   dialogStartup({
     font,

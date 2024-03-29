@@ -23,7 +23,9 @@ import {
   giveXP,
   myEnt,
   sanityDamage,
+  setScore,
 } from './play';
+import { statusPush } from './status';
 
 const MEDKIT_AMT = 5;
 
@@ -370,6 +372,9 @@ dialogRegister({
     dialog('sign', 'Your party feels an otherworldly sense of Solitude.');
   },
   finale: function () {
+    myEnt().data.score_won = true;
+    setScore();
+    statusPush('High score submitted');
     let hero = randomHeroSpatial();
     let { class_id, face, name } = hero;
     let class_def = CLASSES[class_id];
