@@ -141,7 +141,7 @@ dialogRegister({
     });
   },
   party: function (param: string) {
-    if (onetimeEvent()) {
+    if (onetimeEvent() || true) {
       let offset = 0;
       if (param.startsWith('1 ')) {
         offset = 1;

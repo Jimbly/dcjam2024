@@ -63,6 +63,7 @@ import {
   aiDoFloor,
   aiTraitsClientStartup,
 } from './ai';
+import { ambienceHeartbeatPulse, ambienceSetHeartbeat, ambienceTick } from './ambience';
 import { bamfReset, bamfTick } from './bamf';
 import { cleanupCombat, combatPreviewAlpha, doCombat } from './combat';
 // import './client_cmds';
@@ -476,6 +477,8 @@ function moveBlockDead(): boolean {
   let h = render_height;
   let z = Z.UI + 100;
 
+  ambienceSetHeartbeat(0);
+
   y += floor(h/2);
   font.drawSizedAligned(null,
     x + floor(w/2), y - 16, z,
@@ -547,7 +550,7 @@ markdownSetColorStyle('3', fontStyle(null, {
   color: 0x249fdeff,
 }));
 let sanity_flash_at: number;
-let sanity_flash_major: boolean;
+let sanity_flash_major: number = 0;
 let fake_sanity: [number, number] | null;
 export function sanityDamage(perm: number, temp: number, delay: number, major: boolean): void {
   let me = myEnt();
@@ -556,7 +559,7 @@ export function sanityDamage(perm: number, temp: number, delay: number, major: b
   me.data.sanity_max = max(0, me.data.sanity_max - perm);
   me.data.sanity = max(0, me.data.sanity - temp);
   sanity_flash_at = getFrameTimestamp() + delay;
-  sanity_flash_major = major;
+  sanity_flash_major = major ? 1 : 0;
 }
 
 function doSanity(): void {
@@ -579,8 +582,18 @@ function doSanity(): void {
       [sanity, sanity_max] = fake_sanity;
     } else if (dt < 500) {
       flash = easeIn(1 - dt / 500, 2);
+    } else {
+      sanity_flash_major = 0;
     }
   }
+
+  let eff_major = sanity_flash_major;
+  if (sanity < 30) {
+    ambienceSetHeartbeat(0.5 + (30 - sanity) / 30 * 0.5);
+    flash = max(flash, ambienceHeartbeatPulse());
+    eff_major = max(eff_major, 0.5);
+  }
+
   v4set(temp_color, 1 + flash, 1, 1, 1);
   let z = Z.UI;
   ui_sprites.sanity_bg.draw({
@@ -592,7 +605,7 @@ function doSanity(): void {
     color: temp_color,
   });
   z++;
-  let scale = sanity_flash_major ? (1 + flash * 2) : 1;
+  let scale = 1 + eff_major * flash * 2;
   spritesheet_icons.sprite.draw({
     x: SANITY_X + 10 - (scale - 1) * 16,
     y: SANITY_Y + 5 - (scale - 1) * 16,
@@ -1073,6 +1086,7 @@ export function play(dt: number): void {
   }
 
   crawlerPlayBottomOfFrame();
+  ambienceTick();
 }
 
 function onPlayerMove(old_pos: Vec2, new_pos: Vec2): void {

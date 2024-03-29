@@ -29,3 +29,4 @@ Credits for assets used (may not make it into final version)
 * Some world art - Rogue Adventure by ELV Games - https://elvgames.itch.io/rogue-adventure-world
 * Font derived from Habbo - https://www.pentacom.jp/pentacom/bitfontmaker2/gallery/?id=357
 * Oryx 16-bit Sci-Fi - https://oryxdesignlab.itch.io/16-bit-sci-fi
+* Heartbeat - https://freesound.org/people/loudernoises/sounds/332819/

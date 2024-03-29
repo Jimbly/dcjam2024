@@ -16,6 +16,7 @@ import {
 import * as urlhash from 'glov/client/urlhash.js';
 import { TSMap } from 'glov/common/types.js';
 import { createAccountUI } from './account_ui.js';
+import { ambienceTick } from './ambience.js';
 import {
   crawlerCommStart,
   crawlerCommStartup,
@@ -143,6 +144,7 @@ function title(dt: number): void {
   if (crawlerCommWant()) {
     crawlerCommStart();
   }
+  ambienceTick();
 }
 
 export function titleInit(dt: number): void {
