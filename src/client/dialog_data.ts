@@ -8,6 +8,7 @@ import {
 } from '../common/crawler_script';
 import { crawlerScriptAPI } from './crawler_play';
 import {
+  dialog,
   dialogPush,
   dialogRegister,
 } from './dialog_system';
@@ -102,14 +103,18 @@ function drawFace(name: string, face_id: string, param: PanelParam): void {
     drawHeroName(px + 1, py + PORTRAIT_SIZE + 1, z, name, param.color ? param.color[3] : 1);
   }
 }
-function randomHeroSpatial(offset?: number): Hero {
+function randomHeroSpatial(): Hero {
   let me = myEnt();
   let { heroes } = me.data;
-  let idx = (crawlerScriptAPI().getRand().range(heroes.length) + (offset || 0)) % heroes.length;
+  let idx = crawlerScriptAPI().getRand().range(heroes.length) % heroes.length;
   let choice = heroes[idx];
   return choice;
 }
 let sapling_water_count = 0;
+const NILO = {
+  name: '',
+  custom_render: drawFace.bind(null, 'Nilo', 'nilo'),
+};
 dialogRegister({
   terminal: function (param: string) {
     if (onetimeEvent()) {
@@ -142,12 +147,15 @@ dialogRegister({
   },
   party: function (param: string) {
     if (onetimeEvent() || true) {
-      let offset = 0;
-      if (param.startsWith('1 ')) {
-        offset = 1;
+      let hero: Hero;
+      if (param.match(/^\d /)) {
+        let idx = Number(param[0]);
         param = param.slice(2);
+        let { heroes } = myEnt().data;
+        hero = heroes[idx % heroes.length];
+      } else {
+        hero = randomHeroSpatial();
       }
-      let hero = randomHeroSpatial(offset);
       let { class_id, face, name } = hero;
       let class_def = CLASSES[class_id];
       let face_id = class_def ? (class_def.faces[face || 0] || class_def.faces[0]) : '';
@@ -244,6 +252,122 @@ dialogRegister({
       transient: true,
       transient_long: true,
     });
+  },
+  nilo: function () {
+    if (!onetimeEvent()) {
+      return dialogPush({
+        ...NILO,
+        text: 'Be safe, guys!',
+        transient: true,
+      });
+    }
+    dialogPush({
+      ...NILO,
+      text: 'You guys must be adventurers to be passing through here.',
+      buttons: [{
+        label: 'Yeah, we\'re brave adventurers!',
+        cb: function () {
+          dialog('nilo2', 'I used to be an adventurer too.');
+        },
+      }, {
+        label: 'No, we\'re just lost travelers.',
+        cb: function () {
+          dialog('nilo2', 'I\'m lost, too, but I\'m not much of a traveler anymore.');
+        },
+      }],
+    });
+  },
+  nilo2: function (param: string) {
+    dialogPush({
+      ...NILO,
+      text: param,
+      buttons: [{
+        label: 'What happened?',
+        cb: dialog.bind(null, 'nilo2', 'My best friends and I dropped out of college to come out here. Then Masha got, um, devoured by a monster. I told Galen I wanted to turn around, but he insisted on going ahead. He said he\'d come back for me, but... anyway, I\'m too scared to go on alone, and I\'m too lost to go back.'),
+      }, {
+        label: 'How long have you been here?',
+        cb: dialog.bind(null, 'nilo2', 'Not so long. Time is weird down here. The hours pass by like molasses, but sometimes I wake up and it feels like I was talking with Galen only yesterday.'),
+      // }, {
+      //   label: 'How often do people come through here?',
+      //   cb: dialog.bind(null, 'nilo2', 'Sometimes I get three parties a week. Sometimes I go months without seeing another person.'),
+      }, {
+        label: 'How can you stand it in here all alone?',
+        cb: dialog.bind(null, 'nilo2', 'It was hard at first, but I\'ve come to appreciate the solitude. Sometimes I get songs stuck in my head, though – that\'s the worst.'),
+      }, {
+        label: 'Aren\'t there people outside this ship who miss you?',
+        cb: dialog.bind(null, 'nilo2', 'Nilo\'s face wilts and darkens. He doesn\'t seem keen on answering this question.'),
+      }, {
+        label: 'We really must be going...',
+        cb: 'nilo3',
+      }],
+    });
+  },
+  nilo3: function () {
+    dialogPush({
+      ...NILO,
+      text: 'If you insist...',
+      buttons: [{
+        label: 'Why don\'t you come along with us?',
+        cb: dialog.bind(null, 'nilo4', 'I said I\'m not going to make it any further, and I meant it.'),
+      }, {
+        label: 'Maybe we can pick you up on our way out?',
+        cb: dialog.bind(null, 'nilo4', 'I can\'t even bear to look out the doorway, most days. You\'d better leave me be. And, besides, I know no matter how awesome it is outside this ship... Galen and Katie won\'t be there. So... yep.'),
+      }],
+    });
+  },
+  nilo4: function (param: string) {
+    dialogPush({
+      ...NILO,
+      text: param,
+      buttons: [{
+        label: 'OK.',
+        cb: function () {
+          dialogPush({
+            ...NILO,
+            text: 'Wait! Before you go... would you leave me with something? It\'s safe in here, but it gets lonely.',
+            buttons: [{
+              label: 'No way, loser! You can fend for yourself.',
+              cb: dialog.bind(null, 'niloend', 'Nilo sniffles and nods. He sits against the tree and doesn\'t make eye contact with anyone in your party until you leave.'),
+            }, {
+              label: 'Tell Nilo about a childhood memory.',
+              cb: dialog.bind(null, 'niloend', 'Nilo\'s eyes sparkle as, briefly, in their mind\'s eye, they leave this place behind.'),
+            }, {
+              label: 'Leave Nilo a trinket from your backpack.',
+              cb: dialog.bind(null, 'niloend', 'Nilo smiles warmly and clutches it close. They add it to a small collection, squirreled away in a knot in the tree.'),
+            }, {
+              label: 'Give Nilo a hug.',
+              cb: function () {
+                dialogPush({
+                  ...NILO,
+                  text: 'Nilo crumples into the arms of one of your party members.',
+                  buttons: [{
+                    label: 'Pile onto the hug with the whole party.',
+                    cb: dialog.bind(null, 'niloend', 'Nilo breaks into tears. When you guys pull away, he can\'t really look at you, but he thanks you anyway.'),
+                  }],
+                });
+              },
+            }],
+          });
+        },
+      }],
+    });
+  },
+  niloend: function (param: string) {
+    dialogPush({
+      ...NILO,
+      text: param,
+      transient: true,
+    });
+  },
+  solitude3: function (text: string) {
+    if (onetimeEvent()) {
+      return dialogPush({
+        name: '',
+        text,
+        transient: true,
+      });
+    }
+    dialog('sign', 'Your party feels an otherworldly sense of Solitude.');
   },
   finale: function () {
     let hero = randomHeroSpatial();

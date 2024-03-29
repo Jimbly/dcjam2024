@@ -1,8 +1,7 @@
 TODO
-* play all levels
-* NPC dialog
 * track for high score - total number of times XP was awarded; then sanity, then time
 * Insanity view
+  * just ramp this from 0-50 throughout the 5 levels, plus sanity damage
   * party portraits to change to monsters - silhouettes
   * ghosts moving through the level
   * dark/postprocess - 16-bit color crunch? - dither?
@@ -53,6 +52,8 @@ Finish up
 
 Polish
 * final level could use a bunch of unlockable shortcuts
+* bigger/nicer bridge level
+* use wall variations throughout levels
 * bug: when emeny dies to poison damage, the floater moves down halfway through the anim
 * enemy plays blocked sound and does shield floater if 0 damage
 * controller: can't level up: hit Y to open a dedicated screen?
@@ -82,6 +83,7 @@ Post-game fixes / polish
 * add support for multiple fonts with different heights to dialog system and/or markdown - handwriting font would be cool
 * tooltip width and markdown not playing correctly, probably also height
 * origin in entdef depends heavily on aspect ratio of image, but it shouldn't?
+* Nilo "face wilts" dialog is not markdownTruncating correctly
 
 People's games to check out:
 * YouDoYouBuddy - slay the spire

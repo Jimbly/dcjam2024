@@ -55,7 +55,7 @@ export const CLASSES: TSMap<HeroClassDef> = {
   front1: {
     tier: front_tier_data,
     abilities: ['attack_heavy', 'attack_light'],
-    faces: [['a', 'capedeagle'], ['a', 'nebulan2']],
+    faces: [['a', 'capedeagle'], ['a', 'nebulan2'], ['m', 'cyclops3']],
   },
   front2: {
     tier: front_tier_data,

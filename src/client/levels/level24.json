@@ -1845,6 +1845,12 @@
         "open",
         "open",
         "open"
+      ],
+      "events": [
+        {
+          "id": "solitude_upgrade",
+          "param": ""
+        }
       ]
     },
     {
@@ -1855,7 +1861,13 @@
         "open",
         "open"
       ],
-      "h": -0.0625
+      "h": -0.0625,
+      "events": [
+        {
+          "id": "solitude_upgrade",
+          "param": ""
+        }
+      ]
     },
     {
       "id": "open",

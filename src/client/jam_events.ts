@@ -23,11 +23,15 @@ export function statusShort(text: string): void {
 }
 
 const JOIN_MSGS = `
-NAME is looking for adventure.
+NAME wishes to join you in search of answers to deep questions.
 NAME just wants to prove they're awesome.
-NAME silently joins your group.
 From planet Eart, NAME joins you.
+NAME just hopes to forget everything that's come before.
+NAME is looking for adventure.
+NAME has lost it all and hopes to gain it all back.
+NAME silently joins your group.
 NAME is ready to party!
+NAME is looking for a thrill.
 `.trim().split('\n');
 
 type Entity = EntityDemoClient;

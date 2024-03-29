@@ -1528,8 +1528,24 @@
       ],
       "events": [
         {
+          "id": "solitude_upgrade",
+          "param": ""
+        }
+      ],
+      "h": -0.1875
+    },
+    {
+      "id": "solitude_open2",
+      "walls": [
+        "open",
+        "open",
+        "open",
+        "solitude_solid2"
+      ],
+      "events": [
+        {
           "id": "dialog",
-          "param": "party This place feels like home."
+          "param": "nilo"
         }
       ],
       "h": -0.1875
@@ -1549,22 +1565,6 @@
         }
       ],
       "h": -0.1875
-    },
-    {
-      "id": "solitude_open2",
-      "walls": [
-        "open",
-        "open",
-        "open",
-        "solitude_solid2"
-      ],
-      "h": -0.1875,
-      "events": [
-        {
-          "id": "solitude_upgrade",
-          "param": ""
-        }
-      ]
     },
     {
       "id": "solitude_open3",
@@ -1834,6 +1834,10 @@
         {
           "id": "solitude",
           "param": ""
+        },
+        {
+          "id": "dialog",
+          "param": "party Is this the same room we were just in?"
         }
       ],
       "h": 0.0625
@@ -1845,6 +1849,12 @@
         "open",
         "open",
         "open"
+      ],
+      "events": [
+        {
+          "id": "solitude_upgrade",
+          "param": ""
+        }
       ]
     },
     {
@@ -1854,6 +1864,12 @@
         "open",
         "open",
         "open"
+      ],
+      "events": [
+        {
+          "id": "sign",
+          "param": "You feel an otherworldly sense of... someone else is here."
+        }
       ],
       "h": -0.0625
     },
@@ -1867,8 +1883,8 @@
       ],
       "events": [
         {
-          "id": "dialog",
-          "param": "party Is this the same room we were just in?"
+          "id": "solitude_upgrade",
+          "param": ""
         }
       ],
       "h": -0.1875
@@ -3004,7 +3020,16 @@
       ]
     }
   ],
-  "initial_entities": [],
+  "initial_entities": [
+    {
+      "type": "npc_nilo",
+      "pos": [
+        8,
+        10,
+        2
+      ]
+    }
+  ],
   "state": {},
   "vstyle": "solitude",
   "seed": "32845502",

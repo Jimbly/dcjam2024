@@ -9,6 +9,7 @@ import {
   KEYS,
   PAD,
   eatAllInput,
+  inputClick,
   inputPadMode,
   inputTouchMode,
   keyDown,
@@ -93,7 +94,7 @@ function ff(): boolean {
     inputPadMode() && (
       padButtonDown(PAD.LEFT_TRIGGER) || padButtonDown(PAD.RIGHT_TRIGGER) ||
       padButtonDown(PAD.A) || padButtonDown(PAD.B)
-    ) || mouseDownAnywhere();
+    ) || mouseDownAnywhere() || inputClick();
 }
 
 
