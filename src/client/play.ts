@@ -175,6 +175,7 @@ declare module 'glov/client/ui' {
     sanity_bar_bg: Sprite;
     sanity_bg: Sprite;
     panel_note: Sprite;
+    panel_combat_log_title: Sprite;
   }
 }
 

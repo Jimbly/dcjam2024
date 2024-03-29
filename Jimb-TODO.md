@@ -1,8 +1,5 @@
 TODO
 * play all levels
-* draft second level, play through first 2, measure time, check difficulty, put save game aside for later
-  * way too easy second level with ~4 upgrades; was about 30min with some fixes - slot 3!
-  * only had ~3 deaths, max sanity restore totally unneeded
 * Insanity view
   * party portraits to change to monsters - silhouettes
   * ghosts moving through the level
@@ -11,10 +8,9 @@ TODO
   * outlines of tentacles in space backdrop
 * lighting flicker l3 (after insanity)
 * more humanoid choices for front1, since the player picks that!
-* bamf - if player has only 2 attackers in party, give only attack options (if possible)
+* ? bamf - if player has only 2 attackers in party, give only attack options (if possible)
 * integrate footsteps
 * scale sound volume for hunter sounds based on distance
-* combat log needs a "log" header, or should show what the monsters _will_ do
 * roll credits after finale
 
 Balance Plan: conservation of XP
@@ -36,6 +32,11 @@ XP Cost - see doc
 
 Playtest Feedback
 * too many monsters on first floor - maybe aim for ~7 encounters per floor? or more avoidable?
+* playtest 1
+  * way too easy second level with ~4 upgrades; was about 30min with some fixes - slot 3!
+  * only had ~3 deaths, max sanity restore totally unneeded
+* playtest 2
+  *
 
 Finish up
 * remove dbg:kill buttons!

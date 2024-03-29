@@ -27,6 +27,7 @@ import {
   uiButtonWidth,
   uiGetFont,
   uiTextHeight,
+  sprites as ui_sprites,
 } from 'glov/client/ui';
 import { randCreate } from 'glov/common/rand_alea';
 import { DataObject, TSMap } from 'glov/common/types';
@@ -476,13 +477,13 @@ export class CombatState {
           let damage = floor(base_damage / best.length);
           let log: string | null = null;
           if (best.length > 1) {
-            animator?.combatLog(`[c=1]${def.name}[/c] attacks the [c=3]${best.length}[/c]` +
+            animator?.combatLog(`[c=1]${def.name}[/c] attacked the [c=3]${best.length}[/c]` +
               ` with [c=1]${best_aggro}[/c][img=aggro],` +
               ` splitting [c=1]${base_damage}[/c] to [c=1]${damage}[/c] each`);
           } else {
             if (animator) {
               let hero = heroes[best[0]]!;
-              log = `[c=1]${def.name}[/c] attacks [c=3]${hero.name}[/c] ([c=1]${best_aggro}[/c][img=aggro]), `;
+              log = `[c=1]${def.name}[/c] attacked [c=3]${hero.name}[/c] ([c=1]${best_aggro}[/c][img=aggro]), `;
             }
           }
           for (let kk = 0; kk < best.length; ++kk) {
@@ -513,10 +514,10 @@ export class CombatState {
           }
           if (any_damaged) {
             animator?.onPartyDamaged();
-            animator?.combatLog(`[c=1]${def.name}[/c] attacks [c=3]everyone[/c] for` +
+            animator?.combatLog(`[c=1]${def.name}[/c] attacked [c=3]everyone[/c] for` +
               ` [c=1]${damage}[/c] each${num_killed ? `, [c=1]killing[/c] [c=3]${num_killed}[/c]!` : ''}`);
           } else {
-            animator?.combatLog(`[c=1]${def.name}[/c] attacks [c=3]everyone[/c] ineffectively`);
+            animator?.combatLog(`[c=1]${def.name}[/c] attacked [c=3]everyone[/c] ineffectively`);
           }
         } break;
         default:
@@ -963,7 +964,8 @@ function combatTickEnemyTurn(): void {
 }
 
 export function combatAnimPaused(): boolean {
-  return combat_scene && combat_scene.animPaused(false) || false;
+  return combat_scene && (combat_scene.animPaused(false) ||
+    combat_scene.state_id === CSID.EnemyTurn) || false;
 }
 
 export function combatPreviewAlpha(): number {
@@ -1054,7 +1056,7 @@ export function doCombat(target: Entity, dt: number): void {
   // draw enemies
   let enemy_w = 56;
   const ENEMY_PAD = 2;
-  const ENEMY_SPRITE_Y = y0 + 68;
+  const ENEMY_SPRITE_Y = y0 + 68 - 11;
   const ENEMY_SPRITE_H = 110;
   const ENEMY_BAR_W = 56;
   const ENEMY_BAR_H = 11;
@@ -1263,6 +1265,24 @@ export function doCombat(target: Entity, dt: number): void {
   if (ability_tooltip) {
     hint = ability_tooltip;
   } else if (combat_scene.last_log) {
+    let title_y = VIEWPORT_Y0 + render_height - 10;
+    let panel_pad = 4;
+    let title_w = font.draw({
+      style: style_hint,
+      x: VIEWPORT_X0,
+      y: title_y,
+      w: render_width,
+      align: ALIGN.HCENTER,
+      text: 'Combat Log',
+    });
+    panel({
+      x: round(VIEWPORT_X0 + (render_width - title_w) / 2) - panel_pad,
+      y: title_y - panel_pad,
+      z: Z.UI - 1,
+      w: title_w + panel_pad * 2,
+      h: 14,
+      sprite: ui_sprites.panel_combat_log_title,
+    });
     hint = combat_scene.last_log;
   } else if (num_left > 1) {
     hint = 'COMBAT: choose 2 abilities matching your dice';
