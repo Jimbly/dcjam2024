@@ -10,9 +10,7 @@ TODO
   * change fog colors and backdrop
   * outlines of tentacles in space backdrop
 * lighting flicker l3 (after insanity)
-* locked doors on L1/2
 * more humanoid choices for front1, since the player picks that!
-* dungeon event that tiers-up your leader if still T1 on end of floor 4?
 * bamf - if player has only 2 attackers in party, give only attack options (if possible)
 * integrate footsteps
 * scale sound volume for hunter sounds based on distance

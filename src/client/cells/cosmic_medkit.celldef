@@ -1,0 +1,34 @@
+---
+open_move: true
+open_vis: true
+default_wall: cosmic_solid
+default_events:
+- dialog terminal MSG
+visuals:
+- pass: bg
+  type: simple_floor
+  opts:
+    spritesheet: cosmic
+    tile:
+    - star11
+    - star10
+    - star9
+    - star8
+    - star7
+    - star6
+    - star5
+    - star5
+    - star4
+    - star3
+    - star2
+    - star1
+    times: 150
+    do_blend: 150
+    do_alpha: true
+- type: simple_billboard
+  opts:
+    spritesheet: forest
+    tile: mushrooms
+    offs: [0, 0, 0]
+    face_camera: false # Otherwise faces frustum
+    do_alpha: true

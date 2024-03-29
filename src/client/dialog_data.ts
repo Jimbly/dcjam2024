@@ -226,6 +226,25 @@ dialogRegister({
       transient: true,
     });
   },
+  leader_upgrade: function () {
+    let hero = myEnt().data.heroes[0];
+    if (hero.tier === 2) {
+      return;
+    }
+    hero.tier = 2;
+    hero.levels[0] = 0;
+    hero.levels[1] = 0;
+    let { class_id, face, name } = hero;
+    let class_def = CLASSES[class_id];
+    let face_id = class_def ? (class_def.faces[face || 0] || class_def.faces[0]) : '';
+    dialogPush({
+      name: '',
+      text: 'I feel... stronger...\n([c=xp]Upgraded to MAX TIER[img=star][img=star][/c])',
+      custom_render: face_id ? drawFace.bind(null, name, face_id[1]) : undefined,
+      transient: true,
+      transient_long: true,
+    });
+  },
   finale: function () {
     let hero = randomHeroSpatial();
     let { class_id, face, name } = hero;

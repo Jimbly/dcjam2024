@@ -2427,6 +2427,12 @@
         "open",
         "ruins_wall3",
         "ruins_wall3"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "medkit"
+        }
       ]
     },
     {
@@ -2655,6 +2661,12 @@
         "open",
         "open",
         "open"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "leader_upgrade"
+        }
       ]
     },
     {

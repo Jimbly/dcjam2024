@@ -2376,7 +2376,7 @@
       "id": "solid",
       "walls": [
         "open",
-        "open",
+        "cosmic_solid",
         "solid",
         "solid"
       ]
@@ -2546,15 +2546,6 @@
     {
       "id": "cosmic_floor2",
       "walls": [
-        "solid",
-        "open",
-        "solid",
-        "open"
-      ]
-    },
-    {
-      "id": "solid",
-      "walls": [
         "open",
         "open",
         "solid",
@@ -2562,11 +2553,26 @@
       ]
     },
     {
+      "id": "cosmic_medkit",
+      "walls": [
+        "cosmic_solid",
+        "cosmic_solid",
+        "open",
+        "cosmic_solid"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "medkit mushroom"
+        }
+      ]
+    },
+    {
       "id": "solid",
       "walls": [
         "open",
         "open",
-        "open",
+        "cosmic_solid",
         "open"
       ]
     },
@@ -2738,7 +2744,7 @@
         "open",
         "open",
         "solid",
-        "open"
+        "cosmic_solid"
       ]
     },
     {
