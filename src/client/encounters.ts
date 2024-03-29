@@ -165,6 +165,9 @@ const OVERRIDE: TSMap<DataObject> = {
   aoe2: {
     damage: 0,
   },
+  aoe3: {
+    damage: 0,
+  },
   armor3: {
     hp: 3,
     shield: 4,

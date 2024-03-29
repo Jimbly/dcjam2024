@@ -246,7 +246,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     aggro: 1,
     effects: [{
       type: AttackType.HEAL_ALL,
-      base_amount: 1,
+      base_amount: 2,
     }],
     icon: 'ability_heal_all',
   },

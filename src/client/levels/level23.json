@@ -1806,7 +1806,7 @@
       "events": [
         {
           "id": "floor_abs",
-          "param": "12 20 7 2"
+          "param": "13 6 13 3"
         }
       ]
     },
@@ -1855,8 +1855,8 @@
       ],
       "events": [
         {
-          "id": "dialog",
-          "param": "party Is this the same room we were just in?"
+          "id": "sign",
+          "param": "You feel an otherworldly sense of Solitude."
         }
       ],
       "h": -0.1875
