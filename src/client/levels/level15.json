@@ -2124,6 +2124,12 @@
         "solid",
         "open",
         "open"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party What an annoying monster..."
+        }
       ]
     },
     {

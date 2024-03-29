@@ -224,7 +224,7 @@ const NAMES: TSMap<string> = {
   sponge4: 'Flayer',
   aoe5: 'Virus',
   balanced5: 'Spider',
-  boss5: 'Garbage Can',
+  boss5: 'Giant Garbage Can',
   damage5: 'Snake',
   armor5: 'Turtle',
   sponge5: 'Squirrel',

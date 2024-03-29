@@ -2,7 +2,7 @@
 traits:
 - id: enemy
 - id: hunter
-  radius: 3
+  radius: 2
 - id: stats_default
   encounter: l5boss
 - id: drawable

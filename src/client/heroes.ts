@@ -199,7 +199,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     aggro: 2,
     effects: [{
       type: AttackType.BACK,
-      base_amount: 2,
+      base_amount: 4,
     }],
     icon: 'ability_back1',
   },
@@ -246,7 +246,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     aggro: 1,
     effects: [{
       type: AttackType.BACK,
-      base_amount: 1,
+      base_amount: 3,
     }, {
       type: AttackType.SHIELD_SELF,
       base_amount: 1,
@@ -280,7 +280,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     aggro: 1,
     effects: [{
       type: AttackType.HEAL,
-      base_amount: 3,
+      base_amount: 4,
     }],
     icon: 'ability_heal',
   },
@@ -289,7 +289,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     aggro: 2,
     effects: [{
       type: AttackType.HEAL,
-      base_amount: 4,
+      base_amount: 5,
     }],
     icon: 'ability_heal',
   },
