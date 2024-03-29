@@ -1,5 +1,4 @@
 TODO
-* track for high score - total number of times XP was awarded; then sanity, then time
 * Insanity view
   * just ramp this from 0-50 throughout the 5 levels, plus sanity damage
   * party portraits to change to monsters - silhouettes
@@ -88,3 +87,4 @@ Post-game fixes / polish
 People's games to check out:
 * YouDoYouBuddy - slay the spire
 * Yomigael - https://surt-r.itch.io/dragon-ruins
+* Cuprite - The Reaper of the Depths

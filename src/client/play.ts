@@ -579,6 +579,9 @@ export function sanityDamage(perm: number, temp: number, delay: number, major: b
   me.data.sanity = max(min_value, me.data.sanity - temp);
   sanity_flash_at = getFrameTimestamp() + delay;
   sanity_flash_major = major ? 1 : 0;
+  if (perm) {
+    me.data.score_sanity_loss = (me.data.score_sanity_loss || 0) + 1;
+  }
 }
 
 function doSanity(): void {
@@ -791,6 +794,7 @@ export function giveXP(target: Entity | 'note' | 'terminal' | null): void {
   xp_msg = `+${delta} xp`;
   let data = myEnt().data;
   data.xp = (data.xp || 0) + delta;
+  data.score_xp_gain = (data.score_xp_gain || 0) + 1;
 }
 export function levelUpAbility(hero_idx: number, ability_idx: number): void {
   let data = myEnt().data;

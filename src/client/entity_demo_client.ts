@@ -91,6 +91,8 @@ export type EntityDataClient = {
   sanity_max: number;
   heroes: Hero[];
   events_done?: TSMap<true>;
+  score_xp_gain?: number;
+  score_sanity_loss?: number;
 } & EntityCrawlerDataCommon;
 
 
