@@ -237,12 +237,14 @@ Rumor has it that deep within this ruin lie answers to questions about the meani
 
   let picked = -1;
   if (alpha_choices) {
-    y = 104;
+    y = 102;
     y += markdownAuto({
       font_style: style_label,
       x, y, z, w,
       align: ALIGN.HCENTER | ALIGN.HWRAP,
-      text: 'You activate the [c=2]Bamf[/c] device and call in...',
+      text: 'You activate the [c=2]Bamf[/c] device and call in...' +
+        (bamf_state.replacements[0].tier === 2 ? '\n([c=xp]MAX TIER[img=star][img=star][/c])' :
+        bamf_state.replacements[0].tier > hero.tier ? '\n([c=xp]TIER[img=star] UP[/c])' : ''),
       alpha: min(alpha_choices, hero === placeholder_hero ? 0 : 1),
     }).h + PAD;
 

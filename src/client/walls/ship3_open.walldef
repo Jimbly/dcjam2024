@@ -5,9 +5,9 @@ visuals:
 - type: simple_filler
   opts:
     spritesheet: ship3
-    tile: filler
+    tile: ceiling3
 - type: simple_filler
   opts:
-    spritesheet: demo
-    tile: cobble_blood1
+    spritesheet: ship3
+    tile: ceiling1
     offs: [0, 1]

@@ -633,7 +633,8 @@
         "open",
         "ship3_solid3",
         "ship3_solid3"
-      ]
+      ],
+      "h": 0.25
     },
     {
       "id": "ship3_floor3",
@@ -642,7 +643,8 @@
         "open",
         "open",
         "ship3_solid3"
-      ]
+      ],
+      "h": 0.125
     },
     {
       "id": "ship3_floor3",
@@ -693,7 +695,8 @@
           "id": "dialog",
           "param": "note This page has an unsettling portrait."
         }
-      ]
+      ],
+      "h": 0.0625
     },
     {
       "id": "solid",
@@ -825,7 +828,8 @@
           "id": "dialog",
           "param": "note I tried to draw you. It came out wrong. I miss you."
         }
-      ]
+      ],
+      "h": 0.1875
     },
     {
       "id": "ship3_floor3",
@@ -834,7 +838,8 @@
         "open",
         "open",
         "open"
-      ]
+      ],
+      "h": 0.25
     },
     {
       "id": "ship3_floor3",
@@ -843,7 +848,8 @@
         "open",
         "open",
         "open"
-      ]
+      ],
+      "h": 0.125
     },
     {
       "id": "ship3_floor3",
@@ -870,7 +876,8 @@
         "open",
         "open",
         "open"
-      ]
+      ],
+      "h": 0.125
     },
     {
       "id": "ship3_floor3",
@@ -897,7 +904,8 @@
         "open",
         "open",
         "ship3_solid3"
-      ]
+      ],
+      "h": -0.125
     },
     {
       "id": "solid",
@@ -1014,7 +1022,8 @@
         "ship3_solid3",
         "ship3_solid3",
         "open"
-      ]
+      ],
+      "h": 0.375
     },
     {
       "id": "ship3_floor3",
@@ -1023,7 +1032,8 @@
         "ship3_solid3",
         "open",
         "open"
-      ]
+      ],
+      "h": 0.25
     },
     {
       "id": "ship3_floor3",
@@ -1032,7 +1042,8 @@
         "ship3_solid3",
         "open",
         "open"
-      ]
+      ],
+      "h": 0.125
     },
     {
       "id": "ship3_floor3",
@@ -1221,7 +1232,8 @@
         "door",
         "open",
         "solid"
-      ]
+      ],
+      "h": -0.0625
     },
     {
       "id": "open",
@@ -1230,7 +1242,8 @@
         "solid",
         "open",
         "solid"
-      ]
+      ],
+      "h": -0.125
     },
     {
       "id": "open",
@@ -1239,7 +1252,8 @@
         "door",
         "open",
         "solid"
-      ]
+      ],
+      "h": -0.1875
     },
     {
       "id": "open",
@@ -1248,7 +1262,8 @@
         "solid",
         "open",
         "door"
-      ]
+      ],
+      "h": -0.25
     },
     {
       "id": "open",
@@ -1257,7 +1272,8 @@
         "door",
         "open",
         "solid"
-      ]
+      ],
+      "h": -0.1875
     },
     {
       "id": "open",
@@ -1266,7 +1282,8 @@
         "solid",
         "open",
         "ship3_window"
-      ]
+      ],
+      "h": -0.125
     },
     {
       "id": "open",
@@ -1275,7 +1292,8 @@
         "door",
         "open",
         "ship3_window"
-      ]
+      ],
+      "h": -0.0625
     },
     {
       "id": "floorswitch",
@@ -1587,7 +1605,8 @@
         "ship3_pipe_horiz",
         "ship3_door3",
         "open"
-      ]
+      ],
+      "h": 0.125
     },
     {
       "id": "ship3_floor3",
@@ -1596,7 +1615,8 @@
         "ship3_pipe_horiz",
         "open",
         "open"
-      ]
+      ],
+      "h": 0.125
     },
     {
       "id": "ship3_floor3",
@@ -1719,7 +1739,8 @@
         "open",
         "open",
         "ship3_solid1"
-      ]
+      ],
+      "h": 0.0625
     },
     {
       "id": "solid",
@@ -1770,7 +1791,8 @@
           "id": "dialog",
           "param": "terminal LOG 89.01: The only thing I know for sure is we all want to go home."
         }
-      ]
+      ],
+      "h": 0.0625
     },
     {
       "id": "ship3_floor1e",
@@ -1936,7 +1958,8 @@
         "open",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.0625
     },
     {
       "id": "solid",
@@ -2017,7 +2040,8 @@
         "open",
         "ship3_pipe_vert",
         "open"
-      ]
+      ],
+      "h": 0.125
     },
     {
       "id": "ship3_floor2",
@@ -2026,7 +2050,8 @@
         "open",
         "open",
         "open"
-      ]
+      ],
+      "h": 0.125
     },
     {
       "id": "open",
@@ -2044,7 +2069,8 @@
         "open",
         "open",
         "open"
-      ]
+      ],
+      "h": 0.0625
     },
     {
       "id": "open",
@@ -2122,7 +2148,8 @@
         "open",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.0625
     },
     {
       "id": "ship3_floor1e",
@@ -2131,7 +2158,8 @@
         "ship3_solid1",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.125
     },
     {
       "id": "solid",
@@ -2437,7 +2465,8 @@
         "ship3_solitude_door",
         "open",
         "door"
-      ]
+      ],
+      "h": 0.0625
     },
     {
       "id": "open",
@@ -2455,7 +2484,8 @@
         "solid",
         "open",
         "door"
-      ]
+      ],
+      "h": -0.0625
     },
     {
       "id": "open",
@@ -2464,7 +2494,8 @@
         "door",
         "open",
         "solid"
-      ]
+      ],
+      "h": -0.125
     },
     {
       "id": "open",
@@ -2473,7 +2504,8 @@
         "solid",
         "open",
         "door"
-      ]
+      ],
+      "h": -0.1875
     },
     {
       "id": "open",
@@ -2482,7 +2514,8 @@
         "ship3_window",
         "open",
         "solid"
-      ]
+      ],
+      "h": -0.125
     },
     {
       "id": "open",
@@ -2491,7 +2524,8 @@
         "ship3_window",
         "open",
         "door"
-      ]
+      ],
+      "h": -0.0625
     },
     {
       "id": "ship3_floor1e",
@@ -2608,7 +2642,8 @@
         "open",
         "ship3_solid3",
         "ship3_solid3"
-      ]
+      ],
+      "h": -0.125
     },
     {
       "id": "ship3_floor3",
@@ -2617,7 +2652,8 @@
         "open",
         "open",
         "ship3_solid3"
-      ]
+      ],
+      "h": -0.125
     },
     {
       "id": "stairs_out",
@@ -2677,7 +2713,8 @@
         "open",
         "ship3_solid5",
         "ship3_solid1"
-      ]
+      ],
+      "h": -0.0625
     },
     {
       "id": "ship3_floor1e",
@@ -2686,7 +2723,8 @@
         "open",
         "open",
         "ship3_solid1"
-      ]
+      ],
+      "h": -0.125
     },
     {
       "id": "solid",
@@ -2803,7 +2841,8 @@
         "ship3_solid3",
         "ship3_solid3",
         "open"
-      ]
+      ],
+      "h": -0.125
     },
     {
       "id": "ship3_floor3",
@@ -2839,7 +2878,8 @@
         "open",
         "ship3_solid3",
         "open"
-      ]
+      ],
+      "h": -0.0625
     },
     {
       "id": "ship3_floor3",
@@ -2854,7 +2894,8 @@
           "id": "dialog",
           "param": "party Did I just see that pipe move?"
         }
-      ]
+      ],
+      "h": -0.0625
     },
     {
       "id": "ship3_floor3",
@@ -2863,7 +2904,8 @@
         "open",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.0625
     },
     {
       "id": "open",
@@ -2887,7 +2929,8 @@
           "id": "dialog",
           "param": "terminal LOG 87.11: Excuse my language. This place is fucked up. Everything seems to go missing here. The cockpit is long gone, and so is Hector, and even my own sanity may be taking a leave of absence. I no longer recognize my crewmates."
         }
-      ]
+      ],
+      "h": -0.0625
     },
     {
       "id": "solid",
@@ -3019,7 +3062,8 @@
           "id": "dialog",
           "param": "note I don’t know if I told you I brought along the mixtape you made me when we first started hanging out again. You might hate that, I’m not sure. There are weird sounds in the walls down here, and I’ve taken to walking around with headphones on."
         }
-      ]
+      ],
+      "h": -0.5
     },
     {
       "id": "open",
@@ -3028,7 +3072,8 @@
         "ship3_pipe_horiz",
         "ship3_pipe_horiz",
         "ship3_door3"
-      ]
+      ],
+      "h": 0.3125
     },
     {
       "id": "open",
@@ -3037,7 +3082,8 @@
         "ship3_pipe_horiz",
         "ship3_pipe_horiz",
         "ship3_door3"
-      ]
+      ],
+      "h": -0.4375
     },
     {
       "id": "ship3_floor3",
@@ -3046,7 +3092,8 @@
         "ship3_pipe_horiz",
         "ship3_pipe_horiz",
         "open"
-      ]
+      ],
+      "h": -0.125
     },
     {
       "id": "ship3_floor3",
@@ -3055,7 +3102,8 @@
         "ship3_pipe_horiz",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.125
     },
     {
       "id": "ship3_floor3",
@@ -3064,7 +3112,8 @@
         "ship3_pipe_horiz",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.125
     },
     {
       "id": "ship3_floor1e",
@@ -3073,7 +3122,8 @@
         "ship3_solid1",
         "ship3_solid5",
         "open"
-      ]
+      ],
+      "h": 0.0625
     },
     {
       "id": "solid",

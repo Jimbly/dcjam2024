@@ -930,7 +930,8 @@
         "open",
         "solid",
         "ship2_window_low"
-      ]
+      ],
+      "h": -0.25
     },
     {
       "id": "forest_floor3",
@@ -939,7 +940,8 @@
         "open",
         "open",
         "ship2_window_low"
-      ]
+      ],
+      "h": -0.25
     },
     {
       "id": "solid",
@@ -990,7 +992,8 @@
           "id": "dialog",
           "param": "terminal LOG 31.11: I like the trees. They’re odd. Still, the last time I saw a tree my parents were still together. After this mission, I’ll go home and see the trees, I think."
         }
-      ]
+      ],
+      "h": -0.1875
     },
     {
       "id": "open",
@@ -999,7 +1002,8 @@
         "solid",
         "open",
         "ship2_window_low"
-      ]
+      ],
+      "h": -0.125
     },
     {
       "id": "open",
@@ -1008,7 +1012,8 @@
         "solid",
         "open",
         "ship2_window_low"
-      ]
+      ],
+      "h": -0.0625
     },
     {
       "id": "open",
@@ -1026,7 +1031,8 @@
         "open",
         "open",
         "ship2_solid2"
-      ]
+      ],
+      "h": -0.0625
     },
     {
       "id": "solid",
@@ -1143,7 +1149,8 @@
         "open",
         "solid",
         "solid"
-      ]
+      ],
+      "h": -0.25
     },
     {
       "id": "forest_note",
@@ -1158,7 +1165,8 @@
           "id": "dialog",
           "param": "note Remember when we used to climb the trees behind my house? We brought along pages and drew plans for a tree house and hid them in the hollows. I went back last year, and I found some of our old drawings. When I picked them up, they fell apart like flakes of ash."
         }
-      ]
+      ],
+      "h": -0.25
     },
     {
       "id": "forest_floor2",
@@ -1167,7 +1175,8 @@
         "open",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.25
     },
     {
       "id": "forest_floor4",
@@ -1176,7 +1185,8 @@
         "open",
         "open",
         "solid"
-      ]
+      ],
+      "h": -0.25
     },
     {
       "id": "solid",
@@ -1212,7 +1222,8 @@
         "open",
         "solid",
         "open"
-      ]
+      ],
+      "h": -0.1875
     },
     {
       "id": "solid",
@@ -1248,7 +1259,8 @@
         "open",
         "solid",
         "open"
-      ]
+      ],
+      "h": -0.125
     },
     {
       "id": "solid",
@@ -1356,7 +1368,8 @@
         "open",
         "solid",
         "solid"
-      ]
+      ],
+      "h": -0.25
     },
     {
       "id": "forest_floor3",
@@ -1365,7 +1378,8 @@
         "open",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.25
     },
     {
       "id": "forest_tree2",
@@ -1374,7 +1388,8 @@
         "open",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.25
     },
     {
       "id": "forest_floor2",
@@ -1383,7 +1398,8 @@
         "open",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.25
     },
     {
       "id": "forest_statue",
@@ -1392,7 +1408,8 @@
         "open",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.1875
     },
     {
       "id": "solid",
@@ -1428,7 +1445,8 @@
         "open",
         "solid",
         "open"
-      ]
+      ],
+      "h": -0.125
     },
     {
       "id": "forest_floor2",
@@ -1464,7 +1482,8 @@
         "open",
         "solid",
         "open"
-      ]
+      ],
+      "h": -0.0625
     },
     {
       "id": "solid",
@@ -1572,7 +1591,8 @@
         "open",
         "solid",
         "open"
-      ]
+      ],
+      "h": -0.1875
     },
     {
       "id": "forest_floor3",
@@ -1581,7 +1601,8 @@
         "open",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.1875
     },
     {
       "id": "forest_floor3",
@@ -1590,7 +1611,8 @@
         "open",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.1875
     },
     {
       "id": "forest_floor3",
@@ -1599,7 +1621,8 @@
         "open",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.1875
     },
     {
       "id": "forest_floor2",
@@ -1608,7 +1631,8 @@
         "solid",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.25
     },
     {
       "id": "solid",
@@ -1644,7 +1668,8 @@
         "open",
         "solid",
         "open"
-      ]
+      ],
+      "h": -0.0625
     },
     {
       "id": "solid",
@@ -1707,7 +1732,8 @@
         "open",
         "solid",
         "solid"
-      ]
+      ],
+      "h": 0.125
     },
     {
       "id": "forest_floor3",
@@ -1716,7 +1742,8 @@
         "forest_mosswall1",
         "open",
         "forest_mosswall2"
-      ]
+      ],
+      "h": 0.1875
     },
     {
       "id": "stairs_out",
@@ -1785,7 +1812,8 @@
         "open",
         "solid",
         "solid"
-      ]
+      ],
+      "h": -0.1875
     },
     {
       "id": "forest_floor2",
@@ -1794,7 +1822,8 @@
         "open",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.1875
     },
     {
       "id": "forest_floor2",
@@ -1803,7 +1832,8 @@
         "open",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.1875
     },
     {
       "id": "forest_tree2",
@@ -1812,7 +1842,8 @@
         "open",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.1875
     },
     {
       "id": "forest_floor3",
@@ -1821,7 +1852,8 @@
         "solid",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.1875
     },
     {
       "id": "solid",
@@ -1935,7 +1967,8 @@
           "id": "dialog",
           "param": "note I’m not so sure about Sam anymore. I keep glancing at them when I think they’re not looking. How do I describe what I’m seeing... There’s a web of darkness slowly splintering over their face. Not a real web, I don’t think. But maybe?"
         }
-      ]
+      ],
+      "h": 0.0625
     },
     {
       "id": "solid",
@@ -2007,7 +2040,8 @@
         "solid",
         "solid",
         "open"
-      ]
+      ],
+      "h": -0.1875
     },
     {
       "id": "forest_floor3",
@@ -2016,7 +2050,8 @@
         "open",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.1875
     },
     {
       "id": "forest_floor4",
@@ -2025,7 +2060,8 @@
         "open",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.1875
     },
     {
       "id": "forest_floor4",
@@ -2034,7 +2070,8 @@
         "open",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.1875
     },
     {
       "id": "solid",
@@ -2232,7 +2269,8 @@
         "solid",
         "solid",
         "open"
-      ]
+      ],
+      "h": -0.1875
     },
     {
       "id": "forest_floor4",
@@ -2241,7 +2279,8 @@
         "solid",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.1875
     },
     {
       "id": "open",
@@ -2250,7 +2289,8 @@
         "solid",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.1875
     },
     {
       "id": "open",
@@ -2259,7 +2299,8 @@
         "solid",
         "open",
         "solid"
-      ]
+      ],
+      "h": -0.125
     },
     {
       "id": "open",
@@ -2268,7 +2309,8 @@
         "solid",
         "open",
         "solid"
-      ]
+      ],
+      "h": -0.0625
     },
     {
       "id": "forest_floor4",
@@ -2505,7 +2547,8 @@
         "open",
         "solid",
         "open"
-      ]
+      ],
+      "h": -0.0625
     },
     {
       "id": "solid",
@@ -2682,7 +2725,8 @@
           "id": "dialog",
           "param": "terminal LOG 15.13: Dense irregularities. Hector suggested invasive species? Skeptical. This is a small ship built only last year."
         }
-      ]
+      ],
+      "h": -0.3125
     },
     {
       "id": "open",
@@ -2691,7 +2735,8 @@
         "open",
         "open",
         "solid"
-      ]
+      ],
+      "h": -0.3125
     },
     {
       "id": "solid",
@@ -2709,7 +2754,8 @@
         "open",
         "solid",
         "solid"
-      ]
+      ],
+      "h": -0.25
     },
     {
       "id": "forest_floor3",
@@ -2718,7 +2764,8 @@
         "solid",
         "open",
         "solid"
-      ]
+      ],
+      "h": -0.1875
     },
     {
       "id": "forest_floor2",
@@ -2727,7 +2774,8 @@
         "solid",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.125
     },
     {
       "id": "solid",
@@ -2920,7 +2968,8 @@
           "id": "autosave",
           "param": ""
         }
-      ]
+      ],
+      "h": -0.3125
     },
     {
       "id": "open",
@@ -2935,7 +2984,8 @@
           "id": "dialog",
           "param": "party Is this... a forest?"
         }
-      ]
+      ],
+      "h": -0.3125
     },
     {
       "id": "forest_floor4",
@@ -2950,7 +3000,8 @@
           "id": "sign",
           "param": "This forest is less forest and more like what an astronaut who hasn’t seen a tree for decades might dream up – a caricature of forest. The ground is a tangle of giant roots. Verdant leaves blend together like a bad photoshop brush, amidst fuzzy, twisted trunks."
         }
-      ]
+      ],
+      "h": -0.3125
     },
     {
       "id": "forest_floor3",
@@ -2959,7 +3010,8 @@
         "open",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.3125
     },
     {
       "id": "solid",
@@ -3157,7 +3209,8 @@
         "solid",
         "ship2_solid2",
         "open"
-      ]
+      ],
+      "h": -0.3125
     },
     {
       "id": "open",
@@ -3166,7 +3219,8 @@
         "solid",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.3125
     },
     {
       "id": "solid",
@@ -3184,7 +3238,8 @@
         "open",
         "solid",
         "open"
-      ]
+      ],
+      "h": -0.3125
     },
     {
       "id": "solid",
@@ -3397,7 +3452,8 @@
         "open",
         "solid",
         "solid"
-      ]
+      ],
+      "h": -0.3125
     },
     {
       "id": "forest_floor2",
@@ -3406,7 +3462,8 @@
         "open",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.3125
     },
     {
       "id": "forest_floor2",
@@ -3415,7 +3472,8 @@
         "open",
         "open",
         "solid"
-      ]
+      ],
+      "h": -0.3125
     },
     {
       "id": "forest_floor4",
@@ -3424,7 +3482,8 @@
         "forest_mosswall1",
         "open",
         "forest_mosswall1"
-      ]
+      ],
+      "h": -0.1875
     },
     {
       "id": "forest_floor2",
@@ -3433,7 +3492,8 @@
         "forest_mosswall2",
         "open",
         "forest_mosswall2"
-      ]
+      ],
+      "h": -0.0625
     },
     {
       "id": "forest_cobblestone",
@@ -3442,7 +3502,8 @@
         "forest_cavewall2",
         "door",
         "forest_cavewall2"
-      ]
+      ],
+      "h": -0.0625
     },
     {
       "id": "forest_cobblestone",
@@ -3613,7 +3674,8 @@
         "open",
         "solid",
         "open"
-      ]
+      ],
+      "h": -0.3125
     },
     {
       "id": "forest_mushrooms",
@@ -3628,7 +3690,8 @@
           "id": "dialog",
           "param": "medkit mushroom"
         }
-      ]
+      ],
+      "h": -0.3125
     },
     {
       "id": "forest_note",
@@ -3643,7 +3706,8 @@
           "id": "dialog",
           "param": "note This page has a mediocre pencil drawing of a person’s face with unsettling splinters of darkness scribbled through it."
         }
-      ]
+      ],
+      "h": -0.3125
     },
     {
       "id": "solid",
@@ -3751,7 +3815,8 @@
         "open",
         "forest_mosswall2",
         "open"
-      ]
+      ],
+      "h": 0.0625
     },
     {
       "id": "solid",
@@ -3841,7 +3906,8 @@
         "solid",
         "solid",
         "open"
-      ]
+      ],
+      "h": -0.3125
     },
     {
       "id": "forest_floor2",
@@ -3850,7 +3916,8 @@
         "solid",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.3125
     },
     {
       "id": "forest_floor2",
@@ -3859,7 +3926,8 @@
         "solid",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.3125
     },
     {
       "id": "solid",
@@ -3967,7 +4035,8 @@
         "open",
         "forest_mosswall1",
         "open"
-      ]
+      ],
+      "h": 0.0625
     },
     {
       "id": "solid",
@@ -4354,7 +4423,8 @@
         "open",
         "forest_mosswall2",
         "open"
-      ]
+      ],
+      "h": -0.0625
     },
     {
       "id": "solid",
@@ -4390,7 +4460,8 @@
         "open",
         "solid",
         "forest_mosswall1"
-      ]
+      ],
+      "h": -0.0625
     },
     {
       "id": "open",
@@ -4399,7 +4470,8 @@
         "solid",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.0625
     },
     {
       "id": "solid",
@@ -4570,7 +4642,8 @@
         "ship2_window_low",
         "solid",
         "open"
-      ]
+      ],
+      "h": -0.125
     },
     {
       "id": "forest_terminal",
@@ -4585,7 +4658,8 @@
           "id": "dialog",
           "param": "terminal LOG 46.20: Hector wandered out into the forest last week and we have not seen him since."
         }
-      ]
+      ],
+      "h": -0.1875
     },
     {
       "id": "open",
@@ -4594,7 +4668,8 @@
         "ship2_window_low",
         "open",
         "solid"
-      ]
+      ],
+      "h": -0.25
     },
     {
       "id": "open",
@@ -4603,7 +4678,8 @@
         "ship2_solid2",
         "open",
         "solid"
-      ]
+      ],
+      "h": -0.1875
     },
     {
       "id": "open",
@@ -4612,7 +4688,8 @@
         "ship2_window_low",
         "open",
         "open"
-      ]
+      ],
+      "h": -0.125
     },
     {
       "id": "solid",

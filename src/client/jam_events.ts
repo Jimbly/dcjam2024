@@ -103,6 +103,7 @@ export function onetimeEvent(query_only?: boolean): boolean {
   return onetimeEventForPos(pos[0], pos[1], query_only);
 }
 
+let last_upgrade = Date.now();
 crawlerScriptRegisterEvent({
   key: 'solitude_upgrade',
   when: CrawlerScriptWhen.POST,
@@ -120,11 +121,14 @@ crawlerScriptRegisterEvent({
     let me = myEntOptional();
     let events_done = me ? me.data.events_done = me.data.events_done || {} : {};
     let key = `solitude_upgrade_${api.getFloor()}`;
-    if (candidate !== -1 && !events_done[key]) {
+    if (candidate !== -1 && (!events_done[key] || Date.now() - last_upgrade > 15*1000)) {
       let hero = heroes[candidate];
       hero.left = true;
       hero.dead = true;
-      events_done[key] = hero.name as unknown as true;
+      if (!events_done[key]) {
+        events_done[key] = hero.name as unknown as true;
+      }
+      last_upgrade = Date.now();
       doSolitudeLeave(clamp(api.getFloor() - 21, 0, 4), hero);
       bamfCheck();
     }

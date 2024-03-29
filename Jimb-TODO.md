@@ -1,4 +1,5 @@
 TODO
+* L4/5 art and layout
 * play first 3 levels
 * draft second level, play through first 2, measure time, check difficulty, put save game aside for later
   * way too easy second level with ~4 upgrades; was about 30min with some fixes - slot 3!

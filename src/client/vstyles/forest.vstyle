@@ -11,7 +11,7 @@ cell_swaps:
   floorswitch: forest_floor1
   floorswitch_on: forest_floor1
 wall_swaps:
-  open: demo_open
+  open: forest_open
   door: forest_cavedoor
   door_oneway: forest_cavedoor
   door_locked: forest_vines_blocked

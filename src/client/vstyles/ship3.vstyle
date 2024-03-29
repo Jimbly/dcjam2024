@@ -11,7 +11,7 @@ cell_swaps:
   floorswitch: ship3_floorswitch
   floorswitch_on: ship3_floorswitch
 wall_swaps:
-  open: demo_open
+  open: ship3_open
   door: ship3_door
   door_oneway: ship3_door
   door_locked: ship3_blocker_up
