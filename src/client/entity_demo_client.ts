@@ -149,9 +149,9 @@ export class EntityDemoClient extends EntityBaseClient implements EntityCrawlerC
     this.ai_next_move_time = getFrameTimestamp() + this.ai_move_min_time + random() * this.ai_move_rand_time;
   }
 
-  isAlive(): boolean {
+  isAlive(ignore_sanity?: boolean): boolean {
     let sane = this.data.sanity === undefined ? true : this.data.sanity > 0;
-    if (!sane) {
+    if (!sane && !ignore_sanity) {
       return false;
     }
     let { heroes } = this.data;

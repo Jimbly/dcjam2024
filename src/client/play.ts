@@ -34,6 +34,7 @@ import {
   ButtonStateString,
   buttonText,
   drawBox,
+  drawRect,
   menuUp,
   panel,
   playUISound,
@@ -468,6 +469,7 @@ function addFloater(ent_id: EntityID, message: string | null, anim: string): voi
   }
 }
 
+const color_dead_shade = vec4(0.3, 0, 0, 0.75);
 function moveBlockDead(): boolean {
   controller.setFadeOverride(0.75);
 
@@ -476,6 +478,10 @@ function moveBlockDead(): boolean {
   let x = VIEWPORT_X0;
   let h = render_height;
   let z = Z.UI + 100;
+  let x1 = VIEWPORT_X0 + render_width;
+  let y1 = VIEWPORT_Y0 + render_height;
+
+  drawRect(x - 0.1, y - 0.1, x1 + 0.1, y1 + 0.1, z - 2, color_dead_shade);
 
   ambienceSetHeartbeat(0);
 
@@ -535,6 +541,14 @@ export function isSolitude(): boolean {
   return false;
 }
 
+function isFinalBattle(): boolean {
+  let level = crawlerGameState().level;
+  if (level && level.getProp('finale')) {
+    return true;
+  }
+  return false;
+}
+
 const SANITY_H = 38;
 const SANITY_X = game_width - SANITY_W;
 const SANITY_Y = game_height - SANITY_H;
@@ -555,9 +569,13 @@ let fake_sanity: [number, number] | null;
 export function sanityDamage(perm: number, temp: number, delay: number, major: boolean): void {
   let me = myEnt();
   assert(me);
+  let min_value = 0;
+  if (isFinalBattle()) {
+    min_value = 1;
+  }
   fake_sanity = [me.data.sanity, me.data.sanity_max];
-  me.data.sanity_max = max(0, me.data.sanity_max - perm);
-  me.data.sanity = max(0, me.data.sanity - temp);
+  me.data.sanity_max = max(min_value, me.data.sanity_max - perm);
+  me.data.sanity = max(min_value, me.data.sanity - temp);
   sanity_flash_at = getFrameTimestamp() + delay;
   sanity_flash_major = major ? 1 : 0;
 }
@@ -588,7 +606,7 @@ function doSanity(): void {
   }
 
   let eff_major = sanity_flash_major;
-  if (sanity < 30) {
+  if (sanity < 30 && me.isAlive(true)) {
     ambienceSetHeartbeat(0.5 + (30 - sanity) / 30 * 0.5);
     flash = max(flash, ambienceHeartbeatPulse());
     eff_major = max(eff_major, 0.5);

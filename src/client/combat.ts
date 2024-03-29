@@ -202,7 +202,7 @@ export class CombatState {
 
   damage(enemy_idx: number, attack_type: AttackType, hp: number, animator?: Animatable): void {
     let enemy = this.enemies[enemy_idx];
-    let dhp = hp - enemy.def.shield - enemy.temp_shield;
+    let dhp = max(hp - enemy.def.shield - enemy.temp_shield, 0);
     animator?.addFloater({
       enemy_idx,
       attack_type,

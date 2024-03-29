@@ -9,9 +9,6 @@ TODO
   * dark/postprocess - 16-bit color crunch? - dither?
   * change fog colors and backdrop
   * outlines of tentacles in space backdrop
-* final battle
-  * no bamf after final battle
-  * no sanity loss? only lose condition is all heroes are dead?
 * lighting flicker l3 (after insanity)
 * locked doors on L1/2
 * more humanoid choices for front1, since the player picks that!
@@ -48,6 +45,7 @@ Finish up
 * hi score list
 
 Polish
+* enemy plays blocked sound and does shield floater if 0 damage
 * controller: can't level up: hit Y to open a dedicated screen?
 * add "cheat" to the menu - sets everyone to T2L2 and 100 max sanity and enables the "kill enemy" buttons
 * adjust fog colors and settings of all levels - backdrops too
