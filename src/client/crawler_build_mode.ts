@@ -648,7 +648,7 @@ function toggleWithSelected(): void {
         level.setWall(myx, myy, dir, selected_wall, null);
       }
       if (target_cell && !target_cell.desc.open_vis) {
-        if (selected_wall.open_vis) {
+        if (selected_wall.open_vis && selected_wall.id !== 'cosmic_solid_vis') { // DCJ24 hack
           openCell(myx, myy, dir, tx, ty);
         } else if (selected_wall.open_move) {
           let cell_desc = crawlerGetCellDesc('open');

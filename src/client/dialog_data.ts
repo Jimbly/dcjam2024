@@ -109,6 +109,7 @@ function randomHeroSpatial(offset?: number): Hero {
   let choice = heroes[(floor(rnd * heroes.length) + (offset || 0)) % heroes.length];
   return choice;
 }
+let sapling_water_count = 0;
 dialogRegister({
   terminal: function (param: string) {
     if (onetimeEvent()) {
@@ -224,6 +225,113 @@ dialogRegister({
       text: 'You mind feels more at ease.  Let\'s not worry about the side effects...',
       transient: true,
     });
+  },
+  finale: function () {
+    let hero = randomHeroSpatial();
+    let { class_id, face, name } = hero;
+    let class_def = CLASSES[class_id];
+    let face_id = class_def ? (class_def.faces[face || 0] || class_def.faces[0]) : '';
+    sapling_water_count = 0;
+    dialogPush({
+      name: '',
+      text: 'Ph\'nglui mglw\'nafh Cthulhu R\'lyeh wgah\'nagl fhtagn!',
+      custom_render: face_id ? drawFace.bind(null, '???', 'boss') : undefined,
+      buttons: [{
+        label: '...',
+        cb: function () {
+          dialogPush({
+            name: '',
+            text: 'I swear he said "I hate birthdays", but that has to be wrong.',
+            custom_render: face_id ? drawFace.bind(null, name, face_id[1]) : undefined,
+            buttons: [{
+              label: '...',
+              cb: function () {
+                dialogPush({
+                  name: '',
+                  text: 'The creature lies spread eagled on its back, in a pool of its own blood.' +
+                    ' Turquoise roots wriggle out of the wound in its chest and a little sapling sprouts lavender leaves.',
+                  buttons: [{
+                    label: 'Water the sapling.',
+                    cb: 'saplingwater',
+                  }, {
+                    label: 'Pick the sapling.',
+                    cb: 'saplingpick',
+                  }],
+                });
+              },
+            }],
+          });
+        },
+      }],
+    });
+  },
+  saplingpick: function () {
+    dialogPush({
+      name: '',
+      text: 'Your party takes turns cradling the delicate plant in their hands and feeling an otherworldly sense of care for it. Holding this plant, you feel an otherworldly sense of direction.',
+      buttons: [{
+        label: 'We can go home!',
+        cb: function () {
+          dialogPush({
+            name: '',
+            text: 'The party makes their way out of the dungeon, no sweat. By the time they arrive back in the latrine, the sapling is as withered as an old carrot. They look at each other, shrug, and flush it down the toilet. Their loved ones are very happy to know they\'re coming home.',
+            buttons: [{
+              label: 'The end.',
+              cb: 'end',
+            }],
+          });
+        },
+      }],
+    });
+  },
+  saplingwater: function () {
+    ++sapling_water_count;
+    if (sapling_water_count === 7) {
+      return dialogPush({
+        name: '',
+        text: 'Your party\'s canteens are all empty.',
+        buttons: [{
+          label: 'Stay with the sapling.',
+          cb: 'saplingstay',
+        }, {
+          label: 'Pick the sapling.',
+          cb: 'saplingpick',
+        }],
+      });
+    }
+    let line = [
+      '',
+      'As water falls on the tender plant, your party feels an otherworldly sense of understanding. The minds of your party members drift through a sea of wordless answers.',
+      'As droplets cascade onto the delicate foliage, a surreal comprehension envelops your group. Together, their thoughts wander through an ocean of unspoken truths.',
+      'Like the gentle shower upon the fragile sapling, a mystical insight embraces your party.',
+      'As water trickles onto the tender greenery, an unearthly awareness settles upon your party. Their thoughts meander through a vast expanse of silent understanding, like voyagers adrift on a wordless sea.',
+      'With each drop nurturing the young plant, an otherworldly clarity dawns upon the party.',
+      'Like gentle rain on a fragile bloom, an ethereal comprehension descends upon your gathering. Each member\'s consciousness meanders through a realm of silent revelations.',
+    ][sapling_water_count];
+    dialogPush({
+      name: '',
+      text: line,
+      buttons: [{
+        label: 'Water the sapling.',
+        cb: 'saplingwater',
+      }, {
+        label: 'Pick the sapling.',
+        cb: 'saplingpick',
+      }],
+    });
+  },
+  saplingstay: function () {
+    dialogPush({
+      name: '',
+      text: 'The sapling grows into a tall, wide, gentle tree, and your party members grow old. They lose their names, and faces, and die unafraid.',
+      buttons: [{
+        label: 'The end.',
+        cb: 'end',
+      }],
+    });
+  },
+  end: function () {
+    // TODO
   },
 });
 

@@ -42,6 +42,7 @@ import {
 } from 'glov/common/vmath';
 import { bamfCheck } from './bamf';
 import { crawlerEntFactory } from './crawler_entity_client';
+import { dialog } from './dialog_system';
 import {
   AttackType,
   AttackTypeToFrameEnemies,
@@ -1115,7 +1116,7 @@ export function doCombat(target: Entity, dt: number): void {
     ent.draw2D({
       x: x_mid + ENEMY_SPRITE_H / 2,
       y: enemy_y,
-      z: z + 1 + ii * 0.1 + (draw_as_dead ? -0.5 : 0),
+      z: z + 1 + ii * 0.1 + (draw_as_dead ? -0.5 : 0) + (enttype === 'l5boss' ? 1 : 0),
       w: -ENEMY_SPRITE_H,
       h: ENEMY_SPRITE_H,
       color: temp_color,
@@ -1322,9 +1323,13 @@ export function doCombat(target: Entity, dt: number): void {
     // victory!
     combat_scene.did_victory = true;
     playUISound('victory');
-    giveXP(target);
+    if (target.data.type === 'l6boss') {
+      dialog('finale');
+    } else {
+      giveXP(target);
+      bamfCheck();
+    }
     entityManager().deleteEntity(target.id, 'killed');
-    bamfCheck();
   }
   combat_scene.player_is_done = false;
 }

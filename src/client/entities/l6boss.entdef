@@ -2,6 +2,7 @@
 traits:
 - id: enemy
 - id: hunter
+  radius: 2
 - id: stats_default
   encounter: l6boss
 - id: drawable
@@ -16,5 +17,5 @@ traits:
       times: 10000
   sprite_data:
     spritesheet: enemies
-    origin: [0.5, 1.01]
-  scale: 0.6
+    origin: [0.5, 1.25]
+  scale: 3

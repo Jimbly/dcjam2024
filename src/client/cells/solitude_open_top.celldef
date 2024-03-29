@@ -1,0 +1,12 @@
+---
+open_vis: true
+default_wall: solitude_solid1
+
+visuals:
+- pass: bg
+  type: simple_floor
+  opts:
+    spritesheet: solitude
+    tile: marble1
+
+corners: # pillars and floor/ceiling details

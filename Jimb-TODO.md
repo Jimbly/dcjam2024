@@ -1,12 +1,11 @@
 TODO
-* L4/5 art and layout
-* play first 3 levels
+* sanity bar big blinking (heartbeat pulse) when down to < 25
+* play all levels
 * draft second level, play through first 2, measure time, check difficulty, put save game aside for later
   * way too easy second level with ~4 upgrades; was about 30min with some fixes - slot 3!
   * only had ~3 deaths, max sanity restore totally unneeded
 * bug: combat while in map view
 * Insanity view
-  * sanity bar big blinking (heartbeat pulse) when down to < 25
   * party portraits to change to monsters - silhouettes
   * ghosts moving through the level
   * dark/postprocess - 16-bit color crunch? - dither?
@@ -22,6 +21,8 @@ TODO
 * bamf - if player has only 2 attackers in party, give only attack options (if possible)
 * integrate footsteps
 * scale sound volume for hunter sounds based on distance
+* combat log needs a "log" header, or should show what the monsters _will_ do
+* roll credits after finale
 
 Balance Plan: conservation of XP
           level + tier that should get 1-2 deaths in some combats (2/5?) and 2-3 deaths on boss
