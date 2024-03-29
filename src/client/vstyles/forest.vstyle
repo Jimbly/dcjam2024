@@ -8,12 +8,14 @@ fog_params:
 - 800.0
 cell_swaps:
   open: forest_floor1
+  floorswitch: forest_floor1
+  floorswitch_on: forest_floor1
 wall_swaps:
   open: demo_open
   door: forest_cavedoor
   door_oneway: forest_cavedoor
-  door_locked: demo_door_locked
-  door_locked_unlocked: demo_door_locked_unlocked
+  door_locked: forest_vines_blocked
+  door_locked_unlocked: forest_vines_unblocked
   secret_door: forest_cavesecret
   secret_door_unvisited: forest_cavesecret
   solid: forest_mosswall3

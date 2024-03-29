@@ -1120,7 +1120,7 @@ function playInitEarly(room: ClientChannelWorker): void {
 
 export function autosave(): void {
   crawlerSaveGame('auto');
-  statusPush('Auto-saved.').counter = 2000;
+  statusPush('Game saved.').counter = 2000;
   autosave_pos = myEnt().data.pos.slice(0) as JSVec3;
 }
 

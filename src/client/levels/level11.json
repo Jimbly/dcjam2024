@@ -808,7 +808,7 @@
       "walls": [
         "open",
         "open",
-        "solid",
+        "door_oneway",
         "solid"
       ],
       "events": [
@@ -1466,6 +1466,10 @@
         {
           "id": "sign",
           "param": "There are no lights, it is unclear why this space is so bright. These blank features exude an unsettling emptiness."
+        },
+        {
+          "id": "autosave",
+          "param": ""
         }
       ]
     },

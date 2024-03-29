@@ -2814,7 +2814,7 @@
       "id": "forest_dirt",
       "walls": [
         "open",
-        "solid",
+        "door_locked",
         "open",
         "solid"
       ]
@@ -2915,6 +2915,10 @@
         {
           "id": "sign",
           "param": "Your party has to strip off their spacesuits and shove them in a backpack. The air is thick with moisture."
+        },
+        {
+          "id": "autosave",
+          "param": ""
         }
       ]
     },
@@ -3057,12 +3061,21 @@
       ]
     },
     {
-      "id": "open",
+      "id": "floorswitch",
       "walls": [
         "open",
         "open",
         "forest_cavewall",
-        "solid"
+        "door_locked"
+      ],
+      "props": {
+        "key_cell": "l2d1"
+      },
+      "events": [
+        {
+          "id": "key_set",
+          "param": "l2d1"
+        }
       ]
     },
     {

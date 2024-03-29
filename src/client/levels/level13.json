@@ -1922,6 +1922,10 @@
         {
           "id": "sign",
           "param": "Either this part of the ship disintegrated, or something powerful ripped it apart. Though the ship’s engines have long cooled, bare bulbs flicker, casting twisted shadows through the torn up hallways."
+        },
+        {
+          "id": "autosave",
+          "param": ""
         }
       ]
     },
@@ -3230,6 +3234,8 @@
   "state": {},
   "vstyle": "ship3",
   "seed": "32845502",
-  "props": {},
+  "props": {
+    "title": "Lower Deck"
+  },
   "paths": {}
 }

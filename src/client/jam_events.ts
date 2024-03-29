@@ -60,6 +60,14 @@ crawlerScriptRegisterEvent({
 });
 
 crawlerScriptRegisterEvent({
+  key: 'autosave',
+  when: CrawlerScriptWhen.POST,
+  func: (api: CrawlerScriptAPI, cell: CrawlerCell, param: string) => {
+    autosave();
+  },
+});
+
+crawlerScriptRegisterEvent({
   key: 'party_add',
   when: CrawlerScriptWhen.POST,
   func: (api: CrawlerScriptAPI, cell: CrawlerCell, param: string) => {

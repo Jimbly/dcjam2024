@@ -170,7 +170,7 @@ const OVERRIDE: TSMap<DataObject> = {
   },
   armor3: {
     hp: 3,
-    shield: 4,
+    shield: 3,
   },
   armor4: {
     hp: 3,
