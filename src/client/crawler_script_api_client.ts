@@ -94,7 +94,7 @@ class CrawlerScriptAPIClientBase {
   getRand(): RandProvider {
     if (this.need_reseed) {
       this.need_reseed = false;
-      this.rand.reseed(mashString(`${this.level.seed};${this.pos}`)); // TODO: mash in a step counter?
+      this.rand.reseed(mashString(`${this.level.seed};${this.pos[0]};${this.pos[1]}`)); // TODO: mash in a step counter?
     }
     return this.rand;
   }

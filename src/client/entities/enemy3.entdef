@@ -2,6 +2,7 @@
 traits:
 - id: enemy
 - id: hunter
+  radius: 2
 # - id: patrol
 # - id: wander
 - id: stats_default

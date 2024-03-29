@@ -579,7 +579,6 @@ export class CombatState {
       this.dice.push(v);
     }
 
-    //this.dice = [1,2,3,4,5,6];
     //this.dice[1] = 5;
     this.dice_used = this.dice.map((a) => false);
     this.turns++;
@@ -931,6 +930,19 @@ export function combatReadyForEnemyTurn(usable_dice: Partial<Record<number, true
   }
 }
 
+function allEnemiesDead(): boolean {
+  assert(combat_scene);
+  let { combat_state } = combat_scene;
+  let enemies = combat_state.enemies;
+  for (let ii = 0; ii < enemies.length; ++ii) {
+    let enemy = enemies[ii];
+    if (enemy.hp) {
+      return false;
+    }
+  }
+  return true;
+}
+
 function combatStartEnemyTurn(): void {
   assert(combat_scene);
   combat_scene.state_id = CSID.EnemyTurn;
@@ -942,6 +954,10 @@ function combatStartEnemyTurn(): void {
 function combatTickEnemyTurn(): void {
   assert(combat_scene);
   let { combat_state } = combat_scene;
+  if (allEnemiesDead()) {
+    // animations must be playing, just let them finish
+    return;
+  }
   if (combat_state.doEnemyTurnTick(combat_scene)) {
     return;
   }
@@ -965,7 +981,7 @@ function combatTickEnemyTurn(): void {
 
 export function combatAnimPaused(): boolean {
   return combat_scene && (combat_scene.animPaused(false) ||
-    combat_scene.state_id === CSID.EnemyTurn) || false;
+    combat_scene.state_id === CSID.EnemyTurn || allEnemiesDead()) || false;
 }
 
 export function combatPreviewAlpha(): number {
@@ -1333,12 +1349,8 @@ export function doCombat(target: Entity, dt: number): void {
   if (combat_scene.animPaused(true)) {
     end_combat = false;
   }
-  enemies = combat_state.enemies;
-  for (let ii = 0; ii < enemies.length; ++ii) {
-    let enemy = enemies[ii];
-    if (enemy.hp) {
-      end_combat = false;
-    }
+  if (!allEnemiesDead()) {
+    end_combat = false;
   }
 
   if (end_combat && !combat_scene.did_victory) {

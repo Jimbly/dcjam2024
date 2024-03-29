@@ -12,6 +12,7 @@ TODO
 * integrate footsteps
 * scale sound volume for hunter sounds based on distance
 * roll credits after finale
+* allow saving anywhere
 
 Balance Plan: conservation of XP
           level + tier that should get 1-2 deaths in some combats (2/5?) and 2-3 deaths on boss

@@ -1,12 +1,12 @@
 /* eslint prefer-template:off, max-len:off */
 import { fontStyle } from 'glov/client/font';
-import { randSimpleSpatial } from 'glov/client/rand_fast';
 import { PanelParam, sprites as ui_sprites } from 'glov/client/ui';
 import { dialogIconsRegister } from '../common/crawler_events';
 import {
   CrawlerScriptAPI,
   CrawlerScriptEventMapIcon,
 } from '../common/crawler_script';
+import { crawlerScriptAPI } from './crawler_play';
 import {
   dialogPush,
   dialogRegister,
@@ -104,9 +104,9 @@ function drawFace(name: string, face_id: string, param: PanelParam): void {
 }
 function randomHeroSpatial(offset?: number): Hero {
   let me = myEnt();
-  let { pos, heroes } = me.data;
-  let rnd = randSimpleSpatial(pos[0], pos[1], 0);
-  let choice = heroes[(floor(rnd * heroes.length) + (offset || 0)) % heroes.length];
+  let { heroes } = me.data;
+  let idx = (crawlerScriptAPI().getRand().range(heroes.length) + (offset || 0)) % heroes.length;
+  let choice = heroes[idx];
   return choice;
 }
 let sapling_water_count = 0;

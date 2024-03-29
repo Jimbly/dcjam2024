@@ -1542,6 +1542,12 @@
         "open",
         "solitude_solid2"
       ],
+      "events": [
+        {
+          "id": "solitude_upgrade",
+          "param": ""
+        }
+      ],
       "h": -0.1875
     },
     {
@@ -1552,7 +1558,13 @@
         "open",
         "solitude_solid2"
       ],
-      "h": -0.1875
+      "h": -0.1875,
+      "events": [
+        {
+          "id": "solitude_upgrade",
+          "param": ""
+        }
+      ]
     },
     {
       "id": "solitude_open3",
@@ -2184,6 +2196,12 @@
         "open",
         "open"
       ],
+      "events": [
+        {
+          "id": "solitude_upgrade",
+          "param": ""
+        }
+      ],
       "h": -0.1875
     },
     {
@@ -2193,6 +2211,12 @@
         "solitude_solid2",
         "open",
         "open"
+      ],
+      "events": [
+        {
+          "id": "solitude_upgrade",
+          "param": ""
+        }
       ],
       "h": -0.1875
     },
