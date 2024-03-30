@@ -978,6 +978,20 @@ function combatStartEnemyTurn(): void {
   combat_state.doEnemyTurnStart(combat_scene);
   combat_state.doEnemyTurnTick(combat_scene);
 }
+function combatApplyDeaths(): void {
+  assert(combat_scene);
+  let { combat_state } = combat_scene;
+  // Apply deaths back to entity data
+  let me = myEnt();
+  assert(me);
+  let ent_heroes = me.data.heroes;
+  let { heroes } = combat_state;
+  for (let ii = 0; ii < heroes.length; ++ii) {
+    if (!heroes[ii].hp && !ent_heroes[ii].dead) {
+      ent_heroes[ii].dead = true;
+    }
+  }
+}
 function combatTickEnemyTurn(): void {
   assert(combat_scene);
   let { combat_state } = combat_scene;
@@ -993,16 +1007,7 @@ function combatTickEnemyTurn(): void {
 
   combat_state.doEnemyTurnFinish();
 
-  // Apply deaths back to entity data
-  let me = myEnt();
-  assert(me);
-  let ent_heroes = me.data.heroes;
-  let { heroes } = combat_state;
-  for (let ii = 0; ii < heroes.length; ++ii) {
-    if (!heroes[ii].hp && !ent_heroes[ii].dead) {
-      ent_heroes[ii].dead = true;
-    }
-  }
+  combatApplyDeaths();
   combat_scene.state_id = CSID.PlayerTurn;
 }
 
@@ -1383,6 +1388,7 @@ export function doCombat(target: Entity, dt: number): void {
   if (end_combat && !combat_scene.did_victory) {
     // victory!
     combat_scene.did_victory = true;
+    combatApplyDeaths();
     playUISound('victory');
     if (target.data.type === 'l6boss') {
       dialog('finale');

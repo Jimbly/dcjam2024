@@ -19,7 +19,6 @@ TODO
 * lighting flicker l3 (after insanity)
   * maybe height noise thingy?
 * title screen
-* hide transient dialogs when on fullscreen map
 
 
 Watching JK

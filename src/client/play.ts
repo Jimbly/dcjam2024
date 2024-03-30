@@ -979,7 +979,7 @@ function playCrawl(): void {
     dialog_viewport.h = game_height - 3;
   }
   let engaged_enemy = engagedEnemy();
-  dialogRun(dt, dialog_viewport, Boolean(engaged_enemy));
+  dialogRun(dt, dialog_viewport, Boolean(engaged_enemy || frame_map_view));
 
   const build_mode = buildModeActive();
   let locked_dialog = dialogMoveLocked();
