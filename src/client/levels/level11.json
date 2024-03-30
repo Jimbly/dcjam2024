@@ -747,6 +747,12 @@
         "solid",
         "solid",
         "ship1_window1"
+      ],
+      "events": [
+        {
+          "id": "sign",
+          "param": "Looking out the window, the stars are like pinpricks in a black page."
+        }
       ]
     },
     {
@@ -801,6 +807,12 @@
         "open",
         "open",
         "solid"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party 0 There! There it is again!"
+        }
       ]
     },
     {
@@ -975,6 +987,12 @@
         "solid",
         "door",
         "open"
+      ],
+      "events": [
+        {
+          "id": "sign",
+          "param": "One of your party members hears a sound like nails scratching down the inside of a pipe."
+        }
       ]
     },
     {
@@ -1200,6 +1218,12 @@
         "open",
         "solid",
         "door"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party 4 Pssst... I liked THE MOON OF EZMERIAL."
+        }
       ]
     },
     {
@@ -1648,6 +1672,12 @@
         "solid",
         "ship1_window1",
         "open"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party 3 The stars look painted on."
+        }
       ]
     },
     {
@@ -1897,6 +1927,12 @@
         "door",
         "open",
         "open"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party Who here has read THE MOON OF EZMERIAL?"
+        }
       ]
     },
     {
@@ -2023,6 +2059,12 @@
         "open",
         "open",
         "solid"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party 0 Did you hear something?"
+        }
       ]
     },
     {
@@ -2041,6 +2083,12 @@
         "open",
         "open",
         "open"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party 1 No?"
+        }
       ]
     },
     {
@@ -2095,6 +2143,12 @@
         "open",
         "open",
         "open"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party 3 We’re on a literal adventure, right here, right now. We don’t need books."
+        }
       ]
     },
     {
