@@ -27,6 +27,7 @@ import {
   setScore,
 } from './play';
 import { statusPush } from './status';
+import { goToHallOfFame } from './title';
 
 const MEDKIT_AMT = 5;
 
@@ -480,6 +481,7 @@ dialogRegister({
     });
   },
   end: function () {
+    goToHallOfFame();
     creditsGo();
   },
 });

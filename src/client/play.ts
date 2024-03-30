@@ -947,18 +947,10 @@ export type Score = {
   sanity: number;
   seconds: number;
 };
-export type LevelDef = {
-  name: string;
-};
-const level_def: LevelDef = {
-  name: 'the',
-};
-const level_defs: LevelDef[] = [level_def];
-export function getLevelList(): LevelDef[] {
-  return level_defs;
-}
-
 let score_system: ScoreSystem<Score>;
+export function getScoreSystem(): ScoreSystem<Score> {
+  return score_system;
+}
 
 const ENCODE_SEC = 100000;
 const ENCODE_XP = 1000;
@@ -1580,10 +1572,13 @@ export function playStartup(font_tiny_in: Font): void {
     },
   };
 
+  const level_def = {
+    name: 'the',
+  };
   score_system = scoreAlloc({
     score_to_value: encodeScore,
     value_to_score: parseScore,
-    level_defs: level_defs,
+    level_defs: [level_def],
     score_key: 'DCJ24',
     ls_key: 'dcj24',
     asc: false,
