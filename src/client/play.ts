@@ -710,7 +710,7 @@ export function sanityDamage(perm: number, temp: number, delay: number, major: b
   me.data.sanity = max(min_value, me.data.sanity - temp);
   sanity_flash_at = getFrameTimestamp() + delay;
   sanity_flash_major = major ? 1 : 0;
-  if (perm) {
+  if (perm > 0) {
     me.data.score_sanity_loss = (me.data.score_sanity_loss || 0) + 1;
   }
 }
