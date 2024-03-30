@@ -270,7 +270,7 @@ function autoSavedHere(): boolean {
 
 const allow_manual_save = true;
 let pause_menu: SimpleMenu;
-function pauseMenu(): void {
+function pauseMenu(in_combat: boolean): void {
   if (!pause_menu) {
     pause_menu = simpleMenuCreate({
       x: floor((game_width - PAUSE_MENU_W)/2),
@@ -352,10 +352,11 @@ function pauseMenu(): void {
       },
     });
   }
-  // TODO: add "load from last autosave / restart in Room of Solitude" option
-  if (isLocal() && allow_manual_save) {
+  let save_allow = allow_manual_save;
+  if (isLocal() && save_allow) {
     items.push({
-      name: 'Save game',
+      name: in_combat ? 'Save game (disabled in combat)' : 'Save game',
+      disabled: in_combat,
       cb: function () {
         crawlerSaveGame('manual');
         statusPush('Game saved.');
@@ -364,9 +365,10 @@ function pauseMenu(): void {
       },
     });
   }
-  if (!isOnline() && allow_manual_save) {
+  if (!isOnline() && save_allow) {
     items.push({
-      name: 'Save and Exit',
+      name: in_combat ? 'Save (disabled in combat) and Exit' : 'Save and Exit',
+      disabled: in_combat,
       cb: function () {
         crawlerSaveGame('manual');
         urlhash.go('');
@@ -1074,7 +1076,7 @@ function playCrawl(): void {
   // }
 
   if (pause_menu_up) {
-    pauseMenu();
+    pauseMenu(Boolean(frame_combat));
   }
 
   // if (frame_combat && frame_combat !== crawlerEntInFront()) {
