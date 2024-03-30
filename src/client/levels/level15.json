@@ -1044,6 +1044,12 @@
         "open",
         "open",
         "solid"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party 0 I wish Erin could see this."
+        }
       ]
     },
     {
@@ -1590,6 +1596,12 @@
         "open",
         "solid",
         "open"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party 0 Who's Erin?"
+        }
       ]
     },
     {
@@ -2449,6 +2461,12 @@
         "open",
         "solid",
         "open"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party 3 Anyone else's ears ringing?"
+        }
       ]
     },
     {
@@ -3217,6 +3235,12 @@
         "solid",
         "open",
         "solid"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party My nose tickles."
+        }
       ]
     },
     {
@@ -3262,6 +3286,12 @@
         "solid",
         "open",
         "solid"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party 1 Nah, I'm sweating buckets."
+        }
       ]
     },
     {
@@ -3302,7 +3332,7 @@
       "events": [
         {
           "id": "dialog",
-          "param": "party 1 What does it mean to have a name?"
+          "param": "party 4 Is anyone else cold? I can't stop shivering."
         }
       ]
     },

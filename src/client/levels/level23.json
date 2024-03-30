@@ -1529,7 +1529,7 @@
       "events": [
         {
           "id": "dialog",
-          "param": "party This place feels like home."
+          "param": "party I could almost stay here forever."
         }
       ],
       "h": -0.1875
@@ -2195,7 +2195,7 @@
       "events": [
         {
           "id": "dialog",
-          "param": "party Do we really have to go back out there?"
+          "param": "party I got real scared out there for a minute."
         }
       ],
       "h": -0.1875

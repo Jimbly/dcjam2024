@@ -2198,8 +2198,8 @@
       ],
       "events": [
         {
-          "id": "dialog",
-          "param": "party Do we really have to go back out there?"
+          "id": "sign",
+          "param": "NAME3 takes a deep breath and feels a little calmer."
         }
       ],
       "h": -0.1875
@@ -2259,6 +2259,12 @@
         "open",
         "open",
         "open"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party Some wise guy said only from the calm can you understand the storm or something, right?"
+        }
       ],
       "h": -0.1875
     },
