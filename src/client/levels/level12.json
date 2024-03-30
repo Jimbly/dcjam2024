@@ -1452,6 +1452,12 @@
         "solid",
         "open"
       ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party 4 I'm not joking, it's stuck! Wait up!"
+        }
+      ],
       "h": -0.125
     },
     {
@@ -1674,6 +1680,12 @@
         "open",
         "solid",
         "open"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party What hole? Stop screwing around, let's go."
+        }
       ],
       "h": -0.0625
     },
@@ -1904,6 +1916,12 @@
         "forest_cavewall",
         "open",
         "open"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party 4 I'm stuck! My foot got caught in this hole."
+        }
       ]
     },
     {
@@ -2761,6 +2779,12 @@
         "solid",
         "solid"
       ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party These trees are not right."
+        }
+      ],
       "h": -0.25
     },
     {
@@ -2780,6 +2804,12 @@
         "solid",
         "open",
         "open"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party 4 They look lovely to me. But it's been a few years since I've seen a tree..."
+        }
       ],
       "h": -0.125
     },
