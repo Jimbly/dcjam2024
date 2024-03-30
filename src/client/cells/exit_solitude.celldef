@@ -1,0 +1,8 @@
+---
+open_vis: true
+advertised_wall: stairs_out
+ascii_char: '<'
+map_view_detail_frame: 41
+auto_evict: true
+default_events:
+- floor_delta 10

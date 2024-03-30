@@ -1,6 +1,5 @@
 TODO
 * better explain aggro somewhere - maybe just in combat tooltip?
-* different map icon for solitude
 * help button on combat with summary of mechanics
 * hi score list
   * go directly from finale -> credits -> high score list

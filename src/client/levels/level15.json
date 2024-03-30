@@ -2016,7 +2016,7 @@
       ]
     },
     {
-      "id": "stairs_out",
+      "id": "exit_solitude",
       "walls": [
         "cosmic_solitude_door",
         "solid",

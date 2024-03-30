@@ -4095,7 +4095,7 @@
       ]
     },
     {
-      "id": "stairs_out",
+      "id": "exit_solitude",
       "walls": [
         "solid",
         "solid",
