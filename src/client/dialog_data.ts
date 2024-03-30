@@ -7,6 +7,7 @@ import {
   CrawlerScriptEventMapIcon,
 } from '../common/crawler_script';
 import { crawlerScriptAPI } from './crawler_play';
+import { creditsGo } from './credits';
 import {
   dialog,
   dialogPush,
@@ -479,7 +480,7 @@ dialogRegister({
     });
   },
   end: function () {
-    // TODO: submit high score
+    creditsGo();
   },
 });
 
