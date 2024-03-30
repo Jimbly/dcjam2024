@@ -1,11 +1,16 @@
 TODO
 * consistent ability icons and sounds
-* bug: from floor 4 up to floor 3, coming out at the wrong place!
 * each monster should have its own attack sound
+* title screen - ship & dice?
+* favicon
+* fix window title to not have | "local" in it
 * bigger/nicer bridge level
   * fullscreen F11 hint
   * need some space to learn controls before the second popup
   * need some point of interest so you know which way is the front (windows on just one side?)
+* lighting flicker l3 (after insanity)
+  * maybe height noise thingy?
+
 * Insanity view
   * just ramp this from 0-50 throughout the 5 levels, plus sanity damage
   * party portraits to change to monsters - silhouettes
@@ -13,11 +18,6 @@ TODO
   * dark/postprocess - 16-bit color crunch? - dither?
   * change fog colors and backdrop
   * outlines of tentacles in space backdrop
-* lighting flicker l3 (after insanity)
-  * maybe height noise thingy?
-* title screen - ship & dice?
-* favicon
-* fix window title to not have | "local" in it
 
 
 Watching JK
