@@ -1849,12 +1849,18 @@
       ]
     },
     {
-      "id": "open",
+      "id": "ship2_terminal",
       "walls": [
         "open",
         "open",
         "open",
         "ship3_solid5"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "terminal LOG 71.00: The ship is changing.  I swear there was a door here somewhere yesterday."
+        }
       ]
     },
     {

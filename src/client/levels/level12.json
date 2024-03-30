@@ -990,7 +990,7 @@
       "events": [
         {
           "id": "dialog",
-          "param": "terminal LOG 31.11: I like the trees. They’re odd. Still, the last time I saw a tree my parents were still together. After this mission, I’ll go home and see the trees, I think."
+          "param": "terminal LOG 31.11: I like the trees. They’re odd. Still, the last time I saw a tree my dad still had all his hair. After this mission, I’ll go home and see the trees, I think."
         }
       ],
       "h": -0.1875
@@ -1398,6 +1398,12 @@
         "open",
         "open",
         "open"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party \"Don't blink?\""
+        }
       ],
       "h": -0.25
     },

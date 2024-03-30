@@ -1,4 +1,16 @@
 TODO
+* put floor reached into score
+* solitude upgrade only if you also have enough xp to skill up after, or mutliple are max tier
+* lowercase "aggro"
+* "Don't blink."
+* bigger/nicer bridge level
+  * need some space to learn controls before the second popup
+  * need some point of interest so you know which way is the front (windows on just one side?)
+* death messages - ensure random does not repeat if possible
+* better explain aggro somewhere - maybe just in combat tooltip?
+* different map icon for solitude
+* hi score list
+  * go directly from finale -> credits -> high score list
 * Insanity view
   * just ramp this from 0-50 throughout the 5 levels, plus sanity damage
   * party portraits to change to monsters - silhouettes
@@ -7,6 +19,16 @@ TODO
   * change fog colors and backdrop
   * outlines of tentacles in space backdrop
 * lighting flicker l3 (after insanity)
+  * maybe height noise thingy?
+* title screen
+* hide transient dialogs when on fullscreen map
+
+
+Watching JK
+* maybe force spending all XP the first time you're in solitude
+* forest: add a "maybe we should go back and level up?" dialog hint
+* add shield reducing split damage to combat log (need scroll window!)
+* preview player healing just like monster damange
 
 Balance Plan: conservation of XP
           level + tier that should get 1-2 deaths in some combats (2/5?) and 2-3 deaths on boss
@@ -26,10 +48,6 @@ Boss fight : T2L2
 XP Cost - see doc
 
 Playtest Feedback
-* too many monsters on first floor - maybe aim for ~7 encounters per floor? or more avoidable?
-* playtest 1
-  * way too easy second level with ~4 upgrades; was about 30min with some fixes - slot 3!
-  * only had ~3 deaths, max sanity restore totally unneeded
 * playtest 2
   * second level still slightly too easy, not sure I lost anyone?
   * third level, lost 2 in one fight, so far, otherwise fine
@@ -38,15 +56,12 @@ Playtest Feedback
   * last level, lost 2 getting to solitude
     * was underleveled due to wrong XP values!  ended T2L1
 
-Finish up
-* title screen
-* hi score list
-
 Polish
 * controller: can't level up: hit Y to open a dedicated screen?
+  * would fullscreen map view work with characters visible, just do it on this screen?
+  * also don't get initial hint in combat
 * adjust fog colors and settings of all levels - backdrops too
 * fill in empty space in UI with some noise at least
-* bigger/nicer bridge level
 * use wall variations throughout levels
 * add unlockable doors to get back to the Solitude entrances
 * consistent ability icons
@@ -62,6 +77,7 @@ Polish
   * also, make sure it all works well with controller
 * scrolling starfield
 * physopolis cat
+* in forest: put axe on ground on other side of blocker
 
 Post-game fixes / polish
 * bias features for simple billboard details
@@ -70,6 +86,7 @@ Post-game fixes / polish
 * tooltip width and markdown not playing correctly, probably also height
 * origin in entdef depends heavily on aspect ratio of image, but it shouldn't?
 * Nilo "face wilts" dialog is not markdownTruncating correctly
+* Simple way to do dialog as pure text data, and then just add code callbacks the get ran beyond the go-to-dialog
 
 People's games to check out:
 * YouDoYouBuddy - slay the spire
