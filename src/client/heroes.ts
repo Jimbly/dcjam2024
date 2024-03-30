@@ -266,6 +266,15 @@ export const ABILITIES: TSMap<AbilityDef> = {
     }],
     icon: 'ability_heal_all',
   },
+  heal_med: {
+    name: 'Medkit',
+    aggro: 2,
+    effects: [{
+      type: AttackType.HEAL,
+      base_amount: 5,
+    }],
+    icon: 'ability_heal',
+  },
   heal_all_light: {
     name: 'Take \'em If Ya Got \'em',
     aggro: 1,
@@ -276,20 +285,14 @@ export const ABILITIES: TSMap<AbilityDef> = {
     icon: 'ability_heal_all',
   },
   heal_light: {
-    name: 'Bandage',
-    aggro: 1,
+    name: 'Medic!',
+    aggro: 4,
     effects: [{
       type: AttackType.HEAL,
       base_amount: 4,
-    }],
-    icon: 'ability_heal',
-  },
-  heal_med: {
-    name: 'Medkit',
-    aggro: 2,
-    effects: [{
-      type: AttackType.HEAL,
-      base_amount: 5,
+    }, {
+      type: AttackType.SHIELD_SELF,
+      base_amount: 4,
     }],
     icon: 'ability_heal',
   },

@@ -1,5 +1,4 @@
 TODO
-* don't have 2 heal abilities on a 6?
 * dialogs snap in a little quicker?
 * consistent ability icons and sounds
 * bigger/nicer bridge level
