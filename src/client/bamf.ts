@@ -22,7 +22,11 @@ import {
 import { randomHero } from './heroes';
 import { isBootstrap, myEnt, myEntOptional } from './play';
 
+import type { TSMap } from 'glov/common/types';
+
 const { floor, max, min, random } = Math;
+
+let lines_seen: TSMap<number> = {};
 
 const lines_m: string[] = [
   'NAME has died. His two cats are very hungry and unsure what to do about it.',
@@ -62,7 +66,17 @@ function ar(arr: string[]): string {
 
 function randomLine(gender: 'm' | 'f' | 'a'): string {
   let lines = gender === 'm' ? lines_m : gender === 'f' ? lines_f : lines_a;
-  return ar(lines);
+  let min_count = Infinity;
+  lines.map((a) => {
+    let c = lines_seen[a] || 0;
+    min_count = min(c, min_count);
+    return c;
+  });
+  lines = lines.filter((a) => (lines_seen[a] || 0) === min_count);
+  assert(lines.length);
+  let r = ar(lines);
+  lines_seen[r] = (lines_seen[r] || 0) + 1;
+  return r;
 }
 
 function tierFromFloor(): number {

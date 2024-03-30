@@ -1182,6 +1182,10 @@ function playCrawl(): void {
   if (engine.DEBUG && keyDownEdge(KEYS.X)) {
     giveXP(null);
   }
+  if (engine.DEBUG && keyDownEdge(KEYS.O)) {
+    myEnt().data.heroes[2].dead = true;
+    bamfReset();
+  }
   if (!overlay_menu_up && !frame_combat && (keyDownEdge(KEYS.M) || padButtonUpEdge(PAD.BACK))) {
     playUISound('button_click');
     mapViewToggle();
