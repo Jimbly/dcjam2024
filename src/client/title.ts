@@ -175,7 +175,7 @@ function title(dt: number): void {
   if (crawlerCommWant()) {
     crawlerCommStart();
   }
-  ambienceTick();
+  ambienceTick('title');
 }
 
 export function titleInit(dt: number): void {
@@ -281,7 +281,7 @@ function stateHighScores(): void {
     color_me_background: [0.2,0.2,0.2,1],
   });
 
-  ambienceTick();
+  ambienceTick('title');
 }
 
 export function titleStartup(): void {

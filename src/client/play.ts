@@ -72,7 +72,7 @@ import {
   aiDoFloor,
   aiTraitsClientStartup,
 } from './ai';
-import { ambienceHeartbeatPulse, ambienceSetHeartbeat, ambienceTick } from './ambience';
+import { ambienceHeartbeatPulse, ambienceSetHeartbeat, ambienceTick, forceNoMusic } from './ambience';
 import { bamfReset, bamfTick } from './bamf';
 import { cleanupCombat, combatPreviewAlpha, doCombat } from './combat';
 // import './client_cmds';
@@ -631,6 +631,7 @@ function moveBlockDead(): boolean {
     text: 'Reload from last save',
     disabled: !hasSaveData(slot),
   })) {
+    forceNoMusic(false);
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     restartFromLastSave();
   }
@@ -641,6 +642,7 @@ function moveBlockDead(): boolean {
     w: button_w,
     text: 'Exit to Menu',
   })) {
+    forceNoMusic(false);
     urlhash.go('');
   }
 
@@ -1015,6 +1017,7 @@ function playCrawl(): void {
 
   if (!controller.hasMoveBlocker() && !myEnt().isAlive()) {
     crawlerSavePlayTime('auto');
+    forceNoMusic(true);
     playUISound('game_over');
     controller.setMoveBlocker(moveBlockDead);
   }
@@ -1306,6 +1309,8 @@ function playCrawl(): void {
 
   statusTick(dialog_viewport);
 
+  ambienceTick(frame_combat ? 'combat' : 'play');
+
   profilerStopFunc();
 }
 
@@ -1342,7 +1347,6 @@ export function play(dt: number): void {
   }
 
   crawlerPlayBottomOfFrame();
-  ambienceTick();
 }
 
 function onPlayerMove(old_pos: Vec2, new_pos: Vec2): void {

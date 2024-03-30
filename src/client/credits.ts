@@ -131,10 +131,9 @@ function doCredits(): void {
     exit();
   }
 
-  ambienceTick();
+  ambienceTick('credits');
 }
 
 export function creditsGo(): void {
-  soundPlayMusic('music/credits');
   engine.setState(doCredits);
 }
