@@ -112,11 +112,23 @@ crawlerScriptRegisterEvent({
   key: 'solitude_upgrade',
   when: CrawlerScriptWhen.POST,
   func: (api: CrawlerScriptAPI, cell: CrawlerCell, param: string) => {
-    let { heroes } = myEnt().data;
+    let { heroes, xp } = myEnt().data;
+    xp = xp || 0;
     let candidate = -1;
+    let num_at_tier = [0,0,0];
+    for (let ii = 1; ii < heroes.length; ++ii) {
+      num_at_tier[heroes[ii].tier]++;
+    }
+    num_at_tier[1] += num_at_tier[2];
     for (let ii = 1; ii < heroes.length; ++ii) {
       let hero = heroes[ii];
       if (hero.tier !== 2 && hero.levels[0] === 2 && hero.levels[1] === 2) {
+        if (num_at_tier[hero.tier+1] < 2 && (hero.tier === 0 && xp < 6 ||
+          hero.tier === 1 && xp < 10)
+        ) {
+          // not enough xp to skill them up afterwards
+          continue;
+        }
         if (candidate === -1 || random() < 0.5) {
           candidate = ii;
         }
@@ -125,7 +137,7 @@ crawlerScriptRegisterEvent({
     let me = myEntOptional();
     let events_done = me ? me.data.events_done = me.data.events_done || {} : {};
     let key = `solitude_upgrade_${api.getFloor()}`;
-    if (candidate !== -1 && (!events_done[key] || Date.now() - last_upgrade > 15*1000)) {
+    if (candidate !== -1 && (!events_done[key] || Date.now() - last_upgrade > 15*1000 || true)) {
       let hero = heroes[candidate];
       hero.left = true;
       hero.dead = true;

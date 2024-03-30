@@ -1,7 +1,6 @@
 TODO
-* solitude upgrade only if you also have enough xp to skill up after, or mutliple are max tier
 * lowercase "aggro"
-* "Don't blink."
+* fullscreen hint
 * bigger/nicer bridge level
   * need some space to learn controls before the second popup
   * need some point of interest so you know which way is the front (windows on just one side?)
