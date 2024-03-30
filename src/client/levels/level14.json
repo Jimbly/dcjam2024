@@ -1827,6 +1827,12 @@
         "solid",
         "open",
         "solid"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party What flowers?"
+        }
       ]
     },
     {
@@ -1836,6 +1842,12 @@
         "solid",
         "open",
         "solid"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party What are all these flowers?"
+        }
       ]
     },
     {
@@ -2523,6 +2535,12 @@
         "solid",
         "open",
         "solid"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party 4 Um, NAME3, NAME1 told me they think your face is melting off. I think they might be tripping. You’d better keep your guard up."
+        }
       ]
     },
     {
@@ -3120,6 +3138,12 @@
         "open",
         "ruins_wall2",
         "ruins_wall2"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party 4 Uh, yeah. I see it too."
+        }
       ]
     },
     {
@@ -3540,6 +3564,12 @@
         "open",
         "ruins_wall2",
         "open"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party 1 Hey, keep this on the down-low, but is it just me, or is NAME3’s face melting?"
+        }
       ]
     },
     {
