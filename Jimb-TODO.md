@@ -1,6 +1,5 @@
 TODO
 * consistent ability icons and sounds
-* each monster should have its own attack sound
 * title screen - ship & dice?
 * favicon
 * fix window title to not have | "local" in it

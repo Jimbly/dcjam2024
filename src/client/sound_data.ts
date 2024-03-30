@@ -11,7 +11,7 @@ export const SOUND_DATA: Partial<Record<string, UISoundID | string | string[] | 
 
   // UI sounds
   button_click: 'button_click', // menus/general/etc
-  button_click2: 'button_click2', // movement controls
+  button_click2: { file: 'button_click2', volume: 0.125 }, // movement controls
   rollover: { file: 'rollover', volume: 0.25 },
 
   // Game sounds - done
