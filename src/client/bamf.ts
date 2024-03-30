@@ -53,11 +53,19 @@ const lines_a = lines_m.concat(lines_f).concat([
 ]);
 
 const summons = [
-  'It\'s gotta be NAME',
-  'Call in NAME',
+  'It\'s gotta be NAME.',
+  'Call in NAME.',
   'NAME\'s the one!',
   'Help me, NAME!',
   'I choose you, NAME.',
+  'Give me a hand, NAME!',
+  'Get in here, NAME!',
+  'Get out here, NAME!',
+  'Help me, NAME, you\'re my only hope!',
+  'Where have you been, NAME?',
+  'Long time no see, NAME.',
+  'Funny meeting you here, NAME.',
+  'It\'s your time to shine, NAME!',
 ];
 
 function ar(arr: string[]): string {
