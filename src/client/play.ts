@@ -857,6 +857,7 @@ export function levelUpAbility(hero_idx: number, ability_idx: number): void {
 
 export type Score = {
   victory: number;
+  max_floor: number;
   xp: number;
   sanity: number;
   seconds: number;
@@ -877,12 +878,14 @@ let score_system: ScoreSystem<Score>;
 const ENCODE_SEC = 100000;
 const ENCODE_XP = 1000;
 const ENCODE_SANITY = 1000;
+const ENCODE_FLOOR = 10;
 function encodeScore(score: Score): number {
   let spart = max(0, ENCODE_SEC - 1 - score.seconds);
   let sanpart = max(0, ENCODE_SANITY - 1 - score.sanity) * ENCODE_SEC;
   let xpart = min(ENCODE_XP - 1, score.xp) * ENCODE_SEC * ENCODE_SANITY;
-  let vpart = score.victory * ENCODE_XP * ENCODE_SEC * ENCODE_SANITY;
-  return vpart + xpart + sanpart + spart;
+  let fpart = min(ENCODE_FLOOR - 1, score.max_floor) * ENCODE_XP * ENCODE_SEC * ENCODE_SANITY;
+  let vpart = score.victory * ENCODE_FLOOR * ENCODE_XP * ENCODE_SEC * ENCODE_SANITY;
+  return vpart + fpart + xpart + sanpart + spart;
 }
 
 function parseScore(value: number): Score {
@@ -894,9 +897,12 @@ function parseScore(value: number): Score {
   sanity = ENCODE_SANITY - 1 - sanity;
   let xp = value % ENCODE_XP;
   value = (value - xp) / ENCODE_XP;
+  let max_floor = value % ENCODE_FLOOR;
+  value = (value - max_floor) / ENCODE_FLOOR;
   let victory = value;
   return {
     victory,
+    max_floor,
     xp,
     sanity,
     seconds,
@@ -911,6 +917,7 @@ export function setScore(): void {
   }
   let score: Score = {
     seconds: round(crawlerCurSavePlayTime() / 1000),
+    max_floor: data.score_max_floor || 0,
     xp: data.score_xp_gain || 0,
     sanity: data.score_sanity_loss || 0,
     victory: data.score_won ? 1 : 0,
@@ -1270,9 +1277,18 @@ function playInitEarly(room: ClientChannelWorker): void {
 }
 
 export function autosave(): void {
+  let floor_id = myEnt().data.floor;
+  let max_floor = 0;
+  if (floor_id >= 10 && floor_id <= 16) {
+    max_floor = floor_id - 10;
+    if (max_floor > (myEnt().data.score_max_floor || 0)) {
+      myEnt().data.score_max_floor = max_floor;
+    }
+  }
   crawlerSaveGame('auto');
   statusPush('Game saved.').counter = 2000;
   autosave_pos = myEnt().data.pos.slice(0) as JSVec3;
+  setScore();
 }
 
 export function restartFromLastSave(): void {

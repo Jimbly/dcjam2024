@@ -94,6 +94,7 @@ export type EntityDataClient = {
   score_won?: boolean;
   score_xp_gain?: number;
   score_sanity_loss?: number;
+  score_max_floor?: number;
   cheat?: boolean;
 } & EntityCrawlerDataCommon;
 

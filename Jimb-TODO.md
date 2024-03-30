@@ -1,5 +1,4 @@
 TODO
-* put floor reached into score
 * solitude upgrade only if you also have enough xp to skill up after, or mutliple are max tier
 * lowercase "aggro"
 * "Don't blink."
