@@ -895,6 +895,12 @@
         "open",
         "ship3_door3",
         "open"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party Was this somebody's bedroom? It's cozy."
+        }
       ]
     },
     {
@@ -1097,6 +1103,12 @@
         "ship3_solid3",
         "open",
         "open"
+      ],
+      "events": [
+        {
+          "id": "sign",
+          "param": "Your party members try to pick out their home stars, but it's hard to tell from here."
+        }
       ]
     },
     {
@@ -1443,6 +1455,12 @@
         "open",
         "open",
         "ship3_door3"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party 0 This room smells awful."
+        }
       ]
     },
     {
@@ -2472,6 +2490,12 @@
         "open",
         "door"
       ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party 0 Guys, I think something is scratching around inside me. Like I swallowed a goldfish and it's still alive."
+        }
+      ],
       "h": 0.0625
     },
     {
@@ -2531,6 +2555,12 @@
         "open",
         "door"
       ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party 0 What does that even mean?"
+        }
+      ],
       "h": -0.0625
     },
     {
@@ -2549,6 +2579,12 @@
         "ship3_solid1",
         "open",
         "open"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party 1 Does anyone else feel like something is following them from the inside?"
+        }
       ]
     },
     {
