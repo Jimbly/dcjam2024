@@ -209,9 +209,9 @@ export function getAbiltiyTooltip(for_levelup: boolean): string | null {
   }
 
   if (aggro < 0) {
-    ret.push(`Reduces [img=aggro]aggro by [c=1]${-aggro}[/c]`);
+    ret.push(`Reduces [img=aggro]Aggro by [c=1]${-aggro}[/c]`);
   } else if (aggro) {
-    ret.push(`[img=aggro]aggro increases by [c=1]${aggro}[/c]`);
+    ret.push(`[img=aggro]Aggro increases by [c=1]${aggro}[/c]`);
   }
 
   return ret.join('\n');

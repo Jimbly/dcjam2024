@@ -1,3 +1,4 @@
+/* eslint max-len:off */
 import assert from 'assert';
 import { cmd_parse } from 'glov/client/cmds';
 import * as engine from 'glov/client/engine';
@@ -21,6 +22,7 @@ import {
   keyUpEdge,
   padButtonUpEdge,
 } from 'glov/client/input';
+import { markdownAuto } from 'glov/client/markdown';
 import { markdownSetColorStyle } from 'glov/client/markdown_renderables';
 import { ClientChannelWorker } from 'glov/client/net';
 import {
@@ -219,6 +221,7 @@ let loading_level = false;
 let controller: CrawlerController;
 
 let pause_menu_up = false;
+let help_menu_up = false;
 
 let button_sprites: Record<ButtonStateString, Sprite>;
 let button_sprites_down: Record<ButtonStateString, Sprite>;
@@ -398,6 +401,66 @@ function pauseMenu(in_combat: boolean): void {
   settings.set('volume_music', pause_menu.getItem(2).value);
 
   menuUp();
+}
+
+const HELP_TEXT = `
+[c=xp]COMBAT SYSTEM HELP[/c]
+
+Each turn, you must use [c=3]all[/c] of your rolled dice to activate abilities, if possible.
+
+When used, abilities always also generate [img=aggro][c=1]Aggro[/c].
+
+[img=spacer]
+
+[c=sanity]Monster attack targeting[/c]
+
+[img=attack_front_enemy]Frontal attacks target the hero with the [c=3]highest[/c] [img=aggro][c=1]Aggro[/c]. If there are ties, the damage is split, [c=2]rounded down[/c].
+
+[img=attack_all]Area attacks target [c=3]all[/c] heroes.
+
+[img=spacer]
+
+[c=sanity]Hero Abilities[/c]
+
+Mouse over or long-press an ability to get specifics.
+
+[img=poison]Poison applies damage at the [c=2]start[/c] of the enemy's turn, every round.
+
+If a hero was attacked, their [img=aggro][c=1]Aggro[/c] decays by half at the end of the round.
+`;
+const style_help = fontStyle(null, {
+  color: 0xdae0eaff,
+});
+function helpMenu(): void {
+  let z = Z.HELP_MENU;
+  let x0 = 5;
+  let y0 = VIEWPORT_Y0;
+  let w = VIEWPORT_X0 + render_width- x0;
+  let h = game_height - 20 - y0;
+  let panel_param = {
+    x: x0,
+    y: y0,
+    z: z - 1,
+    w,
+    h,
+  };
+
+  const pad = 16;
+  markdownAuto({
+    font_style: style_help,
+    line_height: 9,
+    x: x0 + pad,
+    y: y0 + pad,
+    z,
+    w: w - pad * 2,
+    h: h - pad * 2,
+    align: ALIGN.HCENTER | ALIGN.HWRAP,
+    text: HELP_TEXT,
+  });
+
+  panel(panel_param);
+
+  input.eatAllInput();
 }
 
 let temp_color = vec4(1,1,1,1);
@@ -955,10 +1018,12 @@ function playCrawl(): void {
 
   let down = {
     menu: 0,
+    help: 0,
   };
   type ValidKeys = keyof typeof down;
   let up_edge = {
     menu: 0,
+    help: 0,
   } as Record<ValidKeys, number>;
 
   let dt = getScaledFrameDt();
@@ -987,7 +1052,10 @@ function playCrawl(): void {
   let locked_dialog = dialogMoveLocked();
   const need_bamf = !build_mode && !locked_dialog && bamfTick();
   const frame_combat = !need_bamf && engagedEnemy();
-  const overlay_menu_up = pause_menu_up; // || inventory_up
+  if (!frame_combat) {
+    help_menu_up = false;
+  }
+  const overlay_menu_up = pause_menu_up || help_menu_up;
   let minimap_display_h = build_mode ? BUTTON_W : MINIMAP_W;
   let show_compass = false; // !build_mode;
   let compass_h = show_compass ? 11 : 0;
@@ -1028,12 +1096,17 @@ function playCrawl(): void {
       } else {
         z = Z.MENUBUTTON;
       }
+    } else if (key === 'help') {
+      no_visible_ui = false;
     } else {
       if (overlay_menu_up && toggled_down) {
         no_visible_ui = true;
       } else {
         my_disabled = my_disabled || overlay_menu_up;
       }
+    }
+    if (help_menu_up && !no_visible_ui) {
+      z = Z.HELP_MENU + 1;
     }
     let ret = crawlerOnScreenButton({
       x: button_x0 + (BUTTON_W + 2) * rx,
@@ -1067,6 +1140,10 @@ function playCrawl(): void {
   }
   if (!isBootstrap() && !need_bamf) {
     button(0, 0, menu_up ? 10 : 6, 'menu', menu_keys, menu_pads);
+    if (frame_combat) {
+      button_x0 -= BUTTON_W + 2;
+      button(0, 0, 8, 'help', [KEYS.F1], [PAD.Y]);
+    }
   }
   // if (!build_mode) {
   //   button(0, 1, 7, 'inv', [KEYS.I], [PAD.Y], inventory_up);
@@ -1077,6 +1154,9 @@ function playCrawl(): void {
 
   if (pause_menu_up) {
     pauseMenu(Boolean(frame_combat));
+  }
+  if (help_menu_up) {
+    helpMenu();
   }
 
   // if (frame_combat && frame_combat !== crawlerEntInFront()) {
@@ -1151,7 +1231,9 @@ function playCrawl(): void {
   }
 
   if (up_edge.menu) {
-    if (menu_up) {
+    if (help_menu_up) {
+      help_menu_up = false;
+    } else if (menu_up) {
       if (build_mode && mapViewActive()) {
         mapViewSetActive(false);
         // but stay in build mode
@@ -1166,6 +1248,9 @@ function playCrawl(): void {
     } else {
       pause_menu_up = true;
     }
+  }
+  if (up_edge.help) {
+    help_menu_up = !help_menu_up;
   }
 
   if (!frame_map_view) {
@@ -1223,7 +1308,7 @@ export function play(dt: number): void {
     return;
   }
 
-  let overlay_menu_up = pause_menu_up || dialogMoveLocked(); // || inventory_up
+  let overlay_menu_up = pause_menu_up || help_menu_up || dialogMoveLocked(); // || inventory_up
 
   crawlerPlayTopOfFrame(overlay_menu_up || movement_disabled_last_frame);
   movement_disabled_last_frame = false;
@@ -1268,6 +1353,7 @@ function playInitShared(online: boolean): void {
   controller.setOnInitPos(onInitPos);
 
   pause_menu_up = false;
+  help_menu_up = false;
   // inventory_up = false;
   movement_disabled_last_frame = false;
   autosave_pos = null;

@@ -40,6 +40,7 @@ Z.ENEMY = Z.UI + 20; // after Z.UI for attacks
 Z.COMBAT_SHADE = Z.UI - 1;
 Z.DEAD_FADE = 80;
 Z.BAMF = Z.UI + 10;
+Z.HELP_MENU = Z.ENEMY + 10;
 Z.BAMFFADE = Z.BAMF + 20;
 Z.FLOATERS = 125;
 Z.STATUS = 140;
