@@ -984,7 +984,6 @@ function combatApplyDeaths(): void {
   let { combat_state } = combat_scene;
   // Apply deaths back to entity data
   let me = myEnt();
-  assert(me);
   let ent_heroes = me.data.heroes;
   let { heroes } = combat_state;
   for (let ii = 0; ii < heroes.length; ++ii) {
@@ -992,6 +991,16 @@ function combatApplyDeaths(): void {
       ent_heroes[ii].dead = true;
     }
   }
+}
+function anyDead(): boolean {
+  let me = myEnt();
+  let heroes = me.data.heroes;
+  for (let ii = 0; ii < heroes.length; ++ii) {
+    if (heroes[ii].dead) {
+      return true;
+    }
+  }
+  return false;
 }
 function combatTickEnemyTurn(): void {
   assert(combat_scene);
@@ -1390,7 +1399,7 @@ export function doCombat(target: Entity, dt: number): void {
     // victory!
     combat_scene.did_victory = true;
     combatApplyDeaths();
-    playUISound('victory');
+    playUISound(anyDead() ? 'victory' : 'victory2');
     if (target.data.type === 'l6boss') {
       dialog('finale');
     } else {

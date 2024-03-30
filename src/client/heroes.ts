@@ -134,7 +134,7 @@ for (let key in CLASSES) {
 
 export const ABILITIES: TSMap<AbilityDef> = {
   attack_heavy: {
-    name: 'Heavy Attack',
+    name: 'Laser Pistol',
     aggro: 3,
     effects: [{
       type: AttackType.FRONT,
@@ -143,7 +143,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     icon: 'ability_gun2',
   },
   attack_light: {
-    name: 'Light Attack',
+    name: 'Sidearm',
     aggro: 2,
     effects: [{
       type: AttackType.FRONT,
@@ -204,7 +204,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     icon: 'ability_back1',
   },
   poison: {
-    name: 'Poison',
+    name: 'Poisonous Curse',
     aggro: 1,
     effects: [{
       type: AttackType.POISON,
@@ -214,7 +214,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
   },
 
   attack_area_light: {
-    name: 'Light Blast',
+    name: 'Rapid Assault',
     aggro: 2,
     effects: [{
       type: AttackType.ALL,
@@ -223,7 +223,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     icon: 'ability_ranged_all2',
   },
   attack_area_light2: {
-    name: 'Light Blast',
+    name: 'Rapid Assault',
     aggro: 3,
     effects: [{
       type: AttackType.ALL,
@@ -232,7 +232,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
     icon: 'ability_ranged_all2',
   },
   attack_area_med: {
-    name: 'Medium Blast',
+    name: 'Heavy Assault',
     aggro: 3,
     effects: [{
       type: AttackType.ALL,

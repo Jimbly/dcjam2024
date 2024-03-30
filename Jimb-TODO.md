@@ -1,5 +1,4 @@
 TODO
-* consistent ability icons and sounds
 * title screen - ship & dice?
 * favicon
 * fix window title to not have | "local" in it

@@ -51,6 +51,7 @@ export const SOUND_DATA: Partial<Record<string, UISoundID | string | string[] | 
   level_up: { file: 'level_up', volume: 1 },
   game_over: { file: 'game_over', volume: 1 },
   victory: { file: 'victory', volume: 1 },
+  victory2: { file: 'victory2', volume: 1 },
 
   door_scifi: { file: 'door_scifi', volume: 1 },
 
