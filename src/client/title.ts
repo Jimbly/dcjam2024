@@ -82,7 +82,7 @@ function title(dt: number): void {
   });
 
   let y = 40;
-  if (engine.DEBUG || true) {
+  if (netSubs()) {
     let next_y = account_ui.showLogin({
       x: 10,
       y: 10,

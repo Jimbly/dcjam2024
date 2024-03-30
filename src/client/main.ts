@@ -62,7 +62,7 @@ const style_modal = fontStyle(null, {
 export let chat_ui: ReturnType<typeof chatUICreate>;
 
 export function main(): void {
-  if (engine.DEBUG || true) {
+  if (engine.DEBUG) {
     netInit({
       engine,
       cmd_parse,
