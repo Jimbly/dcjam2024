@@ -1,6 +1,4 @@
 TODO
-* better explain aggro somewhere - maybe just in combat tooltip?
-* help button on combat with summary of mechanics
 * hi score list
   * go directly from finale -> credits -> high score list
 * bigger/nicer bridge level
@@ -17,13 +15,15 @@ TODO
 * lighting flicker l3 (after insanity)
   * maybe height noise thingy?
 * title screen
+* favicon
+* fix window title to not have | "local" in it
 
 
 Watching JK
 * maybe force spending all XP the first time you're in solitude
 * forest: add a "maybe we should go back and level up?" dialog hint
 * add shield reducing split damage to combat log (need scroll window!)
-* preview player healing just like monster damange
+* preview player healing just like monster damage
 
 Balance Plan: conservation of XP
           level + tier that should get 1-2 deaths in some combats (2/5?) and 2-3 deaths on boss

@@ -403,6 +403,11 @@ function pauseMenu(in_combat: boolean): void {
   menuUp();
 }
 
+markdownSetColorStyle('subtitle', fontStyle(null, {
+  color: 0xdae0eaff,
+  glow_color: 0x0ff,
+  glow_outer: 7,
+}));
 const HELP_TEXT = `
 [c=xp]COMBAT SYSTEM HELP[/c]
 
@@ -412,7 +417,7 @@ When used, abilities always also generate [img=aggro][c=1]Aggro[/c].
 
 [img=spacer]
 
-[c=sanity]Monster attack targeting[/c]
+[c=subtitle]Monster attack targeting[/c]
 
 [img=attack_front_enemy]Frontal attacks target the hero with the [c=3]highest[/c] [img=aggro][c=1]Aggro[/c]. If there are ties, the damage is split, [c=2]rounded down[/c].
 
@@ -420,12 +425,15 @@ When used, abilities always also generate [img=aggro][c=1]Aggro[/c].
 
 [img=spacer]
 
-[c=sanity]Hero Abilities[/c]
+[c=subtitle]Hero Abilities[/c]
 
 Mouse over or long-press an ability to get specifics.
 
 [img=poison]Poison applies damage at the [c=2]start[/c] of the enemy's turn, every round.
 
+[img=shield]Shield [c=2]reduces[/c] incoming damage.  Any shield from abilities lasts only 1 round.
+
+[img=spacer]
 If a hero was attacked, their [img=aggro][c=1]Aggro[/c] decays by half at the end of the round.
 `;
 const style_help = fontStyle(null, {
