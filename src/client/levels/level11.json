@@ -3454,7 +3454,8 @@
   "vstyle": "ship2",
   "seed": "32845502",
   "props": {
-    "title": "Derelict"
+    "title": "Derelict",
+    "map_show_star": "1"
   },
   "paths": {}
 }

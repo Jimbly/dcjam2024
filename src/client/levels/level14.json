@@ -4548,7 +4548,8 @@
   "vstyle": "ruins",
   "seed": "32845502",
   "props": {
-    "title": "Temple Ruins"
+    "title": "Temple Ruins",
+    "map_show_star": "1"
   },
   "paths": {}
 }

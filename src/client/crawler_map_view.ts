@@ -51,6 +51,12 @@ import { crawlerEntityManager } from './crawler_entity_client';
 import { crawlerController, crawlerSetLevelGenMode } from './crawler_play';
 import { CrawlerScriptAPIClient } from './crawler_script_api_client';
 
+const spritesheet_icons = require('./img/icons');
+const {
+  FRAME_STAR,
+  sprite_icons,
+} = spritesheet_icons;
+
 type Shader = ReturnType<typeof shaderCreate>;
 
 const { floor, max, min, round, PI } = Math;
@@ -275,9 +281,20 @@ export function crawlerMapViewDraw(
     });
   }
 
-  if (!fullscreen && style_map_name) {
-    ui.font.drawSizedAligned(style_map_name, x, y + 1, z + 1, text_height,
-      ui.font.ALIGN.HCENTER, w, 0, floor_title);
+  if (!fullscreen) {
+    if (style_map_name) {
+      ui.font.drawSizedAligned(style_map_name, x, y + 1, z + 1, text_height,
+        ui.font.ALIGN.HCENTER, w, 0, floor_title);
+    }
+    if (level.seen_cells === level.total_cells && !num_enemies && level.props.map_show_star) {
+      sprite_icons.draw({
+        x: x + w - 9 + 1,
+        y: y + h - 8 + 1,
+        z: z + 1,
+        w: 9, h: 8,
+        frame: FRAME_STAR,
+      });
+    }
   }
 
   spriteClipPush(z, x, y, w, h);

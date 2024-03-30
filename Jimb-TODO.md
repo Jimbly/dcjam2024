@@ -1,6 +1,4 @@
 TODO
-* show a star on the on minimap when a level is completely explored and cleared out
-* disable moving on full map
 * Insanity view
   * just ramp this from 0-50 throughout the 5 levels, plus sanity damage
   * party portraits to change to monsters - silhouettes

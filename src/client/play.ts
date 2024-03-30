@@ -1101,7 +1101,8 @@ function playCrawl(): void {
   }
 
 
-  let disable_player_impulse = Boolean(frame_combat || locked_dialog || need_bamf);
+  let disable_player_impulse = Boolean(frame_combat || locked_dialog || need_bamf ||
+    frame_map_view && !build_mode);
   movement_disabled_last_frame = disable_player_impulse;
   controller.doPlayerMotion({
     dt,

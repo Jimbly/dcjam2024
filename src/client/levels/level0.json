@@ -1535,9 +1535,9 @@
       ]
     },
     {
-      "id": "open",
+      "id": "solid",
       "walls": [
-        "solid",
+        "open",
         "solid",
         "solid",
         "solid"
@@ -1548,7 +1548,7 @@
       "walls": [
         "solitude_solid1",
         "solid",
-        "solid",
+        "open",
         "open"
       ]
     },
@@ -3055,6 +3055,8 @@
   "state": {},
   "vstyle": "ship2",
   "seed": "32845502",
-  "props": {},
+  "props": {
+    "map_show_star": "1"
+  },
   "paths": {}
 }

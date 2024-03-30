@@ -4815,7 +4815,8 @@
   "vstyle": "forest",
   "seed": "32845502",
   "props": {
-    "title": "Forest"
+    "title": "Forest",
+    "map_show_star": "1"
   },
   "paths": {}
 }

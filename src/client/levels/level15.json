@@ -4483,7 +4483,8 @@
   "vstyle": "cosmic",
   "seed": "32845502",
   "props": {
-    "title": "SPACEspace"
+    "title": "SPACEspace",
+    "map_show_star": "1"
   },
   "paths": {}
 }
