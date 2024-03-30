@@ -7,7 +7,6 @@ TODO
   * change fog colors and backdrop
   * outlines of tentacles in space backdrop
 * lighting flicker l3 (after insanity)
-* roll credits after finale
 
 Balance Plan: conservation of XP
           level + tier that should get 1-2 deaths in some combats (2/5?) and 2-3 deaths on boss
@@ -40,12 +39,10 @@ Playtest Feedback
     * was underleveled due to wrong XP values!  ended T2L1
 
 Finish up
-* remove dbg:kill buttons!
 * title screen
 * hi score list
 
 Polish
-* final level could use a bunch of unlockable shortcuts
 * bigger/nicer bridge level
 * use wall variations throughout levels
 * bug: when emeny dies to poison damage, the floater moves down halfway through the anim

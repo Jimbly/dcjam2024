@@ -1857,7 +1857,7 @@
       "id": "solid",
       "walls": [
         "solid",
-        "open",
+        "solid",
         "solid",
         "open"
       ]
@@ -2033,28 +2033,40 @@
     {
       "id": "cosmic_floor2",
       "walls": [
-        "solid",
+        "door_locked",
         "open",
         "cosmic_solitude_door",
         "open"
       ]
     },
     {
-      "id": "solid",
+      "id": "cosmic_open_conditional",
       "walls": [
+        "door_locked",
         "solid",
-        "open",
-        "solid",
-        "open"
-      ]
+        "door_locked",
+        "solid"
+      ],
+      "props": {
+        "key_cell": "l5d1"
+      }
     },
     {
-      "id": "cosmic_floor2",
+      "id": "floorswitch",
       "walls": [
         "solid",
         "open",
-        "solid",
+        "door_locked",
         "open"
+      ],
+      "props": {
+        "key_cell": "l5d1"
+      },
+      "events": [
+        {
+          "id": "key_set",
+          "param": "l5d1"
+        }
       ]
     },
     {
@@ -2259,7 +2271,7 @@
         "solid",
         "open",
         "solid",
-        "open"
+        "solid"
       ]
     },
     {

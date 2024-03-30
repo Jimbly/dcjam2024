@@ -1,0 +1,8 @@
+---
+open_vis: true
+default_wall: solid
+sound_id: footstep_cosmic
+visuals:
+replace:
+  - func: KEY
+    name: cosmic_open
