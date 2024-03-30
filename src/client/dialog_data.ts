@@ -120,6 +120,18 @@ const NILO = {
   custom_render: drawFace.bind(null, 'Nilo', 'nilo'),
 };
 dialogRegister({
+  sign: function (param: string) {
+    param = param.replace(/NAME(\d)/g, function (a, b) {
+      let { heroes } = myEnt().data;
+      let idx = Number(b) % heroes.length;
+      return heroes[idx].name;
+    });
+    dialogPush({
+      name: '',
+      text: param,
+      transient: true,
+    });
+  },
   terminal: function (param: string) {
     if (onetimeEvent()) {
       giveXP('terminal');
@@ -160,6 +172,11 @@ dialogRegister({
       } else {
         hero = randomHeroSpatial();
       }
+      param = param.replace(/NAME(\d)/g, function (a, b) {
+        let { heroes } = myEnt().data;
+        let idx = Number(b) % heroes.length;
+        return heroes[idx].name;
+      });
       let { class_id, face, name } = hero;
       let class_def = CLASSES[class_id];
       let face_id = class_def ? (class_def.faces[face || 0] || class_def.faces[0]) : '';

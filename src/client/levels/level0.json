@@ -1348,7 +1348,7 @@
       "events": [
         {
           "id": "dialog",
-          "param": "party Is this a... forest?"
+          "param": "party Is this a... forest? NAME3 doens't believe me."
         }
       ]
     },
@@ -1666,8 +1666,8 @@
       ],
       "events": [
         {
-          "id": "dialog",
-          "param": "party Is this a... forest?"
+          "id": "sign",
+          "param": "NAME4 takes a deep breath"
         }
       ]
     },

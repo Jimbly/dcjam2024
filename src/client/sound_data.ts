@@ -20,9 +20,9 @@ export const SOUND_DATA: Partial<Record<string, UISoundID | string | string[] | 
   monster_attack: { file: 'monster_attack', volume: 1 }, // could be used for hunter_seen
   ability_ranged_all1: { file: 'ability_ranged_all1', volume: 1 },
   ability_ranged_all2: { file: 'ability_ranged_all2', volume: 1 },
-  // Game sounds - TODO
   ability_gun1: { file: 'ability_gun1', volume: 1 },
   ability_gun2: { file: 'ability_gun2', volume: 1 },
+  // Game sounds - TODO
   ability_back1: { file: 'ability_back1', volume: 1 },
   ability_back2: { file: 'ability_back2', volume: 1 },
   ability_shield2: { file: 'ability_shield2', volume: 1 },
