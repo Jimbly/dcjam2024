@@ -23,6 +23,16 @@ let music = [
   'music/credits',
   'music/battle1',
 ];
+let music_volume = [
+  1,
+  1,
+  1,
+  1,
+  0.4,
+  1,
+  1,
+  1,
+];
 let active_music = 0;
 let force_no_music = false;
 export function forceNoMusic(force: boolean): void {
@@ -90,7 +100,7 @@ export function ambienceTick(page: 'play' | 'title' | 'credits' | 'combat'): voi
     if (!desired) {
       soundPlayMusic(music[active_music], 0, FADE);
     } else {
-      soundPlayMusic(music[desired], 1, FADE);
+      soundPlayMusic(music[desired], music_volume[desired], FADE);
     }
     active_music = desired;
   }

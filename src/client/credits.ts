@@ -26,7 +26,7 @@ Thanks for playing!
 Created in 9 days for [c=3]Dungeon Crawler Jam 2024[/c]
 
 
-[c=xp]CODING - DESIGN - KITBASHING[/c]
+[c=xp]LEAD - CODING - DESIGN - KITBASHING[/c]
 [c=sanity]Jimb Esser[/c]
 
 [c=xp]WRITING - DESIGN[/c]
