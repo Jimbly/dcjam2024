@@ -1,12 +1,12 @@
 TODO
-* lowercase "aggro"
-* fullscreen hint
 * bigger/nicer bridge level
+  * fullscreen F11 hint
   * need some space to learn controls before the second popup
   * need some point of interest so you know which way is the front (windows on just one side?)
 * death messages - ensure random does not repeat if possible
 * better explain aggro somewhere - maybe just in combat tooltip?
 * different map icon for solitude
+* help button on combat with summary of mechanics
 * hi score list
   * go directly from finale -> credits -> high score list
 * Insanity view

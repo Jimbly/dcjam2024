@@ -12,6 +12,7 @@ import {
   fontStyle,
   fontStyleAlpha,
 } from 'glov/client/font';
+import { fscreenActive, fscreenAvailable, fscreenEnter, fscreenExit } from 'glov/client/fscreen';
 import * as input from 'glov/client/input';
 import {
   KEYS,
@@ -300,7 +301,18 @@ function pauseMenu(): void {
     cb: () => {
       settings.set('turn_toggle', 1 - settings.turn_toggle);
     },
+  }, {
+    name: `CRT Filter: ${settings.pixely ? 'ON': 'Off'}`,
+    cb: () => {
+      settings.set('pixely', settings.pixely ? 0 : 2);
+    },
   }];
+  if (fscreenAvailable()) {
+    items.push({
+      name: input.inputTouchMode() ? 'Toggle Fullscreen' : 'Toggle Fullscreen (F11)',
+      in_event_cb: fscreenActive() ? fscreenExit : fscreenEnter,
+    });
+  }
   if (!myEntOptional()?.data.cheat) {
     items.push({
       name: 'Cheat',
