@@ -1,6 +1,7 @@
 TODO
 * don't have 2 heal abilities on a 6?
 * dialogs snap in a little quicker?
+* consistent ability icons and sounds
 * bigger/nicer bridge level
   * fullscreen F11 hint
   * need some space to learn controls before the second popup
@@ -14,7 +15,7 @@ TODO
   * outlines of tentacles in space backdrop
 * lighting flicker l3 (after insanity)
   * maybe height noise thingy?
-* title screen
+* title screen - ship & dice?
 * favicon
 * fix window title to not have | "local" in it
 
@@ -52,14 +53,11 @@ Playtest Feedback
     * was underleveled due to wrong XP values!  ended T2L1
 
 Polish
-* controller: can't level up: hit Y to open a dedicated screen?
-  * would fullscreen map view work with characters visible, just do it on this screen?
-  * also don't get initial hint in combat
+* controller issue: don't see initial hint in combat
 * adjust fog colors and settings of all levels - backdrops too
 * fill in empty space in UI with some noise at least
 * use wall variations throughout levels
 * add unlockable doors to get back to the Solitude entrances
-* consistent ability icons
 * more player faces
 * tooltip on Sanity and XP displays, explaining mechanics
 * add sanity icon to spritesheet and use in dialogs

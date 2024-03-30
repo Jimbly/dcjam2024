@@ -30,7 +30,7 @@ Created in 9 days for [c=3]Dungeon Crawler Jam 2024[/c]
 [c=sanity]Jimb Esser[/c]
 
 [c=xp]WRITING - DESIGN[/c]
-[c=sanity]Siena Moraff[/c]
+[c=sanity]Siena Merlin Moraff[/c]
 
 [c=xp]SOUND FX[/c]
 [c=sanity]Rose Evans[/c]

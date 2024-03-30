@@ -179,7 +179,7 @@ export function crawlerMapViewDraw(
   }
   let full_vis = engine.defines.FULL_VIS || build_mode;
 
-  let fullscreen = w === engine.game_width;
+  let fullscreen = w > engine.game_width / 2;
 
   const text_height = uiTextHeight();
 
