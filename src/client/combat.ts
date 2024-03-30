@@ -201,13 +201,13 @@ export class CombatState {
     return ret;
   }
 
-  damage(enemy_idx: number, attack_type: AttackType, hp: number, animator?: Animatable): void {
+  damage(enemy_idx: number, attack_type: AttackType, hp: number, animator?: Animatable): boolean {
     let enemy = this.enemies[enemy_idx];
     let dhp = max(hp - enemy.def.shield - enemy.temp_shield, 0);
     animator?.addFloater({
       enemy_idx,
-      attack_type,
-      msg: `${dhp}`,
+      attack_type: dhp ? attack_type : AttackType.SHIELD_SELF,
+      msg: dhp ? `${dhp}` : '[img=shield]',
     });
     enemy.hp -= max(0, dhp);
     enemy.temp_shield = 0;
@@ -216,6 +216,7 @@ export class CombatState {
       // TODO: died!
       animator?.playSound('monster_death');
     }
+    return dhp > 0;
   }
   poison(enemy_idx: number, amount: number, animator?: Animatable): void {
     let enemy = this.enemies[enemy_idx];
@@ -272,20 +273,31 @@ export class CombatState {
       let amount = effectGetValue(effect, tier, level);
       switch (effect.type) {
         case AttackType.FRONT:
-          this.damage(living_enemies[0], effect.type, amount + this.damage_bonus, animator);
+          if (!this.damage(living_enemies[0], effect.type, amount + this.damage_bonus, animator)) {
+            animator?.playSound('monster_block');
+          }
           break;
         case AttackType.POISON:
           this.poison(living_enemies[0], amount, animator);
           break;
         case AttackType.BACK:
-          this.damage(living_enemies[living_enemies.length - 1], effect.type,
-            amount + this.damage_bonus, animator);
-          break;
-        case AttackType.ALL:
-          for (let jj = 0; jj < living_enemies.length; ++jj) {
-            this.damage(living_enemies[jj], effect.type, amount + this.damage_bonus, animator);
+          if (!this.damage(living_enemies[living_enemies.length - 1], effect.type,
+            amount + this.damage_bonus, animator)
+          ) {
+            animator?.playSound('monster_block');
           }
           break;
+        case AttackType.ALL: {
+          let any_damaged = false;
+          for (let jj = 0; jj < living_enemies.length; ++jj) {
+            if (this.damage(living_enemies[jj], effect.type, amount + this.damage_bonus, animator)) {
+              any_damaged = true;
+            }
+          }
+          if (!any_damaged) {
+            animator?.playSound('monster_block');
+          }
+        } break;
         case AttackType.SHIELD_SELF:
           if (hero.temp_shield < MAX_SHIELD) {
             animator?.addFloater({
@@ -480,7 +492,7 @@ export class CombatState {
             animator?.combatLog(`[c=1]${def.name}[/c] attacked the [c=3]${best.length}[/c]` +
               ` with [c=1]${best_aggro}[/c][img=aggro],` +
               ` splitting [c=1]${base_damage}[/c] to [c=1]${damage}[/c] each`);
-          } else {
+          } else if (best.length) {
             if (animator) {
               let hero = heroes[best[0]]!;
               log = `[c=1]${def.name}[/c] attacked [c=3]${hero.name}[/c] ([c=1]${best_aggro}[/c][img=aggro]), `;
@@ -796,7 +808,7 @@ class CombatScene {
     let { x, y } = param;
     let { floaters } = this;
     let blink = 1;
-    for (let ii = 0; ii < floaters.length; ++ii) {
+    for (let ii = floaters.length - 1; ii >= 0; --ii) {
       let floater = floaters[ii];
       if (!sameFloaterTarget(floater, param)) {
         continue;

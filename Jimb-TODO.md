@@ -1,4 +1,6 @@
 TODO
+* show a star on the on minimap when a level is completely explored and cleared out
+* disable moving on full map
 * Insanity view
   * just ramp this from 0-50 throughout the 5 levels, plus sanity damage
   * party portraits to change to monsters - silhouettes
@@ -43,14 +45,11 @@ Finish up
 * hi score list
 
 Polish
-* bigger/nicer bridge level
-* use wall variations throughout levels
-* bug: when emeny dies to poison damage, the floater moves down halfway through the anim
-* enemy plays blocked sound and does shield floater if 0 damage
 * controller: can't level up: hit Y to open a dedicated screen?
 * adjust fog colors and settings of all levels - backdrops too
 * fill in empty space in UI with some noise at least
-* show explore percent (and monster count?) on minimap
+* bigger/nicer bridge level
+* use wall variations throughout levels
 * add unlockable doors to get back to the Solitude entrances
 * consistent ability icons
 * more player faces
@@ -58,7 +57,6 @@ Polish
 * add sanity icon to spritesheet and use in dialogs
 * scroll area for combat log when needed
 * change wander to only wander between 2 spaces, start and random neighbor, then can enable on all
-* moving on full map?
 * darken read notes on the minimap
 * animate monsters
 * shake things when people get hit

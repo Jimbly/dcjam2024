@@ -543,7 +543,7 @@ function moveBlockDead(): boolean {
   if (buttonText({
     x: x + floor(w/2 - button_w/2), y, z,
     w: button_w,
-    text: 'Reload from last Solitude',
+    text: 'Reload from last save',
     disabled: !hasSaveData(slot),
   })) {
     // eslint-disable-next-line @typescript-eslint/no-use-before-define

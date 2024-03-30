@@ -33,6 +33,7 @@ export const SOUND_DATA: Partial<Record<string, UISoundID | string | string[] | 
   hero_death: { file: 'hero_death', volume: 1 },
   monster_death: { file: 'monster_death', volume: 1 },
   shield_block: { file: 'shield_block', volume: 1 },
+  monster_block: { file: 'monster_block', volume: 1 },
   monster_attack: { file: 'monster_attack', volume: 1 },
   monster_attack_all: { file: 'monster_attack_all', volume: 1 },
 
