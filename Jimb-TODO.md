@@ -1,6 +1,6 @@
 TODO
-* hi score list
-  * go directly from finale -> credits -> high score list
+* don't have 2 heal abilities on a 6?
+* dialogs snap in a little quicker?
 * bigger/nicer bridge level
   * fullscreen F11 hint
   * need some space to learn controls before the second popup

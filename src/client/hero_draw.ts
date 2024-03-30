@@ -475,12 +475,14 @@ export function drawHero(idx: number, x0: number, y0: number, z: number, hero_de
       base_name: 'abilitybutton',
       disabled,
       sound_rollover: disabled ? null : undefined,
-      sound_button: level_up_available ? 'level_up' : icon,
+      sound_button: engine.defines.SOUND ? icon : level_up_available ? 'level_up' : icon,
       disabled_focusable: true,
       tooltip,
     };
     if (buttonText(button_param)) {
-      if (level_up_available) {
+      if (engine.defines.SOUND) {
+        // just play the sound
+      } else if (level_up_available) {
         levelUpAbility(idx, ability_idx);
       } else {
         combatAcitvateAbility(idx, ability_idx);

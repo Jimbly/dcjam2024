@@ -44,12 +44,14 @@ Footstep sounds by [c=sanity]Alex Hamadey[/c]
 
 [c=xp]OTHER ASSET PACKS BY[/c]
 See page on itch.io for links
+[c=sanity]GuttyKreum[/c]
 [c=sanity]ELV[/c]
 [c=sanity]finalbossblues[/c]
 [c=sanity]Dungeon Crawl Stone Soup[/c]
 [c=sanity]Digital Mosaic Games[/c]
 [c=sanity]game-icons.net[/c]
 [c=sanity]Oryx[/c]
+[c=sanity]Atelier Magicae[/c]
 
 [c=xp]ENGINE[/c]
 [c=sanity]GLOV.js + crawler toolkit[/c]

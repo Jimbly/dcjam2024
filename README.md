@@ -29,3 +29,5 @@ Credits for assets used (may not make it into final version)
 * Oryx 16-bit Sci-Fi - https://oryxdesignlab.itch.io/16-bit-sci-fi
 * Heartbeat - https://freesound.org/people/loudernoises/sounds/332819/
 * Footstep sounds by Alex Hamadey - https://alexhamadey.itch.io/
+* Ability icons - https://guttykreum.itch.io/the-japan-collection-icons
+* Ability icons - https://ateliermagicae.itch.io/200
