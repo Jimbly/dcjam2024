@@ -405,6 +405,7 @@ export class CombatState {
   damageHero(enemy_idx: number, attack_type: AttackType, idx: number, amount: number,
     animator: Animatable | undefined, log: string | null
   ): boolean {
+    let enemy = this.enemies[enemy_idx];
     let hero = this.heroes[idx];
     let class_tier = hero.tier_ref;
     let shield_amt = (hero.temp_shield || 0) + class_tier.shield;
@@ -415,7 +416,7 @@ export class CombatState {
       msg = `${log}for [c=1]${full_amount}[/c]${shield_amt ?
         `-${shield_amt}[img=shield]=[c=1]${amount}[/c]`: ''}`;
     }
-    let sound = amount ? attack_type === AttackType.ALL ? 'monster_attack_all' : 'monster_attack' : 'shield_block';
+    let sound = amount ? enemy.def.sound || 'monster_attack' : 'shield_block';
     hero.hp -= amount;
     if (hero.hp <= 0) {
       hero.hp = 0;

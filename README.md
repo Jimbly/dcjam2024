@@ -14,6 +14,10 @@ No license is provided for any game code or assets.  Copyright (c) 2024 Jimb Ess
 
 GLOV.js is MIT licensed.
 
+Contributor Links
+=================
+* https://revaans.itch.io/
+
 
 Credits for assets used (may not make it into final version)
 ============================================================

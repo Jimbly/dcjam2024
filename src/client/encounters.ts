@@ -58,6 +58,41 @@ export type EnemyDef = {
   enttype: string;
   tier: number;
   level: number;
+  sound?: string;
+};
+
+const SFX: TSMap<string> = {
+  armor1: 'monster_orange_attack_2', // doesn't exist
+  aoe1: 'monster_attack_all',
+  balanced1: 'monster_orange_attack_2',
+  boss1: 'monster_orange_attack_1',
+  damage1: 'monster_pink_attack_1',
+  sponge1: 'monster_pink_attack_2',
+  aoe2: 'monster_attack_all',
+  armor2: 'monster_orange_attack_2',
+  balanced2: 'monster_orange_attack_2',
+  boss2: 'monster_orange_attack_1',
+  damage2: 'monster_pink_attack_1',
+  sponge2: 'monster_pink_attack_2',
+  aoe3: 'monster_attack_all',
+  armor3: 'monster_orange_attack_2',
+  balanced3: 'monster_orange_attack_2',
+  boss3: 'monster_orange_attack_1',
+  damage3: 'monster_pink_attack_1',
+  sponge3: 'monster_pink_attack_2',
+  aoe4: 'monster_attack_all',
+  armor4: 'monster_orange_attack_2',
+  balanced4: 'monster_orange_attack_2',
+  boss4: 'monster_orange_attack_1',
+  damage4: 'monster_pink_attack_1',
+  sponge4: 'monster_pink_attack_2',
+  aoe5: 'monster_attack_all',
+  armor5: 'monster_orange_attack_2',
+  balanced5: 'monster_orange_attack_2',
+  boss5: 'monster_orange_attack_1',
+  damage5: 'monster_pink_attack_1',
+  sponge5: 'monster_pink_attack_2',
+  boss6: 'monster_orange_attack_1',
 };
 
 export const ENEMIES: TSMap<EnemyDef> = {
@@ -100,6 +135,7 @@ export const ENEMIES: TSMap<EnemyDef> = {
   aoe1: { // L1-aoe-NeonWiggler
     name: 'Neon Wiggler',
     enttype: 'enemy3',
+    sound: 'monster_attack_all',
     hp: 4,
     shield: 0,
     tier: 0,
@@ -270,6 +306,12 @@ Object.keys(ENEMIES).forEach((enemy_id: string) => {
     new_enemy.tier = MAPPING[floor-2].tier;
     ENEMIES[new_name] = new_enemy;
   }
+});
+
+Object.keys(ENEMIES).forEach((enemy_id: string) => {
+  let enemy_def = ENEMIES[enemy_id]!;
+  assert(SFX[enemy_id], enemy_id);
+  enemy_def.sound = SFX[enemy_id];
 });
 
 export const ENCOUNTERS: TSMap<Encounter> = {

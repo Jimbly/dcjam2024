@@ -264,7 +264,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
       type: AttackType.SHIELD_ALL,
       base_amount: 1,
     }],
-    icon: 'ability_heal_all',
+    icon: 'ability_heal_and_shield',
   },
   heal_med: {
     name: 'Medkit',
@@ -294,7 +294,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
       type: AttackType.SHIELD_SELF,
       base_amount: 4,
     }],
-    icon: 'ability_heal',
+    icon: 'ability_heal_other_shield_self',
   },
   shield_other1: {
     name: 'Guard',

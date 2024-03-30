@@ -1,5 +1,7 @@
 TODO
 * consistent ability icons and sounds
+* bug: from floor 4 up to floor 3, coming out at the wrong place!
+* each monster should have its own attack sound
 * bigger/nicer bridge level
   * fullscreen F11 hint
   * need some space to learn controls before the second popup

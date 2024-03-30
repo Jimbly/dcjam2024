@@ -914,8 +914,10 @@ export function giveXP(target: Entity | 'note' | 'terminal' | 'cheat' | null): v
   if (target) {
     if (target === 'cheat') {
       delta = 100;
+      playUISound('xp_gain');
     } else if (target === 'note' || target === 'terminal') {
       delta = XP_TABLE_STORY[floor_level];
+      playUISound('xp_gain');
     } else {
       let is_boss = target?.data?.stats?.encounter.includes('boss');
       if (is_boss) {
@@ -1013,6 +1015,7 @@ function playCrawl(): void {
 
   if (!controller.hasMoveBlocker() && !myEnt().isAlive()) {
     crawlerSavePlayTime('auto');
+    playUISound('game_over');
     controller.setMoveBlocker(moveBlockDead);
   }
 
@@ -1270,7 +1273,9 @@ function playCrawl(): void {
     giveXP(null);
   }
   if (engine.DEBUG && keyDownEdge(KEYS.O)) {
-    myEnt().data.heroes[2].dead = true;
+    for (let ii = 1; ii < 6; ++ii) {
+      myEnt().data.heroes[ii].dead = true;
+    }
     bamfReset();
   }
   if (!overlay_menu_up && !frame_combat && (keyDownEdge(KEYS.M) || padButtonUpEdge(PAD.BACK))) {
@@ -1314,7 +1319,7 @@ export function play(dt: number): void {
 
   let overlay_menu_up = pause_menu_up || help_menu_up || dialogMoveLocked(); // || inventory_up
 
-  crawlerPlayTopOfFrame(overlay_menu_up || movement_disabled_last_frame);
+  crawlerPlayTopOfFrame(overlay_menu_up || movement_disabled_last_frame || controller.move_blocker === moveBlockDead);
   movement_disabled_last_frame = false;
 
   if (keyDownEdge(KEYS.F3)) {

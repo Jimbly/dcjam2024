@@ -7,3 +7,4 @@ visuals:
   opts:
     spritesheet: ship2
     tile: stairs_down
+sound_id: door_scifi
