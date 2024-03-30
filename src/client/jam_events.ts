@@ -73,7 +73,7 @@ crawlerScriptRegisterEvent({
 
 crawlerScriptRegisterEvent({
   key: 'party_add',
-  when: CrawlerScriptWhen.POST,
+  when: CrawlerScriptWhen.PRE,
   func: (api: CrawlerScriptAPI, cell: CrawlerCell, param: string) => {
     let idx = Number(param) || 6;
     if (myEnt().data.heroes.length < idx) {

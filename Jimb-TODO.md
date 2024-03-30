@@ -1,5 +1,4 @@
 TODO
-* dialogs snap in a little quicker?
 * consistent ability icons and sounds
 * bigger/nicer bridge level
   * fullscreen F11 hint
