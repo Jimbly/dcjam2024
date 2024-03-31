@@ -185,19 +185,21 @@ declare module 'glov/client/ui' {
     sanity_bg: Sprite;
     panel_note: Sprite;
     panel_combat_log_title: Sprite;
+    filler: Sprite;
   }
 }
 
+const MOVE_BUTTONS_X0 = 290;
 // const ATTACK_WINDUP_TIME = 1000;
 const BOTTOM_UI_Y = 200;
 const MINIMAP_RADIUS = 3;
-const MINIMAP_X = VIEWPORT_X0 + 2;
-const MINIMAP_Y = BOTTOM_UI_Y;
-const MINIMAP_W = 5+7*(MINIMAP_RADIUS*2 + 1);
+const MINIMAP_W = 5+7*((MINIMAP_RADIUS+1)*2 + 1);
+const MINIMAP_H = 5+7*(MINIMAP_RADIUS*2 + 1);
+const MINIMAP_X = VIEWPORT_X0 + floor((MOVE_BUTTONS_X0 - VIEWPORT_X0 - MINIMAP_W)/2);
+const MINIMAP_Y = BOTTOM_UI_Y + floor((game_height - BOTTOM_UI_Y - MINIMAP_H)/2);
 const COMPASS_X = MINIMAP_X;
-const COMPASS_Y = MINIMAP_Y + MINIMAP_W;
+const COMPASS_Y = MINIMAP_Y + MINIMAP_H;
 
-const MOVE_BUTTONS_X0 = 290;
 const MOVE_BUTTONS_Y0 = BOTTOM_UI_Y;
 
 const BUTTON_W = 32;
@@ -1062,7 +1064,7 @@ function playCrawl(): void {
     help_menu_up = false;
   }
   const overlay_menu_up = pause_menu_up || help_menu_up;
-  let minimap_display_h = build_mode ? BUTTON_W : MINIMAP_W;
+  let minimap_display_h = build_mode ? BUTTON_W : MINIMAP_H;
   let show_compass = false; // !build_mode;
   let compass_h = show_compass ? 11 : 0;
 
@@ -1207,6 +1209,13 @@ function playCrawl(): void {
     cleanupCombat(dt);
   }
 
+  if (!buildModeActive() && settings.pixely) {
+    ui_sprites.filler.draw({
+      x: 0, y: 0, z: 0.1,
+      w: game_width,
+      h: game_height,
+    });
+  }
 
   let disable_player_impulse = Boolean(frame_combat || locked_dialog || need_bamf ||
     frame_map_view && !build_mode);
@@ -1305,6 +1314,14 @@ function playCrawl(): void {
     crawlerMapViewDraw(game_state, MINIMAP_X, MINIMAP_Y, MINIMAP_W, minimap_display_h, compass_h, Z.MAP,
       false, script_api, overlay_menu_up || !myEntOptional()?.isAlive(),
       COMPASS_X, COMPASS_Y);
+
+    panel({
+      x: MINIMAP_X - 3,
+      y: MINIMAP_Y - 3,
+      w: MINIMAP_W + 6,
+      h: minimap_display_h + 6,
+      z: Z.MAP - 1,
+    });
   }
 
   statusTick(dialog_viewport);

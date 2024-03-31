@@ -201,6 +201,7 @@ export function main(): void {
       sanity_bar_full: { name: 'sanity_bar_full', ws: [3], hs: [50, 10, 34] },
       sanity_bar_bg: { name: 'sanity_bar_bg', ws: [5], hs: [201] },
       sanity_bg: { name: 'sanity_bg', ws: [38], hs: [38] },
+      filler: { name: 'filler', ws: [480], hs: [270] },
     },
     ui_sounds: SOUND_DATA,
   })) {
