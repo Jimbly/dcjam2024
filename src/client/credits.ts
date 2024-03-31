@@ -55,6 +55,9 @@ Footstep sounds by [c=sanity]Alex Hamadey[/c]
 [c=sanity]Nauris[/c]
 See page on itch.io for links
 
+[c=xp]AI CONTENT[/c]
+Title screen ship made by ethically-trained [c=sanity]RetroDiffusion[/c]
+
 [c=xp]ENGINE[/c]
 [c=sanity]GLOV.js + crawler toolkit[/c]
 [c=sanity]MIT Licensed[/c]

@@ -47,7 +47,7 @@ import {
 } from './play';
 
 
-const { floor, max } = Math;
+const { floor, max, min } = Math;
 
 type AccountUI = ReturnType<typeof createAccountUI>;
 
@@ -131,7 +131,7 @@ function title(dt: number): void {
   let W = game_width;
   let H = game_height;
 
-  for (let ii = 0; ii < parallax.length && false; ++ii) {
+  for (let ii = 0; ii < parallax.length; ++ii) {
     let img = parallax[ii];
     let offs = engine.getFrameTimestamp() * (1 + ii * 0.1) * 0.000003;
     let uvs = img.uvs;
@@ -311,14 +311,14 @@ const SCORE_COLUMNS = [
   { name: '', width: 12, align: ALIGN.HFIT | ALIGN.HRIGHT | ALIGN.VCENTER },
   { name: 'Name', width: 60, align: ALIGN.HFIT | ALIGN.VCENTER },
   { name: 'Floor', width: 32 },
-  { name: 'Discover', width: 32 },
+  { name: 'Discoveries', width: 32 },
   { name: 'Max Sanity Loss', width: 32 },
 ];
 const style_score = fontStyleColored(null, 0xFFFFFFff);
 const style_me = fontStyleColored(null, 0xffd541ff);
 const style_header = fontStyleColored(null, 0xFFFFFFff);
 function myScoreToRow(row: unknown[], score: Score): void {
-  row.push(score.victory ? 'WIN' : `${score.max_floor}/5`, score.xp, score.sanity * 2);
+  row.push(score.victory ? 'WIN' : `${min(score.max_floor, 5)}/5`, score.xp, score.sanity * 2);
 }
 const style_title = fontStyle(null, {
   color: 0x249fdeff,
