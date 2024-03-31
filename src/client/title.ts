@@ -47,13 +47,14 @@ import {
 } from './play';
 
 
-const { floor, max, min } = Math;
+const { floor, max, min, sin, random } = Math;
 
 type AccountUI = ReturnType<typeof createAccountUI>;
 
 let account_ui: AccountUI;
 
 let sprite_title: Sprite;
+let sprite_shadow: Sprite;
 let parallax: Sprite[];
 
 export function hasSaveData(slot: number): boolean {
@@ -159,8 +160,20 @@ function title(dt: number): void {
     y: 20,
     w: title_w,
     h: title_h,
+    z: Z.UI - 2,
     color: [1,1,1,title_alpha.title],
   });
+  let shadow_alpha = sin(engine.getFrameTimestamp() * 0.0005) * 500 - 499;
+  if (shadow_alpha > 0) {
+    sprite_shadow.draw({
+      x: 94 + random() * 10,
+      y: 45 + random() * 20,
+      w: 294,
+      h: 248,
+      z: Z.UI - 1,
+      color: [1,1,1,min(shadow_alpha, 0.25)],
+    });
+  }
 
   let button_height = uiButtonHeight();
   let text_height = uiTextHeight();
@@ -422,6 +435,9 @@ export function titleStartup(): void {
   });
   sprite_title = spriteCreate({
     name: 'title',
+  });
+  sprite_shadow = spriteCreate({
+    name: 'shadow',
   });
 
   parallax = [1, 2, 3, 4, 5, 6].map((a) => {
