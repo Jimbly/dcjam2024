@@ -164,13 +164,16 @@ function title(dt: number): void {
     color: [1,1,1,title_alpha.title],
   });
   let shadow_alpha = sin(engine.getFrameTimestamp() * 0.0005) * 500 - 499;
+  if (FOR_LOGO) {
+    shadow_alpha = 1;
+  }
   if (shadow_alpha > 0) {
     sprite_shadow.draw({
-      x: 94 + random() * 10,
-      y: 45 + random() * 20,
+      x: 94 + (FOR_LOGO ? 0 : random() * 10),
+      y: 45 + (FOR_LOGO ? -20 : random() * 20),
       w: 294,
       h: 248,
-      z: Z.UI - 1,
+      z: FOR_LOGO ? Z.UI - 3 : Z.UI - 1,
       color: [1,1,1,min(shadow_alpha, 0.25)],
     });
   }
