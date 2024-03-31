@@ -1,19 +1,23 @@
+import { AnimationSequencer, animationSequencerCreate } from 'glov/client/animation';
 import * as camera2d from 'glov/client/camera2d';
 import * as engine from 'glov/client/engine';
 import { ALIGN, fontStyle, fontStyleColored } from 'glov/client/font';
 import { fscreenAvailable, fscreenEnter } from 'glov/client/fscreen';
 import {
   KEYS,
+  eatAllInput,
   inputTouchMode,
+  keyDown,
   keyDownEdge,
+  mouseDownAnywhere,
 } from 'glov/client/input';
 import { localStorageGetJSON } from 'glov/client/local_storage';
 import { netSubs } from 'glov/client/net';
 import { scoresDraw } from 'glov/client/score_ui';
+import { Sprite, spriteCreate } from 'glov/client/sprites';
 import {
   buttonText,
   modalDialog,
-  print,
   uiButtonHeight,
   uiButtonWidth,
   uiGetFont,
@@ -21,6 +25,7 @@ import {
 } from 'glov/client/ui';
 import * as urlhash from 'glov/client/urlhash';
 import { TSMap } from 'glov/common/types';
+import { vec4 } from 'glov/common/vmath';
 import { createAccountUI } from './account_ui';
 import { ambienceTick } from './ambience';
 import {
@@ -33,6 +38,7 @@ import {
   crawlerPlayWantMode,
   crawlerPlayWantNewGame,
 } from './crawler_play';
+import { creditsGo } from './credits';
 import { game_height, game_width } from './globals';
 import * as main from './main';
 import {
@@ -41,11 +47,14 @@ import {
 } from './play';
 
 
-const { max } = Math;
+const { floor, max } = Math;
 
 type AccountUI = ReturnType<typeof createAccountUI>;
 
 let account_ui: AccountUI;
+
+let sprite_title: Sprite;
+let parallax: Sprite[];
 
 export function hasSaveData(slot: number): boolean {
   let manual_data = localStorageGetJSON<SavedGameData>(`savedgame_${slot}.manual`, { timestamp: 0 });
@@ -70,7 +79,17 @@ function fullscreenDid(key: string): boolean {
   return (fs_did[key] && fs_did[key]! >= engine.getFrameIndex() - 1) || false;
 }
 
+let title_anim: AnimationSequencer | null = null;
+let title_alpha = {
+  title: 0,
+  sub: 0,
+  button: 0,
+};
+
+const color_myblack = vec4(20/255, 16/255, 19/255, 1);
+
 function title(dt: number): void {
+  gl.clearColor(color_myblack[0], color_myblack[1], color_myblack[2], 0);
   if (want_hof) {
     want_hof = false;
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
@@ -81,8 +100,19 @@ function title(dt: number): void {
     hide: true,
   });
 
+  if (title_anim) {
+    if (keyDown(KEYS.SHIFT) || mouseDownAnywhere()) {
+      dt = 100000;
+    }
+    if (!title_anim.update(dt)) {
+      title_anim = null;
+    } else {
+      eatAllInput();
+    }
+  }
+
   let y = 40;
-  if (netSubs()) {
+  if (netSubs() && false) {
     let next_y = account_ui.showLogin({
       x: 10,
       y: 10,
@@ -98,87 +128,179 @@ function title(dt: number): void {
     y = max(next_y + 2, y);
   }
 
-  let x = 10;
-  print(null, x, y, Z.UI, 'Crawler Demo');
-  x += 10;
+  let W = game_width;
+  let H = game_height;
+
+  for (let ii = 0; ii < parallax.length && false; ++ii) {
+    let img = parallax[ii];
+    let offs = engine.getFrameTimestamp() * (1 + ii * 0.1) * 0.000003;
+    let uvs = img.uvs;
+    let aspect = img.getAspect();
+    let vh = W / aspect;
+    let v1 = H / vh;
+    img.draw({
+      x: 0,
+      y: 0,
+      z: 0.1 + ii * 0.1,
+      w: W,
+      h: H,
+      uvs: [0, offs, uvs[2], v1 * uvs[3] + offs],
+    });
+  }
+
+  let title_w = 260;
+  let title_h = 132;
+  sprite_title.draw({
+    x: floor(W - title_w)/2,
+    y: 20,
+    w: title_w,
+    h: title_h,
+    color: [1,1,1,title_alpha.title],
+  });
+
+  let button_height = uiButtonHeight();
+  let text_height = uiTextHeight();
+  y = game_height - button_height * 5 - text_height * 3 - 16;
+  let font = uiGetFont();
+
+  font.draw({
+    color: 0x6d758dff,
+    alpha: title_alpha.sub,
+    x: 0, y, w: game_width, align: ALIGN.HCENTER,
+    text: 'By Jimb Esser, Siena Merlin Moraff,',
+  });
+  y += text_height + 2;
+  font.draw({
+    color: 0x6d758dff,
+    alpha: title_alpha.sub,
+    x: 0, y, w: game_width, align: ALIGN.HCENTER,
+    text: 'Rose Evans, and Cooper Savage',
+  });
+  y += text_height + 2;
+  font.draw({
+    color: 0x6d758dff,
+    alpha: title_alpha.sub,
+    x: 0, y, w: game_width, align: ALIGN.HCENTER,
+    text: 'Monsters by Tyler Warren',
+  });
+  y += text_height + 4;
+
+  let mid_w = uiButtonWidth() * 2 + 16;
+  let x0 = floor((W - mid_w) / 2);
+  let x = x0;
   y += uiTextHeight() + 2;
-  for (let ii = 0; ii < 3; ++ii) {
-    let slot = ii + 1;
-    let manual_data = localStorageGetJSON<SavedGameData>(`savedgame_${slot}.manual`, { timestamp: 0 });
-    let auto_data = localStorageGetJSON<SavedGameData>(`savedgame_${slot}.auto`, { timestamp: 0 });
-    if (auto_data.timestamp > manual_data.timestamp) {
-      manual_data = auto_data;
-    }
-    let yy = y;
-    print(null, x, yy, Z.UI, `Slot ${slot}`);
-    yy += uiButtonHeight();
-    let key = `lg${ii}`;
-    if (buttonText({
-      x, y: yy, text: 'Load Game',
-      disabled: !hasSaveData(slot),
-      in_event_cb: fullscreenGo.bind(null, key),
-    }) || fullscreenDid(key)) {
-      crawlerPlayWantMode('recent');
-      urlhash.go(`?c=local&slot=${slot}`);
-    }
-    yy += uiButtonHeight() + 2;
-    if (manual_data.time_played) {
-      uiGetFont().draw({
+  if (title_alpha.button) {
+    let y_save = 0;
+    let y_save2 = 0;
+    for (let ii = 0; ii < 2; ++ii) {
+      let slot = ii + 1;
+      let manual_data = localStorageGetJSON<SavedGameData>(`savedgame_${slot}.manual`, { timestamp: 0 });
+      let auto_data = localStorageGetJSON<SavedGameData>(`savedgame_${slot}.auto`, { timestamp: 0 });
+      if (auto_data.timestamp > manual_data.timestamp) {
+        manual_data = auto_data;
+      }
+      let yy = y;
+      font.draw({
         x, y: yy,
+        color: 0x333941ff,
         w: uiButtonWidth(),
+        alpha: title_alpha.button,
         align: ALIGN.HCENTER,
-        text: `(${Math.ceil(manual_data.time_played/(1000*60))} mins)`
+        text: `Slot ${slot}`,
       });
-    }
-    yy += uiTextHeight() + 2;
-    key = `ng${ii}`;
-    if (buttonText({
-      x, y: yy, text: 'New Game',
-      in_event_cb: fullscreenGo.bind(null, key),
-    }) || fullscreenDid(key)) {
-      if (manual_data.timestamp) {
-        modalDialog({
-          text: 'This will overwrite your existing game.  Continue?',
-          buttons: {
-            yes: function () {
-              crawlerPlayWantNewGame();
-              urlhash.go(`?c=local&slot=${slot}`);
-            },
-            no: null,
-          }
-        });
-      } else {
-        crawlerPlayWantNewGame();
+      yy += text_height + 1;
+      let key = `lg${ii}`;
+      y_save = yy;
+      if (buttonText({
+        x, y: yy, text: 'Load Game',
+        disabled: !hasSaveData(slot),
+        in_event_cb: fullscreenGo.bind(null, key),
+        color: [1,1,1,title_alpha.button],
+      }) || fullscreenDid(key)) {
+        crawlerPlayWantMode('recent');
         urlhash.go(`?c=local&slot=${slot}`);
       }
+      yy += uiButtonHeight() + 2;
+      if (manual_data.time_played) {
+        uiGetFont().draw({
+          x, y: yy,
+          w: uiButtonWidth(),
+          align: ALIGN.HCENTER,
+          text: `(${Math.ceil(manual_data.time_played/(1000*60))} mins)`
+        });
+      }
+      yy += uiTextHeight() + 2;
+      key = `ng${ii}`;
+      if (buttonText({
+        x, y: yy, text: 'New Game',
+        in_event_cb: fullscreenGo.bind(null, key),
+        color: [1,1,1,title_alpha.button],
+      }) || fullscreenDid(key)) {
+        if (manual_data.timestamp) {
+          modalDialog({
+            text: 'This will overwrite your existing game.  Continue?',
+            buttons: {
+              yes: function () {
+                crawlerPlayWantNewGame();
+                urlhash.go(`?c=local&slot=${slot}`);
+              },
+              no: null,
+            }
+          });
+        } else {
+          crawlerPlayWantNewGame();
+          urlhash.go(`?c=local&slot=${slot}`);
+        }
+      }
+      y_save2 = yy + uiButtonHeight();
+      x += uiButtonWidth() + 16;
     }
-    x += uiButtonWidth() + 2;
-  }
-  x = 10;
 
-  y += uiButtonHeight() * 4 + 10;
-  if (buttonText({
-    x, y, text: 'Hall of Fame',
-  })) {
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    engine.setState(stateHighScores);
+    y = floor((y_save + y_save2 - uiButtonHeight()) / 2);
+    x = floor((x0 - uiButtonWidth())/2);
+    if (buttonText({
+      x, y, text: 'Hall of Fame',
+      color: [1,1,1,title_alpha.button],
+    })) {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      engine.setState(stateHighScores);
+    }
+    x = floor(game_width - ((game_width - mid_w) / 2 - uiButtonWidth())/2) - uiButtonWidth();
+
+    if (buttonText({
+      x, y, text: 'Credits',
+      color: [1,1,1,title_alpha.button],
+    })) {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      creditsGo();
+    }
   }
-  // y += uiButtonHeight() * 4 + 6;
-  // if (netSubs().loggedIn()) {
-  //   if (buttonText({
-  //     x, y, text: 'Online Test', w: uiButtonWidth() * 1.5,
-  //   })) {
-  //     urlhash.go('?c=build');
-  //   }
-  //   y += uiButtonHeight() + 2;
-  // }
+
   if (crawlerCommWant()) {
     crawlerCommStart();
   }
   ambienceTick('title');
 }
 
+let first_time = true;
 export function titleInit(dt: number): void {
+  if (first_time) {
+    title_anim = animationSequencerCreate();
+    let t = title_anim.add(0, 300, (progress) => {
+      title_alpha.title = progress;
+    });
+    // t = title_anim.add(t + 200, 1000, (progress) => {
+    //   title_alpha.desc = progress;
+    // });
+    t = title_anim.add(t + 300, 300, (progress) => {
+      title_alpha.sub = progress;
+    });
+    title_anim.add(t + 500, 300, (progress) => {
+      title_alpha.button = progress;
+    });
+  }
+  first_time = false;
+
   account_ui = account_ui || createAccountUI();
   engine.setState(title);
   title(dt);
@@ -287,7 +409,16 @@ function stateHighScores(): void {
 export function titleStartup(): void {
   crawlerCommStartup({
     lobby_state: titleInit,
-    title_func: (value: string) => `Crawler Demo | "${value}"`,
+    title_func: (value: string) => 'Snake Eyes',
     chat_ui: main.chat_ui,
+  });
+  sprite_title = spriteCreate({
+    name: 'title',
+  });
+
+  parallax = [1, 2, 3, 4, 5, 6].map((a) => {
+    return spriteCreate({
+      name: `titlebg${a}`,
+    });
   });
 }

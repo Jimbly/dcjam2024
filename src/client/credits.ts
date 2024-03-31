@@ -20,7 +20,7 @@ Thanks for playing!
 
 
 
-[c=xp]PLACEHOLDER TITLE[/c]
+[c=xp]SNAKE EYES[/c]
 [c=sanity] (c)2024 Jimb Esser, et al, All rights reserved[/c]
 
 Created in 9 days for [c=3]Dungeon Crawler Jam 2024[/c]
@@ -34,7 +34,6 @@ Created in 9 days for [c=3]Dungeon Crawler Jam 2024[/c]
 
 [c=xp]SOUND FX[/c]
 [c=sanity]Rose Evans[/c]
-Footstep sounds by [c=sanity]Alex Hamadey[/c]
 
 [c=xp]MUSIC[/c]
 [c=sanity]Cooper Savage[/c]
@@ -42,8 +41,8 @@ Footstep sounds by [c=sanity]Alex Hamadey[/c]
 [c=xp]MONSTER ART ASSETS BY[/c]
 [c=sanity]Tyler Warren[/c]
 
-[c=xp]OTHER ASSET PACKS BY[/c]
-See page on itch.io for links
+[c=xp]OTHER ASSETS BY[/c]
+Footstep sounds by [c=sanity]Alex Hamadey[/c]
 [c=sanity]GuttyKreum[/c]
 [c=sanity]ELV[/c]
 [c=sanity]finalbossblues[/c]
@@ -52,6 +51,9 @@ See page on itch.io for links
 [c=sanity]game-icons.net[/c]
 [c=sanity]Oryx[/c]
 [c=sanity]Atelier Magicae[/c]
+[c=sanity]Napoleon[/c]
+[c=sanity]Nauris[/c]
+See page on itch.io for links
 
 [c=xp]ENGINE[/c]
 [c=sanity]GLOV.js + crawler toolkit[/c]

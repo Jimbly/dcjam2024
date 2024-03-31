@@ -27,6 +27,7 @@ Credits for assets used (may not make it into final version)
 * Monster Art by Tyler Warren - https://tylerjwarren.itch.io/
 * Likely many textures from Dungeon Crawl Stone Soup - https://opengameart.org/content/dungeon-crawl-32x32-tiles-supplemental
 * Sci-Fi UI Pack - https://digital-mosaic-games.itch.io/sci-fi-ui-pack
+* Sci-Fi BGs - https://aamatniekss.itch.io/sci-fi-space-background-set/devlog/206354/new-asset-pack-scifi-space
 * cartoon explosion - https://opengameart.org/content/2d-bomb-and-explosion
 * AAP-64 palette - https://twitter.com/AdigunPolack/status/917804769405792257 - https://lospec.com/palette-list/aap-64
 * Sanity icon derived from https://game-icons.net/
@@ -37,3 +38,4 @@ Credits for assets used (may not make it into final version)
 * Footstep sounds by Alex Hamadey - https://alexhamadey.itch.io/
 * Ability icons - https://guttykreum.itch.io/the-japan-collection-icons
 * Ability icons - https://ateliermagicae.itch.io/200
+* Dice - https://opengameart.org/content/dice-1

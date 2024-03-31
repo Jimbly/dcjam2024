@@ -1,7 +1,4 @@
 TODO
-* title screen - ship & dice?
-* favicon
-* fix window title to not have | "local" in it
 * bigger/nicer bridge level
   * fullscreen F11 hint
   * need some space to learn controls before the second popup

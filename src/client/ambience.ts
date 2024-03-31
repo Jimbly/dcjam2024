@@ -81,7 +81,7 @@ export function ambienceTick(page: 'play' | 'title' | 'credits' | 'combat'): voi
   } else if (page === 'combat') {
     desired = 6;
   } else if (page === 'title') {
-    desired = active_music ? 1 : 0;
+    desired = 1; // active_music ? 1 : 0;
   } else if (page === 'credits') {
     desired = 5;
   } else {
