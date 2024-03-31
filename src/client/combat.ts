@@ -1132,6 +1132,8 @@ export function doCombat(target: Entity, dt: number): void {
     let enemy_x = enemy_x0 + ii * (enemy_w + ENEMY_PAD);
     let enemy_y = ENEMY_SPRITE_Y;
     let z = Z.ENEMY;
+    let draw_as_dead = !enemy_real.hp;
+    let scale = draw_as_dead ? 1 : (1 + abs(sin(getFrameTimestamp() * 0.001 + ii * 1.03)) * 0.05);
     let anim = combat_scene.getAttackAnim(ii);
     if (anim) {
       let p = (getFrameTimestamp() - anim.start) / ATTACK_TIME;
@@ -1142,13 +1144,13 @@ export function doCombat(target: Entity, dt: number): void {
         p = 1 - (p * 2 - 1);
       }
       if (anim.hero_idx === -1) {
-        // also grow?
         enemy_x = lerp(easeIn(p, 2), enemy_x, enemy_x - 20);
         let p2 = p * 2;
         if (p2 > 1) {
           p2 = 2 - p2;
         }
         enemy_y = lerp(easeOut(p2, 2), enemy_y, enemy_y - 40);
+        scale += easeOut(p2, 2) * 0.3;
       } else {
         let hero_pos = heroDrawPos(anim.hero_idx);
         enemy_x = lerp(easeIn(p, 2), enemy_x, hero_pos[0]);
@@ -1170,17 +1172,16 @@ export function doCombat(target: Entity, dt: number): void {
       let ent_factory = crawlerEntFactory<Entity>();
       ent = enemy_draw_ents[enttype] = ent_factory.allocate(enttype, example_ent_data);
     }
-    let draw_as_dead = !enemy_real.hp;
     let preview_as_dead = !enemy.hp;
     let alpha = draw_as_dead ? 0.25 : 1;
     temp_color[3] = alpha;
     v3set(temp_color, blink, blink, blink);
     ent.draw2D({
-      x: x_mid + ENEMY_SPRITE_H / 2,
-      y: enemy_y,
+      x: x_mid + ENEMY_SPRITE_H * scale / 2,
+      y: enemy_y - (ENEMY_SPRITE_H * (scale - 1)),
       z: z + 1 + ii * 0.1 + (draw_as_dead ? -0.5 : 0) + (enttype === 'l5boss' ? 1 : 0),
-      w: -ENEMY_SPRITE_H,
-      h: ENEMY_SPRITE_H,
+      w: -ENEMY_SPRITE_H * scale,
+      h: ENEMY_SPRITE_H * scale,
       color: temp_color,
     });
     // let aspect = sprite.getAspect();

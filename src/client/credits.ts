@@ -53,6 +53,7 @@ Footstep sounds by [c=sanity]Alex Hamadey[/c]
 [c=sanity]Atelier Magicae[/c]
 [c=sanity]Napoleon[/c]
 [c=sanity]Nauris[/c]
+[c=sanity]@IKnowKingRabbit[/c]
 See page on itch.io for links
 
 [c=xp]AI CONTENT[/c]

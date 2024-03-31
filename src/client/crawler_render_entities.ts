@@ -1,6 +1,6 @@
 import assert from 'assert';
 import { alphaDraw, opaqueDraw } from 'glov/client/draw_list';
-import { BUCKET_ALPHA, FACE_XY } from 'glov/client/dyn_geom';
+import { BUCKET_ALPHA, BUCKET_OPAQUE, FACE_XY } from 'glov/client/dyn_geom';
 import {
   getFrameDt,
   getFrameIndex,
@@ -119,6 +119,7 @@ export type DrawableSpriteOpts = {
   sprite_near?: Sprite; // assigned at load time
   sprite_hybrid?: Sprite; // assigned at load time
   scale: number;
+  do_alpha?: boolean;
   tint_colors?: [JSVec4, JSVec4, JSVec4][];
 };
 
@@ -275,7 +276,7 @@ export function drawableSpriteDrawSub(this: EntityDrawableSprite, param: EntityD
     frame,
     color,
     size: [scale * DIM * aspect, scale * DIM],
-    bucket: BUCKET_ALPHA,
+    bucket: ent.drawable_sprite_opts.do_alpha === false ? BUCKET_OPAQUE : BUCKET_ALPHA,
     facing: FACE_XY,
     vshader: crawlerRenderGetShader(ShaderType.SpriteVertex),
     shader,

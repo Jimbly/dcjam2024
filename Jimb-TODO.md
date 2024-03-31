@@ -1,9 +1,7 @@
 TODO
-* title screen
-  * add silhouette of monster flickering, and use that in Facebook share image
+* shake things when people get hit
 * lighting flicker l3 (after insanity)
   * maybe height noise thingy?
-
 * Insanity view
   * just ramp this from 0-50 throughout the 5 levels, plus sanity damage
   * party portraits to change to monsters - silhouettes
@@ -52,13 +50,7 @@ Polish
 * tooltip on Sanity and XP displays, explaining mechanics
 * scroll area for combat log when needed
 * change wander to only wander between 2 spaces, start and random neighbor, then can enable on all
-* darken read notes on the minimap
-* animate monsters
-* shake things when people get hit
-* long-press on ability is not focusing and showing preview
-  * also, make sure it all works well with controller
 * scrolling starfield
-* physopolis cat
 * in forest: put axe on ground on other side of blocker
 
 Post-game fixes / polish
