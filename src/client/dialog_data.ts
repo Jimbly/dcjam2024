@@ -1,6 +1,6 @@
 /* eslint prefer-template:off, max-len:off */
 import { fontStyle } from 'glov/client/font';
-import { PanelParam, sprites as ui_sprites } from 'glov/client/ui';
+import { PanelParam, playUISound, sprites as ui_sprites } from 'glov/client/ui';
 import { dialogIconsRegister } from '../common/crawler_events';
 import {
   CrawlerScriptAPI,
@@ -248,6 +248,7 @@ dialogRegister({
     if (!onetimeEvent()) {
       return;
     }
+    playUISound('sanity_restore');
     sanityDamage(-delta, -delta, 1000, true);
     dialogPush({
       name: '',

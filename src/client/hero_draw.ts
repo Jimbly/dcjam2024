@@ -29,6 +29,7 @@ import {
   combatDrawFloaters,
   combatGetStates,
   combatIsPlayerTurn,
+  combatPreviewAlpha,
   combatReadyForEnemyTurn,
   combatSetPreviewState,
   showAbilityTooltip,
@@ -229,6 +230,8 @@ const placeholder_hero: Hero = {
 
 let any_level_up_available: [number, number] | null = null;
 
+let temp_color = vec4(1,1,1,1);
+
 export function heroDrawPos(hero_idx: number): [number, number] {
   return [0 + PORTRAIT_X + PORTRAIT_SIZE / 2, hero_idx * HERO_H + PORTRAIT_Y + PORTRAIT_SIZE/2];
 }
@@ -305,12 +308,25 @@ export function drawHero(idx: number, x0: number, y0: number, z: number, hero_de
       frame: FRAME_STAR,
     });
   }
+  let predicted_hp_orig = 0;
+  if (class_tier) {
+    if (preview_hero && combat_hero) {
+      if (preview_hero.hp !== combat_hero.hp) {
+        predicted_hp_orig = combat_hero.hp;
+      }
+    }
+  }
   if (hp) {
-    let hp_w = max(1, floor(HP_W * hp));
+    let bar_hp = hp;
+    if (predicted_hp_orig) {
+      bar_hp = predicted_hp_orig / class_tier!.hp;
+    }
+    let hp_w = max(1, floor(HP_W * bar_hp));
+    let hp_y = y0 + HP_Y - HP_BIAS;
     if (hp_w >= 5) {
       sprite_icons.draw({
         x: x0 + HP_X,
-        y: y0 + HP_Y - HP_BIAS,
+        y: hp_y,
         z,
         w: 5,
         h: 5,
@@ -319,7 +335,7 @@ export function drawHero(idx: number, x0: number, y0: number, z: number, hero_de
       if (hp_w > 5) {
         sprite_icons.draw({
           x: x0 + HP_X + 5,
-          y: y0 + HP_Y - HP_BIAS,
+          y: hp_y,
           z,
           w: hp_w - 5,
           h: 5,
@@ -330,16 +346,35 @@ export function drawHero(idx: number, x0: number, y0: number, z: number, hero_de
       let uvs = sprite_icons.uidata.rects[FRAME_HEALTHBAR_LEFT];
       sprite_icons.draw({
         x: x0 + HP_X,
-        y: y0 + HP_Y - HP_BIAS,
+        y: hp_y,
         z,
         w: hp_w,
         h: 5,
         uvs: [uvs[0], uvs[1], uvs[0] + (uvs[2] - uvs[0]) * hp_w/5, uvs[3]],
       });
     }
+    if (predicted_hp_orig) {
+      let second_x0 = x0 + hp_w;
+      hp_w = max(1, floor(HP_W * hp));
+      temp_color[3] = combatPreviewAlpha();
+      sprite_icons.draw({
+        x: second_x0 + HP_X,
+        y: hp_y,
+        z,
+        w: x0 + hp_w - second_x0,
+        h: 5,
+        frame: FRAME_HEALTHBAR_RIGHT,
+        color: temp_color,
+      });
+    }
   }
   z++;
   if (class_tier) {
+    let text = dead && !hero_def.left ? 'DEAD' :
+      preview_hero ? `${preview_hero.hp} / ${class_tier!.hp}` : `${class_tier!.hp}`;
+    if (predicted_hp_orig) {
+      text = `${predicted_hp_orig}→${preview_hero!.hp} / ${class_tier!.hp}`;
+    }
     font_tiny.draw({
       style: style_hp,
       x: x0 + HP_X,
@@ -347,8 +382,7 @@ export function drawHero(idx: number, x0: number, y0: number, z: number, hero_de
       z,
       w: HP_W,
       align: ALIGN.HCENTER,
-      text: dead && !hero_def.left ? 'DEAD' :
-        preview_hero ? `${preview_hero.hp} / ${class_tier!.hp}` : `${class_tier!.hp}`,
+      text,
     });
   }
 

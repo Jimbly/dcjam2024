@@ -5,7 +5,6 @@ TODO
 * fill in empty space in UI with some noise at least
 * lighting flicker l3 (after insanity)
   * maybe height noise thingy?
-* preview player healing just like monster damage
 
 * Insanity view
   * just ramp this from 0-50 throughout the 5 levels, plus sanity damage

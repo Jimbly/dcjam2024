@@ -54,6 +54,7 @@ export const SOUND_DATA: Partial<Record<string, UISoundID | string | string[] | 
   victory2: { file: 'victory2', volume: 1 },
 
   door_scifi: { file: 'door_scifi', volume: 1 },
+  sanity_restore: { file: 'sanity_restore', volume: 1 },
 
   // Game sounds - TODO
   ability_back2: { file: 'ability_back2', volume: 1 },
@@ -63,6 +64,7 @@ export const SOUND_DATA: Partial<Record<string, UISoundID | string | string[] | 
   monster_death: { file: 'monster_death', volume: 1 }, // reused monster attack, okish
 
   heartbeat: { file: 'heartbeat', volume: 1, opts: { loop: true } }, // fine
+
 
   footstep: [{
     file: 'footstep/footstep1',
