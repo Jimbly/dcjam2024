@@ -1,7 +1,6 @@
 TODO
 * title screen
   * add silhouette of monster flickering, and use that in Facebook share image
-* adjust fog colors and settings of all levels - backdrops too
 * lighting flicker l3 (after insanity)
   * maybe height noise thingy?
 

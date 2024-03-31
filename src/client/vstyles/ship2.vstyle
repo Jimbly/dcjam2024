@@ -1,11 +1,11 @@
 ---
-fog_color: '#191c0e'
-background_color: '#191c0e'
+fog_color: '#242234'
+background_color: '#242234'
 background_img: space1
 fog_params:
-- 0.003
-- 0.0005
-- 800.0
+- 0.0019
+- 0.0019
+- 270.0
 cell_swaps:
   open: ship2_open
 wall_swaps:

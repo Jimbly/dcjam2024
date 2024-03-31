@@ -1,11 +1,11 @@
 ---
-fog_color: '#191c0e'
-background_color: '#191c0e'
+fog_color: '#249fde'
+background_color: '#000000'
 background_img: backdrop_forest
 fog_params:
-- 0.003
-- 0.0005
-- 800.0
+- 0.001
+- 0.001
+- 400.0
 cell_swaps:
   open: forest_floor1
   floorswitch: forest_floor1
