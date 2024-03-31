@@ -292,7 +292,7 @@ export const ABILITIES: TSMap<AbilityDef> = {
       base_amount: 4,
     }, {
       type: AttackType.SHIELD_SELF,
-      base_amount: 4,
+      base_amount: 3,
     }],
     icon: 'ability_heal_other_shield_self',
   },

@@ -84,6 +84,7 @@ crawlerScriptRegisterEvent({
         name: '',
         text: JOIN_MSGS[tail_idx-1].replace('NAME', tail.name),
         transient: true,
+        transient_long: true,
       });
     }
   },

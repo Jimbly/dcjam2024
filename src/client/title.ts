@@ -86,6 +86,13 @@ let title_alpha = {
   button: 0,
 };
 
+const style_sub = fontStyle(null, {
+  color: 0x6d758dff,
+  glow_color: 0x141013ff,
+  glow_inner: 1.5,
+  glow_outer: 2.5,
+});
+
 const color_myblack = vec4(20/255, 16/255, 19/255, 1);
 
 const FOR_LOGO = false;
@@ -191,24 +198,24 @@ function title(dt: number): void {
     title_alpha.sub = 0;
   }
   font.draw({
-    color: 0x6d758dff,
+    style: style_sub,
     alpha: title_alpha.sub,
     x: 0, y, w: game_width, align: ALIGN.HCENTER,
     text: 'By Jimb Esser, Siena Merlin Moraff,',
   });
   y += text_height + 2;
   font.draw({
-    color: 0x6d758dff,
+    style: style_sub,
     alpha: title_alpha.sub,
     x: 0, y, w: game_width, align: ALIGN.HCENTER,
     text: 'Rose Evans, and Cooper Savage',
   });
   y += text_height + 2;
   font.draw({
-    color: 0x6d758dff,
+    style: style_sub,
     alpha: title_alpha.sub,
     x: 0, y, w: game_width, align: ALIGN.HCENTER,
-    text: 'Monsters by Tyler Warren',
+    text: 'Monster Art from Tyler Warren',
   });
   y += text_height + 4;
 
@@ -254,7 +261,8 @@ function title(dt: number): void {
           x, y: yy,
           w: uiButtonWidth(),
           align: ALIGN.HCENTER,
-          text: `(${Math.ceil(manual_data.time_played/(1000*60))} mins)`
+          text: engine.defines.SECONDS ? `${Math.ceil(manual_data.time_played/1000)}` :
+            `(${Math.ceil(manual_data.time_played/(1000*60))} mins)`
         });
       }
       yy += uiTextHeight() + 2;

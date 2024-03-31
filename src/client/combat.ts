@@ -1133,7 +1133,7 @@ export function doCombat(target: Entity, dt: number): void {
     let enemy_y = ENEMY_SPRITE_Y;
     let z = Z.ENEMY;
     let draw_as_dead = !enemy_real.hp;
-    let scale = draw_as_dead ? 1 : (1 + abs(sin(getFrameTimestamp() * 0.001 + ii * 1.03)) * 0.05);
+    let scale = draw_as_dead ? 1 : (1 + abs(sin(getFrameTimestamp() * 0.001 + ii * 1.03)) * 0.05 - 0.05);
     let anim = combat_scene.getAttackAnim(ii);
     if (anim) {
       let p = (getFrameTimestamp() - anim.start) / ATTACK_TIME;

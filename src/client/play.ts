@@ -383,6 +383,7 @@ function pauseMenu(in_combat: boolean): void {
   items.push({
     name: (isOnline() || autoSavedHere()) ? 'Exit to Title' : 'Exit without saving',
     cb: function () {
+      crawlerSavePlayTime('manual');
       urlhash.go('');
     },
   });
@@ -844,7 +845,7 @@ const style_xp = fontStyle(null, {
 let xp_time = 0;
 let xp_msg = '';
 markdownSetColorStyle('xp', style_xp);
-function doXP(): void {
+function doXP(map_active: boolean): void {
   let me = myEnt();
   let { xp } = me.data;
   if (xp === undefined) {
@@ -852,7 +853,7 @@ function doXP(): void {
     return;
   }
 
-  let z = Z.UI;
+  let z = map_active ? Z.MAP + 5 : Z.UI;
   spritesheet_icons.sprite.draw({
     x: XP_X,
     y: XP_Y,
@@ -1190,7 +1191,7 @@ function playCrawl(): void {
 
   if (!build_mode && !isBootstrap()) {
     doSanity();
-    doXP();
+    doXP(frame_map_view);
   }
 
   if (frame_combat) {
@@ -1237,7 +1238,7 @@ function playCrawl(): void {
   button_x0 = MOVE_BUTTONS_X0;
   button_y0 = MOVE_BUTTONS_Y0;
 
-  if (keyUpEdge(KEYS.B)) {
+  if (engine.DEBUG && keyUpEdge(KEYS.B)) {
     crawlerBuildModeActivate(!build_mode);
     if (crawlerCommWant()) {
       return profilerStopFunc();
@@ -1290,7 +1291,9 @@ function playCrawl(): void {
     }
     bamfReset();
   }
-  if (!overlay_menu_up && !frame_combat && (keyDownEdge(KEYS.M) || padButtonUpEdge(PAD.BACK))) {
+  if (!overlay_menu_up && !frame_combat && (keyDownEdge(KEYS.M) || padButtonUpEdge(PAD.BACK) ||
+    padButtonUpEdge(PAD.Y))
+  ) {
     playUISound('button_click');
     mapViewToggle();
   }

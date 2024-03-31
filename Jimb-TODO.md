@@ -53,6 +53,7 @@ Polish
 * in forest: put axe on ground on other side of blocker
 
 Post-game fixes / polish
+* pathfinding does not use unlocked doors
 * bias features for simple billboard details
 * reorganize all of the example entities to use a spritesheet
 * add support for multiple fonts with different heights to dialog system and/or markdown - handwriting font would be cool
