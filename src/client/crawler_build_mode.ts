@@ -1737,7 +1737,7 @@ export function crawlerBuildModeUI(frame: Box & { map_view: boolean }): void {
     '[+/-] - Change floor',
     '[F1] - Toggle this help',
     '[F2] - Toggle freecam',
-  ] : ['BUILD MODE (F1 Help)']).forEach((text) => {
+  ] : [''/*JAM'BUILD MODE (F1 Help)'*/]).forEach((text) => {
     let fh = uiTextHeight() * 0.5;
     font.draw({
       x, y, z,

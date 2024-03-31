@@ -1,10 +1,11 @@
 TODO
-* bigger/nicer bridge level
-  * fullscreen F11 hint
-  * need some space to learn controls before the second popup
-  * need some point of interest so you know which way is the front (windows on just one side?)
+* title screen
+  * add silhouette of monster flickering, and use that in Facebook share image
+* adjust fog colors and settings of all levels - backdrops too
+* fill in empty space in UI with some noise at least
 * lighting flicker l3 (after insanity)
   * maybe height noise thingy?
+* preview player healing just like monster damage
 
 * Insanity view
   * just ramp this from 0-50 throughout the 5 levels, plus sanity damage
@@ -14,12 +15,13 @@ TODO
   * change fog colors and backdrop
   * outlines of tentacles in space backdrop
 
+* Itch page
+  * 3-5 screenshots
 
 Watching JK
 * maybe force spending all XP the first time you're in solitude
 * forest: add a "maybe we should go back and level up?" dialog hint
 * add shield reducing split damage to combat log (need scroll window!)
-* preview player healing just like monster damage
 
 Balance Plan: conservation of XP
           level + tier that should get 1-2 deaths in some combats (2/5?) and 2-3 deaths on boss
@@ -49,13 +51,8 @@ Playtest Feedback
 
 Polish
 * controller issue: don't see initial hint in combat
-* adjust fog colors and settings of all levels - backdrops too
-* fill in empty space in UI with some noise at least
 * use wall variations throughout levels
-* add unlockable doors to get back to the Solitude entrances
-* more player faces
 * tooltip on Sanity and XP displays, explaining mechanics
-* add sanity icon to spritesheet and use in dialogs
 * scroll area for combat log when needed
 * change wander to only wander between 2 spaces, start and random neighbor, then can enable on all
 * darken read notes on the minimap

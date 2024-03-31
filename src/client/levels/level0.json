@@ -2455,7 +2455,7 @@
       "walls": [
         "open",
         "open",
-        "solid",
+        "ship1_window1",
         "door"
       ]
     },
@@ -2599,7 +2599,7 @@
       "walls": [
         "open",
         "open",
-        "solid",
+        "ship1_window1",
         "open"
       ]
     },
@@ -2743,7 +2743,16 @@
       "walls": [
         "open",
         "open",
-        "solid",
+        "ship1_window1",
+        "open"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "door",
+        "open",
+        "open",
         "open"
       ]
     },
@@ -2752,16 +2761,7 @@
       "walls": [
         "open",
         "open",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "open",
-      "walls": [
-        "open",
-        "open",
-        "open",
+        "door",
         "solid"
       ]
     },
@@ -2886,8 +2886,17 @@
       "id": "open",
       "walls": [
         "open",
+        "ship1_solid3",
         "solid",
+        "open"
+      ]
+    },
+    {
+      "id": "open",
+      "walls": [
+        "ship1_solid1",
         "solid",
+        "open",
         "open"
       ]
     },
@@ -2896,16 +2905,7 @@
       "walls": [
         "open",
         "solid",
-        "open",
-        "open"
-      ]
-    },
-    {
-      "id": "open",
-      "walls": [
-        "open",
         "solid",
-        "open",
         "open"
       ]
     },
@@ -3020,33 +3020,9 @@
   ],
   "initial_entities": [
     {
-      "type": "enemy1",
+      "type": "l3damage",
       "pos": [
         2,
-        19,
-        3
-      ]
-    },
-    {
-      "type": "enemy2",
-      "pos": [
-        3,
-        19,
-        3
-      ]
-    },
-    {
-      "type": "enemy3",
-      "pos": [
-        4,
-        19,
-        3
-      ]
-    },
-    {
-      "type": "enemy0",
-      "pos": [
-        1,
         19,
         3
       ]

@@ -88,6 +88,8 @@ let title_alpha = {
 
 const color_myblack = vec4(20/255, 16/255, 19/255, 1);
 
+const FOR_LOGO = false;
+
 function title(dt: number): void {
   gl.clearColor(color_myblack[0], color_myblack[1], color_myblack[2], 0);
   if (want_hof) {
@@ -131,21 +133,23 @@ function title(dt: number): void {
   let W = game_width;
   let H = game_height;
 
-  for (let ii = 0; ii < parallax.length; ++ii) {
-    let img = parallax[ii];
-    let offs = engine.getFrameTimestamp() * (1 + ii * 0.1) * 0.000003;
-    let uvs = img.uvs;
-    let aspect = img.getAspect();
-    let vh = W / aspect;
-    let v1 = H / vh;
-    img.draw({
-      x: 0,
-      y: 0,
-      z: 0.1 + ii * 0.1,
-      w: W,
-      h: H,
-      uvs: [0, offs, uvs[2], v1 * uvs[3] + offs],
-    });
+  if (!FOR_LOGO) {
+    for (let ii = 0; ii < parallax.length; ++ii) {
+      let img = parallax[ii];
+      let offs = engine.getFrameTimestamp() * (1 + ii * 0.1) * 0.000003;
+      let uvs = img.uvs;
+      let aspect = img.getAspect();
+      let vh = W / aspect;
+      let v1 = H / vh;
+      img.draw({
+        x: 0,
+        y: 0,
+        z: 0.1 + ii * 0.1,
+        w: W,
+        h: H,
+        uvs: [0, offs, uvs[2], v1 * uvs[3] + offs],
+      });
+    }
   }
 
   let title_w = 260;
@@ -163,6 +167,9 @@ function title(dt: number): void {
   y = game_height - button_height * 5 - text_height * 3 - 16;
   let font = uiGetFont();
 
+  if (FOR_LOGO) {
+    title_alpha.sub = 0;
+  }
   font.draw({
     color: 0x6d758dff,
     alpha: title_alpha.sub,
@@ -223,6 +230,7 @@ function title(dt: number): void {
       yy += uiButtonHeight() + 2;
       if (manual_data.time_played) {
         uiGetFont().draw({
+          alpha: title_alpha.button,
           x, y: yy,
           w: uiButtonWidth(),
           align: ALIGN.HCENTER,
