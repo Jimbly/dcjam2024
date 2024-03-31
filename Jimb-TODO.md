@@ -1,5 +1,4 @@
 TODO
-* shake things when people get hit
 * lighting flicker l3 (after insanity)
   * maybe height noise thingy?
 * Insanity view

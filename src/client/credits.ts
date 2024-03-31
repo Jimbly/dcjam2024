@@ -9,7 +9,7 @@ import * as urlhash from 'glov/client/urlhash';
 import { vec4 } from 'glov/common/vmath';
 import { ambienceTick } from './ambience';
 import { game_height, game_width } from './globals';
-import { titleInit } from './title';
+import { drawParallax, titleInit } from './title';
 
 const { round } = Math;
 
@@ -89,6 +89,8 @@ function exit(): void {
 }
 function doCredits(): void {
   gl.clearColor(color_myblack[0], color_myblack[1], color_myblack[2], 0);
+
+  drawParallax();
 
   if (mouseDownAnywhere()) {
     clicked = true;

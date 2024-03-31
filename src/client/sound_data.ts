@@ -10,7 +10,7 @@ export const SOUND_DATA: Partial<Record<string, UISoundID | string | string[] | 
   msg_out: 'msg_out',
 
   // UI sounds
-  button_click: 'button_click', // menus/general/etc
+  button_click: { file: 'button_click', volume: 0.5 }, // menus/general/etc
   button_click2: { file: 'button_click2', volume: 0.125 }, // movement controls
   rollover: { file: 'rollover', volume: 0.25 },
 

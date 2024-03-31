@@ -1,5 +1,4 @@
 import { AnimationSequencer, animationSequencerCreate } from 'glov/client/animation';
-import * as camera2d from 'glov/client/camera2d';
 import * as engine from 'glov/client/engine';
 import { ALIGN, fontStyle, fontStyleColored } from 'glov/client/font';
 import { fscreenAvailable, fscreenEnter } from 'glov/client/fscreen';
@@ -91,6 +90,27 @@ const color_myblack = vec4(20/255, 16/255, 19/255, 1);
 
 const FOR_LOGO = false;
 
+export function drawParallax(): void {
+  let W = game_width;
+  let H = game_height;
+  for (let ii = 0; ii < parallax.length; ++ii) {
+    let img = parallax[ii];
+    let offs = engine.getFrameTimestamp() * (1 + ii * 0.1) * 0.000003;
+    let uvs = img.uvs;
+    let aspect = img.getAspect();
+    let vh = W / aspect;
+    let v1 = H / vh;
+    img.draw({
+      x: 0,
+      y: 0,
+      z: 0.1 + ii * 0.1,
+      w: W,
+      h: H,
+      uvs: [0, offs, uvs[2], v1 * uvs[3] + offs],
+    });
+  }
+}
+
 function title(dt: number): void {
   gl.clearColor(color_myblack[0], color_myblack[1], color_myblack[2], 0);
   if (want_hof) {
@@ -132,25 +152,9 @@ function title(dt: number): void {
   }
 
   let W = game_width;
-  let H = game_height;
 
   if (!FOR_LOGO) {
-    for (let ii = 0; ii < parallax.length; ++ii) {
-      let img = parallax[ii];
-      let offs = engine.getFrameTimestamp() * (1 + ii * 0.1) * 0.000003;
-      let uvs = img.uvs;
-      let aspect = img.getAspect();
-      let vh = W / aspect;
-      let v1 = H / vh;
-      img.draw({
-        x: 0,
-        y: 0,
-        z: 0.1 + ii * 0.1,
-        w: W,
-        h: H,
-        uvs: [0, offs, uvs[2], v1 * uvs[3] + offs],
-      });
-    }
+    drawParallax();
   }
 
   let title_w = 260;
@@ -334,15 +338,22 @@ const SCORE_COLUMNS = [
   // widths are just proportional, scaled relative to `width` passed in
   { name: '', width: 12, align: ALIGN.HFIT | ALIGN.HRIGHT | ALIGN.VCENTER },
   { name: 'Name', width: 60, align: ALIGN.HFIT | ALIGN.VCENTER },
-  { name: 'Floor', width: 32 },
+  { name: 'Floor', width: 20 },
   { name: 'Discoveries', width: 32 },
   { name: 'Max Sanity Loss', width: 32 },
+  { name: 'Playtime', width: 24, align: ALIGN.HRIGHT },
 ];
 const style_score = fontStyleColored(null, 0xFFFFFFff);
 const style_me = fontStyleColored(null, 0xffd541ff);
-const style_header = fontStyleColored(null, 0xFFFFFFff);
+const style_header = fontStyleColored(null, 0xb9bffbff);
+function timeformat(seconds: number): string {
+  let ss = seconds % 60;
+  let mm = (seconds - ss) / 60;
+  return `${mm}:${ss < 10 ? '0' : ''}${ss} `;
+}
 function myScoreToRow(row: unknown[], score: Score): void {
-  row.push(score.victory ? 'WIN' : `${min(score.max_floor, 5)}/5`, score.xp, score.sanity * 2);
+  row.push(score.victory ? 'WIN' : `${min(score.max_floor, 5)}/5`, score.xp, score.sanity * 2,
+    timeformat(score.seconds));
 }
 const style_title = fontStyle(null, {
   color: 0x249fdeff,
@@ -357,7 +368,8 @@ const level_idx = 0;
 function stateHighScores(): void {
   let W = game_width;
   let H = game_height;
-  camera2d.setAspectFixed(W, H);
+  // camera2d.setAspectFixed(W, H);
+  drawParallax();
   let font = uiGetFont();
 
   let y = 8;

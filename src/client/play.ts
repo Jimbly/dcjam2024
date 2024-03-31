@@ -1612,7 +1612,7 @@ export function playStartup(font_tiny_in: Font): void {
     score_key: 'DCJ24',
     ls_key: 'dcj24',
     asc: false,
-    rel: 8,
+    rel: 16,
     num_names: 3,
     histogram: false,
   });

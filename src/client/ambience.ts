@@ -76,7 +76,7 @@ export function ambienceTick(page: 'play' | 'title' | 'credits' | 'combat'): voi
   }
 
   let desired = 0;
-  if (buildModeActive() || !settings.volume_music || force_no_music) {
+  if (buildModeActive() || !settings.volume_music || force_no_music || hb_sound) {
     desired = 0;
   } else if (page === 'combat') {
     desired = 6;
