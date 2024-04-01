@@ -63,6 +63,23 @@ Post-game fixes / polish
 * Simple way to do dialog as pure text data, and then just add code callbacks the get ran beyond the go-to-dialog
 
 People's games to check out:
-* YouDoYouBuddy - slay the spire
+* YouDoYouBuddy - slay the spire - https://itch.io/jam/dcjam2024/rate/2617392
 * Yomigael - https://surt-r.itch.io/dragon-ruins
-* Cuprite - The Reaper of the Depths
+* Cuprite - The Reaper of the Depths - https://cupritegames.itch.io/the-reaper-of-the-depths
+* SteamPunkProgrammer - Nether Whisper
+* Batisdark & co - https://apoly.itch.io/tomb-of-aeon
+* tjm - Recluse and the Relic
+* David York
+* Captain Coder - Cosmic Encounter - https://captaincoder.itch.io/cosmic-encounter
+* Disastrophism - https://disastrophism.itch.io/broccoli-pentad
+* CallMeAdam - Bleak Harbor - https://adamstrange.itch.io/bleakharbor
+* starside - https://climberjosh.itch.io/dungeonruga
+* bonebrah - https://realmsruins.itch.io/escaping-the-cosmic-abyss
+* Frib - https://frib.itch.io/the-monstrous-maw-and-the-veiled-cube
+* Rubikow - https://rubikow.itch.io/those-without-names
+* MagnusFurcifer
+* Lejund - https://itch.io/jam/dcjam2024/rate/2616761
+* tiny/simple - https://urbandrei.itch.io/basic-dungeon-crawler
+* mass - https://steamknight.itch.io/void-protocol
+Stretch
+* JD Nation - https://jd-nation.itch.io/the-endless-adventure-the-cursed-caverns
