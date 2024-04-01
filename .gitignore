@@ -13,3 +13,5 @@ Bfxr
 *.00?
 config/*.json
 .DS_Store
+src/textures/spritesheets/enemies/*.png
+src/textures/spritesheets/faces/*.png
