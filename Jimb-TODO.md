@@ -53,6 +53,7 @@ Polish
 * in forest: put axe on ground on other side of blocker
 
 Post-game fixes / polish
+* if sanity < 50% -> 'Hey, let's rest here a while before leavin, 'kay?
 * pathfinding does not use unlocked doors
 * bias features for simple billboard details
 * reorganize all of the example entities to use a spritesheet
@@ -61,6 +62,7 @@ Post-game fixes / polish
 * origin in entdef depends heavily on aspect ratio of image, but it shouldn't?
 * Nilo "face wilts" dialog is not markdownTruncating correctly
 * Simple way to do dialog as pure text data, and then just add code callbacks the get ran beyond the go-to-dialog
+* controller alternate mode to just do instant step and lerping, feels so good in other games and would work perfect in the editor
 
 People's games to check out:
 * YouDoYouBuddy - slay the spire - https://itch.io/jam/dcjam2024/rate/2617392
