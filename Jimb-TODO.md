@@ -53,7 +53,6 @@ Polish
 * in forest: put axe on ground on other side of blocker
 
 Post-game fixes / polish
-* if sanity < 50% -> 'Hey, let's rest here a while before leavin, 'kay?
 * pathfinding does not use unlocked doors
 * bias features for simple billboard details
 * reorganize all of the example entities to use a spritesheet

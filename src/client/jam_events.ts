@@ -54,9 +54,14 @@ crawlerScriptRegisterEvent({
           ' not to disturb them.'
         ).replace('NAME', `[c=3]${events_done[key]}[/c]`));
       }
-    } else if (last_solitude !== is_solitude) {
-      last_solitude = is_solitude;
-      //autosave();
+    } else {
+      if (myEnt().data.sanity_max - myEnt().data.sanity >= 20) {
+        dialog('party', 'We should rest before leaving here.');
+      }
+      if (last_solitude !== is_solitude) {
+        last_solitude = is_solitude;
+        //autosave();
+      }
     }
     autosave();
 
