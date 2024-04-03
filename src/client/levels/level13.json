@@ -1863,7 +1863,7 @@
         "open",
         "open",
         "solid",
-        "ship3_solid5"
+        "ship3_pipe_horiz"
       ]
     },
     {
@@ -1872,12 +1872,12 @@
         "open",
         "open",
         "open",
-        "ship3_solid5"
+        "ship3_pipe_horiz"
       ],
       "events": [
         {
           "id": "dialog",
-          "param": "terminal LOG 71.00: The ship is changing.  I swear there was a door here somewhere yesterday."
+          "param": "terminal LOG 71.00: The ship is changing.  I swear this door was not here yesterday."
         }
       ]
     },
@@ -1887,7 +1887,7 @@
         "solid",
         "open",
         "open",
-        "secret_door"
+        "ship3_door3"
       ]
     },
     {
