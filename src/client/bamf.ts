@@ -4,7 +4,15 @@ import { getFrameTimestamp } from 'glov/client/engine';
 import { ALIGN, fontStyle } from 'glov/client/font';
 import { inputClick } from 'glov/client/input';
 import { markdownAuto } from 'glov/client/markdown';
-import { buttonText, drawRect, panel, playUISound, uiButtonHeight } from 'glov/client/ui';
+import {
+  buttonText,
+  drawRect,
+  panel,
+  playUISound,
+  suppressNewDOMElemWarnings,
+  uiButtonHeight,
+} from 'glov/client/ui';
+import { easeOut } from 'glov/common/util';
 import { showAbilityTooltip } from './combat';
 import { crawlerGameState } from './crawler_play';
 import { Hero } from './entity_demo_client';
@@ -105,6 +113,7 @@ let bamf_state: {
   summons: [string, string];
   replacements: [Hero, Hero];
   start: number;
+  played_upgrade_sound: boolean;
 } | null = null;
 
 const placeholder_hero = { dead: true, tier: 0 } as Hero;
@@ -162,7 +171,8 @@ export function bamfCheck(): void {
           line: randomLine(hero.gender),
           summons: s,
           replacements: [h1, h2],
-          start: getFrameTimestamp(),
+          start: 0,
+          played_upgrade_sound: false,
         };
       }
       break;
@@ -220,15 +230,40 @@ export function bamfTick(): boolean {
   let y = y0 + PAD;
 
   assert(bamf_state);
+  bamf_state.start = bamf_state.start || getFrameTimestamp();
   let { hero, start } = bamf_state;
   let dt = getFrameTimestamp() - start;
 
+
+  let upgrade_state = '';
+  if (bamf_state.replacements[0].tier > hero.tier) {
+    if (bamf_state.replacements[0].tier === 2) {
+      upgrade_state = '[c=xp]MAX TIER[img=star][img=star][/c]';
+    } else {
+      upgrade_state = '[c=xp]TIER[img=star] UP[/c]';
+    }
+  }
+
   let alpha_death = 1;
   let alpha_choices = 0;
+  let alpha_upgrade_state = 0;
   if (dt < 500) {
     alpha_death = dt/500;
   } else {
-    alpha_choices = min(1, (dt - 500) / 500);
+    if (upgrade_state) {
+      if (dt < 1300) {
+        alpha_upgrade_state = min(1, (dt - 500) / 800);
+        if (!bamf_state.played_upgrade_sound) {
+          playUISound('xp_gain');
+          bamf_state.played_upgrade_sound = true;
+        }
+      }
+      if (dt > 1000) {
+        alpha_choices = min(1, (dt - 1000) / 500);
+      }
+    } else {
+      alpha_choices = min(1, (dt - 500) / 500);
+    }
   }
 
   //y += 24;
@@ -258,15 +293,30 @@ Rumor has it that deep within this ruin lie answers to questions about the meani
   }
 
   let picked = -1;
+  y = 102;
+
+  if (alpha_upgrade_state) {
+    suppressNewDOMElemWarnings();
+    markdownAuto({
+      x: x - 100,
+      y,
+      z: z + 10,
+      w: w + 200,
+      h: y0 + h - y - PAD,
+      align: ALIGN.HVCENTER,
+      text_height: 16 + alpha_upgrade_state * 30,
+      text: upgrade_state,
+      alpha: easeOut(1 - alpha_upgrade_state, 2),
+    });
+  }
+
   if (alpha_choices) {
-    y = 102;
     y += markdownAuto({
       font_style: style_label,
       x, y, z, w,
       align: ALIGN.HCENTER | ALIGN.HWRAP,
       text: 'You activate the [c=2]Bamf[/c] device and call in...' +
-        (bamf_state.replacements[0].tier === 2 ? '\n([c=xp]MAX TIER[img=star][img=star][/c])' :
-        bamf_state.replacements[0].tier > hero.tier ? '\n([c=xp]TIER[img=star] UP[/c])' : ''),
+        (upgrade_state ? `\n(${upgrade_state})` : ''),
       alpha: min(alpha_choices, hero === placeholder_hero ? 0 : 1),
     }).h + PAD;
 
