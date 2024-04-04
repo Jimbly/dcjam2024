@@ -9,13 +9,9 @@ TODO
   * change fog colors and backdrop
   * outlines of tentacles in space backdrop
 
-* Itch page
-  * 3-5 screenshots
-
 Watching JK
 * maybe force spending all XP the first time you're in solitude
 * forest: add a "maybe we should go back and level up?" dialog hint
-* add shield reducing split damage to combat log (need scroll window!)
 
 Balance Plan: conservation of XP
           level + tier that should get 1-2 deaths in some combats (2/5?) and 2-3 deaths on boss
