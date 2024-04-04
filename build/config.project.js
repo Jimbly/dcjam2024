@@ -61,7 +61,6 @@ module.exports = function (config) {
   [
     'crawlertest',
     'whitebox',
-    'ship1',
     'ship2',
     'ship3',
     'icons',

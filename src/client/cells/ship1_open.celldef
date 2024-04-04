@@ -6,12 +6,12 @@ visuals:
 - pass: bg
   type: simple_floor
   opts:
-    spritesheet: ship1
-    tile: floor1
+    spritesheet: ship2
+    tile: floor
 - pass: bg
   type: simple_ceiling
   opts:
-    spritesheet: ship1
-    tile: oryx_16bit_scifi_world-38
+    spritesheet: ship2
+    tile: ceiling
 
 corners: # pillars and floor/ceiling details

@@ -6,5 +6,5 @@ visuals:
 - type: simple_wall
   opts:
     do_alpha: true
-    spritesheet: ship1
+    spritesheet: ship2
     tile: window1
