@@ -590,7 +590,7 @@ export function crawlerMapViewDraw(
           }
         } else if (allow_pathfind) {
           // pathfind
-          let path = pathFind(level, self_x, self_y, self_dir, mx, my, full_vis);
+          let path = pathFind(level, self_x, self_y, self_dir, mx, my, full_vis, script_api);
           if (path) {
             for (let ii = 0; ii < path.length; ++ii) {
               let idx = path[ii];

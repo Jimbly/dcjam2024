@@ -1,3 +1,4 @@
+import { CrawlerScriptAPI, getEffWall } from './crawler_script';
 import {
   CrawlerCell,
   CrawlerLevel,
@@ -16,6 +17,7 @@ export function pathFind(
   dest_x: number,
   dest_y: number,
   ignore_visibility: boolean,
+  script_api: CrawlerScriptAPI,
 ): number[] | null {
   const { w, cells } = level;
   let dest_idx = dest_x + dest_y * w;
@@ -57,9 +59,9 @@ export function pathFind(
     dir: DirType,
     idx: number,
     cx: number,
-    cy: number
+    cy: number,
   ): void {
-    let wall = cell.walls[dir];
+    let wall = getEffWall(script_api, cell, dir);
     if (!wall.open_move) {
       return;
     }

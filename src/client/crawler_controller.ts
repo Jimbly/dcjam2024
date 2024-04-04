@@ -80,6 +80,7 @@ import {
   EntityCrawlerClient,
   entityBlocks,
 } from './crawler_entity_client';
+import { crawlerScriptAPI } from './crawler_play';
 import {
   RenderPrepParam,
   crawlerRenderGetPosOffs,
@@ -1161,7 +1162,7 @@ export class CrawlerController {
       let cur = this.queueTail();
       assert(cur.pos);
       let path = pathFind(level, cur.pos[0], cur.pos[1], cur.rot,
-        this.path_to[0], this.path_to[1], build_mode);
+        this.path_to[0], this.path_to[1], build_mode, crawlerScriptAPI());
       if (!path || path.length === 1) {
         this.path_to = null;
       } else {
