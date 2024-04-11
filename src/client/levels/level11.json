@@ -2050,6 +2050,12 @@
         "open",
         "door",
         "solid"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party 0 Did you hear something?"
+        }
       ]
     },
     {
@@ -2059,12 +2065,6 @@
         "open",
         "open",
         "solid"
-      ],
-      "events": [
-        {
-          "id": "dialog",
-          "param": "party 0 Did you hear something?"
-        }
       ]
     },
     {
