@@ -245,6 +245,15 @@ export function drawHero(idx: number, x0: number, y0: number, z: number, hero_de
   let is_placeholder = hero_def === placeholder_hero;
   let class_tier = class_def && class_def.tier[tier];
   let hp = is_placeholder ? 0 : preview_hero ? preview_hero.hp / class_tier!.hp : 1;
+  if (combat_hero && combat_hero.hp_predict_until) {
+    let now = getFrameTimestamp();
+    if (now > combat_hero.hp_predict_until) {
+      delete combat_hero.hp_predict;
+      delete combat_hero.hp_predict_until;
+    } else {
+      hp = combat_hero.hp_predict! / class_tier!.hp;
+    }
+  }
   let dead = preview_hero ? !hp : hero_def.dead;
   if (dead) {
     hp = 0;
@@ -371,7 +380,7 @@ export function drawHero(idx: number, x0: number, y0: number, z: number, hero_de
   z++;
   if (class_tier) {
     let text = dead && !hero_def.left ? 'DEAD' :
-      preview_hero ? `${preview_hero.hp} / ${class_tier!.hp}` : `${class_tier!.hp}`;
+      preview_hero ? `${preview_hero.hp_predict || preview_hero.hp} / ${class_tier!.hp}` : `${class_tier!.hp}`;
     if (predicted_hp_orig) {
       text = `${predicted_hp_orig}→${preview_hero!.hp} / ${class_tier!.hp}`;
     }

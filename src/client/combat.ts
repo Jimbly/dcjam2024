@@ -127,6 +127,8 @@ export class CombatHero {
   class_ref!: HeroClassDef;
   tier_ref!: HeroClassTier;
   ability_refs!: [AbilityDef, AbilityDef];
+  hp_predict?: number;
+  hp_predict_until?: number;
 }
 function cloneCombatHero(hero: CombatHero): CombatHero {
   let ret = new CombatHero();
@@ -162,7 +164,7 @@ function sameFloaterTarget(p1: FloaterTarget, p2: FloaterTarget): boolean {
     (p1 as FloaterTargetLoose).hero_idx === (p2 as FloaterTargetLoose).hero_idx;
 }
 type Animatable = {
-  addFloater(f: FloaterParam): void;
+  addFloater(f: FloaterParam): number;
   animateAttack(enemy_idx: number, hero_idx: number): void;
   playSound(sound: string): void;
   onHeroDeath(hero_idx: number): void;
@@ -417,6 +419,7 @@ export class CombatState {
         `-${shield_amt}[img=shield]=[c=1]${amount}[/c]`: ''}`;
     }
     let sound = amount ? enemy.def.sound || 'monster_attack' : 'shield_block';
+    let hp_orig = hero.hp;
     hero.hp -= amount;
     if (hero.hp <= 0) {
       hero.hp = 0;
@@ -434,13 +437,17 @@ export class CombatState {
     if (log) {
       animator?.combatLog(msg);
     }
-    animator?.addFloater({
+    let attack_land_time = animator?.addFloater({
       hero_idx: idx,
       attack_type: amount ? attack_type : AttackType.SHIELD_SELF,
       msg: amount ? `${amount}` : '[img=shield]',
       from_attack_enemy: enemy_idx,
       sound,
     });
+    if (attack_land_time) {
+      hero.hp_predict = hp_orig;
+      hero.hp_predict_until = attack_land_time;
+    }
     let arr = this.heroes_attacked[idx] = this.heroes_attacked[idx] || [];
     arr.push([attack_type, amount]);
     return amount > 0;
@@ -756,10 +763,11 @@ class CombatScene {
   }
   last_attack_land_time!: number;
   floaters: Floater[] = [];
-  addFloater(f: FloaterParam): void {
+  addFloater(f: FloaterParam): number {
     let f2 = f as Floater;
     f2.start = (f.from_attack_enemy === undefined) ? getFrameTimestamp() : this.last_attack_land_time;
     this.floaters.push(f2);
+    return f2.start;
   }
   attack_anims: AttackAnim[] = [];
   animateAttack(enemy_idx: number, hero_idx: number): void {
