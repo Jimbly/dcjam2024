@@ -49,6 +49,11 @@ Polish
 * in forest: put axe on ground on other side of blocker
 
 Post-game fixes / polish
+* JD Nation bug - network disconnect, clicked "new", screen goes black, never fades up to in-game
+  * likely due to loading level 1 json file never finishing - add retries and error message on this
+* bug: markdown image from auto atlas is not getting aspect ratio (unless passing frame = 0)
+* merge things back to crawler branch as appropriate
+* allow entities and simple rendering to use atlases as well as (instead of?) spritesheets
 * bias features for simple billboard details
 * reorganize all of the example entities to use a spritesheet
 * add support for multiple fonts with different heights to dialog system and/or markdown - handwriting font would be cool
