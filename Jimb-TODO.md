@@ -49,6 +49,8 @@ Polish
 * in forest: put axe on ground on other side of blocker
 
 Post-game fixes / polish
+* Check everything with CRT filter off
+  * just switch to pixely=1 anyway for consistency?
 * JD Nation bug - network disconnect, clicked "new", screen goes black, never fades up to in-game
   * likely due to loading level 1 json file never finishing - add retries and error message on this
 * bug: markdown image from auto atlas is not getting aspect ratio (unless passing frame = 0)

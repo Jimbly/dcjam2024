@@ -307,9 +307,9 @@ function pauseMenu(in_combat: boolean): void {
       settings.set('turn_toggle', 1 - settings.turn_toggle);
     },
   }, {
-    name: `CRT Filter: ${settings.pixely ? 'ON': 'Off'}`,
+    name: `CRT Filter: ${settings.pixely === 2 ? 'ON': 'Off'}`,
     cb: () => {
-      settings.set('pixely', settings.pixely ? 0 : 2);
+      settings.set('pixely', settings.pixely === 2 ? 1 : 2);
     },
   }];
   if (fscreenAvailable()) {

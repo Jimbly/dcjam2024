@@ -1927,12 +1927,6 @@
         "door",
         "open",
         "open"
-      ],
-      "events": [
-        {
-          "id": "dialog",
-          "param": "party Who here has read THE MOON OF EZMERIAL?"
-        }
       ]
     },
     {
@@ -2116,6 +2110,12 @@
         "open",
         "open",
         "door"
+      ],
+      "events": [
+        {
+          "id": "dialog",
+          "param": "party 2 Who here has read THE MOON OF EZMERIAL?"
+        }
       ]
     },
     {
@@ -3448,11 +3448,11 @@
       ]
     },
     {
-      "type": "enemy3",
+      "type": "enemy2",
       "pos": [
-        12,
-        10,
-        3
+        7,
+        8,
+        1
       ]
     },
     {
@@ -3496,11 +3496,11 @@
       ]
     },
     {
-      "type": "enemy2",
+      "type": "enemy3",
       "pos": [
-        7,
-        8,
-        1
+        12,
+        10,
+        3
       ]
     }
   ],

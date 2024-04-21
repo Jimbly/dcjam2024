@@ -42,6 +42,7 @@ import {
 import {
   callEach,
   clone,
+  mod,
 } from 'glov/common/util';
 import {
   Vec4,
@@ -187,7 +188,8 @@ settings.register({
       }
       setTimeout(() => {
         setting_pixely = settings.pixely;
-        engine.setPixelyStrict(setting_pixely === 2);
+        engine.setPixelyStrict(setting_pixely === 1 || setting_pixely === 2);
+        engine.setViewportPostprocess(setting_pixely >= 2);
         callEach(on_pixely_change, null, setting_pixely);
       }, 1);
     },
@@ -866,14 +868,39 @@ export function crawlerRenderFramePrep(): void {
   if (vstyle && vstyle.background_img) {
     let tex = textureLoad({
       url: `img/${vstyle.background_img}.png`,
+      wrap_s: gl.CLAMP_TO_EDGE,
+      wrap_t: gl.CLAMP_TO_EDGE,
+      filter_mag: gl.NEAREST,
+      filter_min: gl.NEAREST,
+      force_mipmaps: false,
     });
     if (tex.loaded) {
       gl.disable(gl.DEPTH_TEST);
       gl.depthMask(false);
-      let voffs = -crawlerRenderGameViewAngle() / PI * 2;
+      let voffs = mod(-crawlerRenderGameViewAngle() / PI * 2, 1);
       applyCopy({ source: tex, no_framebuffer: true, params: {
-        copy_uv_scale: [1, -tex.src_height / tex.height, voffs, -(1-tex.src_height / tex.height)],
+        copy_uv_scale: [tex.src_width / tex.width, -tex.src_height / tex.height, voffs, tex.src_height / tex.height],
       } });
+      if (voffs) {
+        let viewport_save = engine.viewport.slice(0);
+        if (setting_pixely) {
+          let cv = crawlerRenderViewportGet();
+          engine.setViewport([cv.w * (1 - voffs), 0, cv.w * voffs, cv.h]);
+        } else {
+          let viewport = crawlerCalc3DViewport();
+          engine.setViewport([
+            viewport[0] + viewport[2] * (1 - voffs), viewport[1],
+            viewport[2] * voffs, viewport[3]
+          ]);
+        }
+        applyCopy({ source: tex, no_framebuffer: true, params: {
+          copy_uv_scale: [
+            tex.src_width / tex.width * voffs, -tex.src_height / tex.height,
+            0, tex.src_height / tex.height
+          ],
+        } });
+        engine.setViewport(viewport_save);
+      }
       gl.enable(gl.DEPTH_TEST);
       gl.depthMask(true);
     }
