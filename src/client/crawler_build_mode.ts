@@ -648,7 +648,7 @@ function toggleWithSelected(): void {
         level.setWall(myx, myy, dir, selected_wall, null);
       }
       if (target_cell && !target_cell.desc.open_vis) {
-        if (selected_wall.open_vis && selected_wall.id !== 'cosmic_solid_vis') { // DCJ24 hack
+        if (selected_wall.open_vis && selected_wall.id !== 'cosmic_solid_vis') { // DCJAM24 hack
           openCell(myx, myy, dir, tx, ty);
         } else if (selected_wall.open_move) {
           let cell_desc = crawlerGetCellDesc('open');
@@ -802,7 +802,7 @@ type PaletteConfigTab = 'all' | 'wall' | 'cell' | 'spawn';
 let palette_config_tab: PaletteConfigTab = (localStorageGet('pal_tab') as PaletteConfigTab) || 'all';
 
 function showPaintPaletteConfig(level: CrawlerLevel, x1: number): void {
-  x1 = camera2d.x1() - 2; // DCJ24
+  x1 = camera2d.x1() - 2; // DCJAM24
   const x0 = 204; // VIEWPORT_X0 //  camera2d.x0() + 2;
   const y0 = camera2d.y0() + 2;
   const w = x1 - x0;
@@ -1493,7 +1493,7 @@ export function crawlerBuildModeUI(frame: Box & { map_view: boolean }): void {
 
   if (build_tab === BuildTab.Paint) {
     // Palette area
-    let eff_col_width = min(col_width, 32); // DCJ24
+    let eff_col_width = min(col_width, 32); // DCJAM24
     ({ x, y } = showPaintPalette({
       level,
       x, y, z,

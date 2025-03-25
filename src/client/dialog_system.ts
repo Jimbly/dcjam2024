@@ -233,7 +233,7 @@ export function dialogRun(dt: number, viewport: UIBox & { pad_top: number; pad_b
   let buttons_h = num_buttons * uiButtonHeight() + (num_buttons ? BUTTON_HEAD + (num_buttons - 1) * BUTTON_PAD : 0);
   const text_height = uiTextHeight();
   let size = text_height;
-  let line_height = size + 1; // DCJ24 hack
+  let line_height = size + 1; // DCJAM24 hack
   let style = text_style_cb(active_dialog);
   let align = transient ? ALIGN.HCENTER|ALIGN.HWRAP : ALIGN.HLEFT|ALIGN.HWRAP;
   let dims = dimsSplit(style, align, w - HPAD * 2, size, line_height, text);

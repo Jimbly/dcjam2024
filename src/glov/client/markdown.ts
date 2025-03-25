@@ -83,7 +83,7 @@ export type MarkdownLayoutParam = {
   // TODO: also need line_height here!  Get alignment/etc respecting that
   text_height?: number;
   line_height?: number;
-  img_height?: number; // DCJ24 hack
+  img_height?: number; // DCJAM24 hack
   indent?: number;
   align?: ALIGN;
 };
@@ -503,7 +503,7 @@ function markdownLayout(param: MarkdownStateCached & MarkdownLayoutParam): void 
         if (calc_param.align & ALIGN.HCENTER) {
           xoffs *= 0.5;
         }
-        xoffs = round(xoffs); // DCJAM - only if noFilter font
+        xoffs = round(xoffs); // DCJAM24 - only if noFilter font
         if (xoffs > 0) {
           for (let jj = row_start_idx; jj < ii; ++jj) {
             let block = draw_blocks[jj];
@@ -534,7 +534,7 @@ function markdownLayout(param: MarkdownStateCached & MarkdownLayoutParam): void 
       if (calc_param.align & ALIGN.VCENTER) {
         yoffs *= 0.5;
       }
-      yoffs = round(yoffs); // DCJ
+      yoffs = round(yoffs); // DCJAM24
       for (let ii = 0; ii < draw_blocks.length; ++ii) {
         let block = draw_blocks[ii];
         block.dims.y += yoffs;

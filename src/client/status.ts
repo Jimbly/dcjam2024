@@ -98,7 +98,7 @@ export function statusTick(viewport: UIBox & { pad_top: number; pad_bottom: numb
     });
     let text_w = dims.w;
     text_w += 6;
-    text_w = max(text_w, 48); // DCJ24 HACK: panel size
+    text_w = max(text_w, 48); // DCJAM24 HACK: panel size
     temp_color[3] = alpha;
     ui.panel({
       x: x + round((w - text_w)/2) - 1,

@@ -16,16 +16,16 @@ float Gaus(float pos, float scale) {
   return exp2(scale*pos*pos);
 }
 
-const float SHADE = 0.80; // JAM
-const float EASING = 1.75; // JAM
+const float SHADE = 0.80; // DCJAM
+const float EASING = 1.75; // DCJAM
 
 #define DO_WARP
 #ifdef DO_WARP
-const float VIGNETTE = 0.65; // JAM
+const float VIGNETTE = 0.65; // DCJAM
 // Display warp.
 // 0.0 = none
 // 1.0/8.0 = extreme
-const vec2 WARP=vec2(1.0/48.0,1.0/32.0); // JAM
+const vec2 WARP=vec2(1.0/48.0,1.0/32.0); // DCJAM
 
 // Distortion of scanlines, and end of screen alpha.
 vec2 Warp(vec2 pos){
@@ -56,7 +56,7 @@ void main()
   vec2 intcoords = (floor(texcoords.xy * orig_pixel_size.xy) + 0.5) * orig_pixel_size.zw;
   vec2 deltacoords = (texcoords.xy - intcoords) * orig_pixel_size.xy; // -0.5 ... 0.5
   // for horizontal sampling, map [-0.5 .. -A .. A .. 0.5] -> [-0.5 .. 0 .. 0 .. 0.5];
-  float A = 0.125; // JAM
+  float A = 0.125; // DCJAM
   float Ainv = (0.5 - A) * 2.0;
   float uoffs = clamp((abs(deltacoords.x) - A) / Ainv, 0.0, 1.0) * orig_pixel_size.z;
   uoffs *= sign(deltacoords.x);

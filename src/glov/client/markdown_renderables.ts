@@ -150,7 +150,7 @@ class MDRImg implements MDLayoutBlock, MDDrawBlock, Box {
     // vertically center image
     // if scale is > 1.0, we perhaps want some line height logic instead
     this.y += (line_height - h) / 2;
-    this.y += offs; // DCJ24 HACK for centering larger icons next to smaller text
+    this.y += offs; // DCJAM24 HACK for centering larger icons next to smaller text
     return [this];
   }
   alpha_color_cache?: Vec4;

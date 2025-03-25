@@ -409,7 +409,7 @@ function crawlerTraitsInit(ent_factory: TraitFactory<Entity, DataObject>): void 
       offs: [0, 0],
     },
     alloc_state: function (opts: DrawableSpineOpts, ent: Entity) {
-      let spine = null; // DCJ24 hack for unit tests
+      let spine = null; // DCJAM24 hack for unit tests
       // let spine = spineCreate(opts.spine_data);
       // spine.setAnimation(0, ent.data.state || 'idle');
       let ret: DrawableSpineState = {
