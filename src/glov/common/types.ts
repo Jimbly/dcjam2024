@@ -17,6 +17,8 @@ export function isDataObject(value: unknown): value is DataObject {
   return value ? typeof value === 'object' && !Array.isArray(value) : false;
 }
 
+export type EmptyObject = Record<string, never>;
+
 /**
  * Error callback accepting an error as the first parameter and a result as the second parameter.
  * Both parameters are optional.
@@ -83,22 +85,33 @@ export type DefinedValueOf<T> = Exclude<T[keyof T], undefined>;
  */
 export type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
 
-
-// TODO: Implement the types below and move them to the appropriate files
+/**
+ * Helper type to filter only keys for values who exactly match a given type
+ *
+ * { a: string; b: string | number; c: number, d?: number; } yields:
+ * string -> a
+ * string | number -> b
+ * number -> c
+ * number | undefined -> d
+ */
+export type KeysMatching<T, V> = Exclude<{
+  [K in keyof T]: [T[K]] extends [V] ? [V] extends [T[K]] ? K : never : never
+}[keyof T], undefined>;
 
 /**
- * CmdParse data
+ * Helper type to filter only keys for values which could be assigned to a variable of a given type
+ *
+ * { a: string; b: string | number; c: number; d?: number; } yields:
+ * string -> a
+ * string | number -> a | b | c
+ * number -> c
+ * number | undefined -> c | d
  */
-export type CmdRespFunc = ErrorCallback<string | unknown, string | null>;
-export interface CmdDef {
-  cmd?: string;
-  help?: string;
-  usage?: string;
-  prefix_usage_with_help?: boolean;
-  access_show?: string[];
-  access_run?: string[];
-  func(str: string, resp_func: CmdRespFunc): void;
-}
+export type KeysMatchingLoose<T, V> = Exclude<{
+  [K in keyof T]: T[K] extends V ? K : never
+}[keyof T], undefined>;
+
+// TODO: Implement the types below and move them to the appropriate files
 
 /**
  * Presence data
@@ -129,6 +142,7 @@ export interface ChatMessageDataBroadcast extends ChatMessageDataShared {
   client_id?: string;
   ent_id?: EntityID; // If from a worker with an EnityManager
   quiet?: boolean; // Added at run-time on client
+  err_echo?: boolean; // Added at run-time on client
 }
 /*
  * Chat history data
@@ -180,11 +194,13 @@ export interface ChatIDs extends ClientHandlerSource {
   style?: string;
 }
 
+export type Roles = TSMap<1>;
+
 export type ClientIDs = {
   client_id: string;
   user_id?: string;
   display_name?: string;
-  roles?: TSMap<1>;
+  roles?: Roles;
 };
 export type ChannelDataClient = {
   ids: ClientIDs;
@@ -196,7 +212,7 @@ export type ChannelDataClients = TSMap<ChannelDataClient>;
 export type UnimplementedData = DataObject;
 
 export type DeepPartial<T> = T extends DataObject ? {
-    [P in keyof T]?: DeepPartial<T[P]>;
+  [P in keyof T]?: DeepPartial<T[P]>;
 } : T;
 
 export type NumberBoolean = 0 | 1;

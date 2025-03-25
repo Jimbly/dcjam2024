@@ -1,4 +1,5 @@
 import assert from 'assert';
+import type { TSMap, WithRequired } from 'glov/common/types';
 import { has } from 'glov/common/util';
 import verify from 'glov/common/verify';
 import {
@@ -11,46 +12,46 @@ import {
   EPSILON,
   Font,
   FontStyle,
-  Text,
   fontStyleAlpha,
   fontStyleBold,
   fontStyleHash,
+  Text,
 } from './font';
 import { Box } from './geom_types';
 import { mousePos } from './input';
 import { getStringFromLocalizable } from './localization';
 import {
   MDASTNode,
-  RenderableContent,
   mdParse,
   mdParseSetValidRenderables,
+  RenderableContent,
 } from './markdown_parse';
 import {
-  MarkdownRenderable,
   markdown_default_font_styles,
   markdown_default_renderables,
+  markdownLayoutFit,
+  MarkdownRenderable,
 } from './markdown_renderables';
 import {
-  SPOT_DEFAULT_LABEL,
   spot,
+  SPOT_DEFAULT_LABEL,
   spotPadMode,
 } from './spot';
 import {
   spriteClipPause,
-  spriteClipResume,
   spriteClipped,
   spriteClippedViewport,
+  spriteClipResume,
 } from './sprites';
 import {
-  LabelBaseOptions,
   drawElipse,
   drawRect2,
   getUIElemData,
+  LabelBaseOptions,
   uiFontStyleNormal,
   uiGetFont,
   uiTextHeight,
 } from './ui';
-import type { TSMap, WithRequired } from 'glov/common/types';
 
 const { ceil, floor, max, min, round } = Math;
 
@@ -126,6 +127,7 @@ export type MDLayoutCalcParam = Required<MarkdownLayoutParam> & {
   font_style_stack?: (string | number)[];
   cursor: {
     line_x0: number;
+    line_y1: number;
     x: number;
     y: number;
   };
@@ -247,59 +249,65 @@ class MDBlockText implements MDLayoutBlock {
   constructor(private content: string, param: MarkdownParseParam) {
   }
   layout(param: MDLayoutCalcParam): MDDrawBlock[] {
+    let { cursor, line_height, text_height } = param;
     let ret: MDDrawBlock[] = [];
     let text = this.content;
     if (!(param.align & ALIGN.HWRAP)) {
       text = text.replace(/\n/g, ' ');
     }
     if (param.align & ALIGN.HWRAP) {
-      let line_x0 = param.cursor.x;
+      let line_x0 = cursor.x;
       // Adjust in case we're mid-line, or already inset
-      let inset = param.cursor.x;
+      let inset = cursor.x;
       let w = param.w - inset;
       let indent = param.indent - inset;
+      let yoffs = (line_height - text_height)/2;
+      if (param.font.integral) {
+        yoffs = round(yoffs);
+      }
       param.font.wrapLines(
-        param.font_style, w, indent, param.text_height, text, param.align,
+        param.font_style, w, indent, text_height, text, param.align,
         (x0: number, linenum: number, line: string, x1: number) => {
           if (linenum > 0) {
-            param.cursor.y += param.line_height;
-            param.cursor.line_x0 = param.indent;
+            cursor.y += line_height; // TODO: = cursor.line_y1 instead?
+            cursor.line_x0 = param.indent;
+            cursor.line_y1 = cursor.y;
           }
           let layout_param: MDBlockTextLayout = {
             font: param.font,
             font_style: param.font_style,
             x: line_x0 + x0,
-            y: param.cursor.y,
-            h: param.text_height,
+            y: cursor.y + yoffs,
+            h: text_height,
             w: min(x1, w) - x0,
             align: param.align,
             text: line,
           };
+          cursor.line_y1 = max(cursor.line_y1, cursor.y + line_height);
           ret.push(new MDDrawBlockText(layout_param));
         }
       );
       if (ret.length) {
         let tail = ret[ret.length - 1];
-        param.cursor.x = tail.dims.x + tail.dims.w;
+        cursor.x = tail.dims.x + tail.dims.w;
       } else {
         // all whitespace, just advance cursor
-        param.cursor.x += param.font.getStringWidth(param.font_style, param.text_height, text);
+        cursor.x += param.font.getStringWidth(param.font_style, text_height, text);
       }
     } else {
-      let str_w = param.font.getStringWidth(param.font_style, param.text_height, text);
-      let x0 = param.cursor.x;
+      let str_w = param.font.getStringWidth(param.font_style, text_height, text);
       let layout_param: MDBlockTextLayout = {
+        x: -1, // filled below
+        y: -1, // filled below
         font: param.font,
         font_style: param.font_style,
-        x: x0,
-        y: param.cursor.y,
-        h: param.text_height,
+        h: text_height,
         w: str_w,
         align: param.align,
         text,
       };
+      markdownLayoutFit(param, layout_param);
       ret.push(new MDDrawBlockText(layout_param));
-      param.cursor.x += str_w;
     }
     return ret;
   }
@@ -459,6 +467,7 @@ function markdownLayout(param: MarkdownStateCached & MarkdownLayoutParam): void 
     font_style_idx: param.font_style_idx || 'def',
     cursor: {
       line_x0: 0,
+      line_y1: 0,
       x: 0,
       y: 0,
     },
@@ -480,6 +489,7 @@ function markdownLayout(param: MarkdownStateCached & MarkdownLayoutParam): void 
       draw_blocks.push(block);
     }
   }
+  let bottom_pad = max(0, calc_param.cursor.line_y1 - maxy);
   if ((calc_param.align & (ALIGN.HRIGHT | ALIGN.HCENTER)) && draw_blocks.length) {
     // Find rightmost block for every row
     let row_h_est = calc_param.line_height / 2;
@@ -502,6 +512,9 @@ function markdownLayout(param: MarkdownStateCached & MarkdownLayoutParam): void 
         let xoffs = calc_param.w - (last_dims.x + last_dims.w);
         if (calc_param.align & ALIGN.HCENTER) {
           xoffs *= 0.5;
+          if (calc_param.font.integral) {
+            xoffs = round(xoffs);
+          }
         }
         xoffs = round(xoffs); // DCJAM24 - only if noFilter font
         if (xoffs > 0) {
@@ -532,7 +545,11 @@ function markdownLayout(param: MarkdownStateCached & MarkdownLayoutParam): void 
     if (verify(calc_param.h)) {
       let yoffs = calc_param.h - maxy;
       if (calc_param.align & ALIGN.VCENTER) {
+        yoffs -= miny;
         yoffs *= 0.5;
+        if (calc_param.font.integral) {
+          yoffs = round(yoffs);
+        }
       }
       yoffs = round(yoffs); // DCJAM24
       for (let ii = 0; ii < draw_blocks.length; ++ii) {
@@ -550,6 +567,7 @@ function markdownLayout(param: MarkdownStateCached & MarkdownLayoutParam): void 
     maxy = max(maxy, block.dims.y + block.dims.h);
     max_block_h = max(max_block_h, block.dims.h);
   }
+  maxy += bottom_pad;
   draw_blocks.sort(cmpDimsY);
   cache.layout = {
     blocks: draw_blocks,
@@ -678,7 +696,13 @@ export function markdownDraw(param: MarkdownDrawCachedParam): void {
   profilerStopFunc();
 }
 
-type MarkdownAutoParam = MarkdownStateParam & MarkdownParseParam & MarkdownLayoutParam & MarkdownDrawParam;
+type MarkdownAutoParamBase = MarkdownStateParam & MarkdownParseParam & MarkdownLayoutParam;
+type MarkdownAutoParamDraw = MarkdownAutoParamBase & MarkdownDrawParam;
+type MarkdownAutoParamNoDraw = MarkdownAutoParamBase & { no_draw: true };
+export type MarkdownAutoParam = MarkdownAutoParamDraw | MarkdownAutoParamNoDraw;
+function isAutoDrawParam(param: MarkdownAutoParam): param is MarkdownAutoParamDraw {
+  return !(param as MarkdownAutoParamNoDraw).no_draw;
+}
 
 function mdcAlloc(): MDCache {
   return {};
@@ -699,6 +723,7 @@ export function markdownAuto(param: MarkdownAutoParam): MarkdownDims {
       param.w || 0,
       param.h || 0,
       param.text_height || uiTextHeight(),
+      param.line_height || param.text_height || uiTextHeight(),
       param.indent || 0,
       param.align || 0,
       param.font_style ? fontStyleHash(param.font_style) : 0,
@@ -710,7 +735,9 @@ export function markdownAuto(param: MarkdownAutoParam): MarkdownDims {
 
   markdownPrep(param2);
   let dims = markdownDims(param2);
-  markdownDraw(param2);
+  if (isAutoDrawParam(param2)) {
+    markdownDraw(param2);
+  }
 
   if (auto_cache) {
     delete param.cache;

@@ -47,7 +47,12 @@ const {
   shadersBind,
   shadersPrelink,
 } = require('./shaders.js');
-const { deprecate, nextHighestPowerOfTwo } = require('glov/common/util.js');
+const {
+  callEach,
+  deprecate,
+  nextHighestPowerOfTwo,
+} = require('glov/common/util.js');
+const verify = require('glov/common/verify');
 const {
   vec2,
   vec4,
@@ -514,7 +519,14 @@ function scissorSet(scissor) {
   if (!active_scissor) {
     gl.enable(gl.SCISSOR_TEST);
   }
-  gl.scissor(scissor[0], scissor[1], scissor[2], scissor[3]);
+  let [x, y, w, h] = scissor;
+  if (!verify(w >= 0)) {
+    w = 0;
+  }
+  if (!verify(h >= 0)) {
+    h = 0;
+  }
+  gl.scissor(x, y, w, h);
   active_scissor = scissor;
 }
 function scisssorClear() {
@@ -595,6 +607,8 @@ export function spriteClippedViewport() {
 
 export function spriteClipPush(z, x, y, w, h) {
   assert(clip_stack.length < 10); // probably leaking
+  verify(w >= 0);
+  verify(h >= 0);
   let scissor = clipCoordsScissor(x, y, w, h);
   let dom_clip = clipCoordsDom(x, y, w, h);
   camera2d.setInputClipping(dom_clip);
@@ -864,6 +878,18 @@ export function spriteDrawPartial(z) {
 }
 
 export function buildRects(ws, hs, tex) {
+  if (typeof ws === 'number') {
+    ws = new Array(ws);
+    for (let ii = 0; ii < ws.length; ++ii) {
+      ws[ii] = 1;
+    }
+  }
+  if (typeof hs === 'number') {
+    hs = new Array(hs);
+    for (let ii = 0; ii < hs.length; ++ii) {
+      hs[ii] = 1;
+    }
+  }
   let rects = [];
   let total_w = 0;
   for (let ii = 0; ii < ws.length; ++ii) {
@@ -1028,6 +1054,17 @@ Sprite.prototype.getAspect = function () {
   return tex.src_width / tex.src_height;
 };
 
+Sprite.prototype.onReInit = function (cb) {
+  this.on_reinit = this.on_reinit || [];
+  this.on_reinit.push(cb);
+};
+
+Sprite.prototype.doReInit = function () {
+  if (this.on_reinit) {
+    callEach(this.on_reinit);
+  }
+};
+
 Sprite.prototype.withOrigin = function (new_origin) {
   let cache_v = String(new_origin[0] + new_origin[1] * 1007);
   if (!this.origin_cache) {
@@ -1042,7 +1079,13 @@ Sprite.prototype.withOrigin = function (new_origin) {
       color: this.color,
       uvs: this.uvs,
     });
-    new_sprite.uidata = this.uidata;
+    let doInit = () => {
+      new_sprite.texs = this.texs;
+      new_sprite.uvs = this.uvs;
+      new_sprite.uidata = this.uidata;
+    };
+    this.onReInit(doInit);
+    doInit();
   }
   return this.origin_cache[cache_v];
 };
@@ -1076,6 +1119,10 @@ Sprite.prototype.lazyLoad = function () {
     this.lazyLoadInit();
   }
   if (!this.texs[0].loaded) {
+    // Still loading, don't let it be unloaded in the meantime though!
+    for (let ii = 0; ii < this.texs.length; ++ii) {
+      this.texs[ii].last_use = engine.frame_timestamp;
+    }
     return 0;
   }
   if (!this.loaded_at) {
@@ -1111,7 +1158,7 @@ Sprite.prototype.draw = function (params) {
   }
   let w = (params.w || 1) * this.size[0];
   let h = (params.h || 1) * this.size[1];
-  let uvs = (typeof params.frame === 'number') ? this.uidata.rects[params.frame] : (params.uvs || this.uvs);
+  let uvs = ((params.frame !== undefined) ? this.uidata.rects[params.frame] : params.uvs) || this.uvs;
   qsp.sprite = this;
   qsp.x = params.x;
   qsp.y = params.y;

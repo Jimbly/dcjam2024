@@ -1,10 +1,12 @@
-/* eslint-disable import/order */
-const { execFile } = require('child_process');
-const crypto = require('crypto');
-const fs = require('fs');
-const os = require('os');
-const path = require('path');
-const { errorString, nop } = require('../common/util.js');
+import { execFile } from 'child_process';
+import crypto from 'crypto';
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
+import {
+  errorString,
+  nop,
+} from '../common/util';
 
 const regex_bound = /; Bound: (\d+)/;
 const regex_ignore = new RegExp([
@@ -68,7 +70,7 @@ function getShaderStats(stage, text, cb) {
   let validator_path;
   try {
     if (!glslang_validator) {
-      // eslint-disable-next-line global-require
+      // eslint-disable-next-line n/global-require
       glslang_validator = require('glslang-validator-prebuilt-predownloaded');
     }
     validator_path = glslang_validator.getPath();

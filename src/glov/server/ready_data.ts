@@ -1,20 +1,20 @@
 import assert from 'assert';
-import { Express, NextFunction, Request, Response } from 'express';
+import type { Express, NextFunction, Request, Response } from 'express';
+import type { CmdRespFunc } from 'glov/common/cmd_parse';
 import {
-  PlatformID,
   platformGetValidIDs,
+  PlatformID,
   platformIsValid,
 } from 'glov/common/platform';
-import { CmdRespFunc } from 'glov/common/types';
-import { ChannelServer } from './channel_server';
-import { ChannelServerWorker } from './channel_server_worker';
-import { GlobalWorker } from './global_worker';
+
+import type { ChannelServer } from './channel_server';
+import type { ChannelServerWorker } from './channel_server_worker';
+import type { GlobalWorker } from './global_worker';
 import {
   serverGlobalsReady,
   serverGlobalsRegister,
 } from './server_globals';
 import {
-  VersionSupport,
   getAllFallbackEnvironments,
   getFallbackEnvironment,
   getVersionSupport,
@@ -22,6 +22,7 @@ import {
   isVersionUpToDate,
   setFallbackEnvironments,
   setLatestVersions,
+  VersionSupport,
 } from './version_management';
 
 interface ReadyData {

@@ -1,6 +1,5 @@
 // Portions Copyright 2019 Jimb Esser (https://github.com/Jimbly/)
 // Released under MIT License: https://opensource.org/licenses/MIT
-/* eslint complexity:off */
 
 // eslint-disable-next-line @typescript-eslint/no-use-before-define
 exports.create = selectionBoxCreate;
@@ -16,11 +15,11 @@ import {
   fontStyle,
 } from './font';
 import {
-  KEYS,
-  PAD,
   drag,
   keyDownEdge,
+  KEYS,
   mouseButtonHadUpEdge,
+  PAD,
   padButtonDown,
   padButtonDownEdge,
 } from './input.js';
@@ -28,6 +27,7 @@ import { link } from './link.js';
 import { markdownAuto } from './markdown';
 import { scrollAreaCreate } from './scroll_area.js';
 import {
+  spot,
   SPOT_DEFAULT_BUTTON,
   SPOT_NAV_DOWN,
   SPOT_NAV_LEFT,
@@ -37,7 +37,6 @@ import {
   SPOT_STATE_DOWN,
   SPOT_STATE_FOCUSED,
   SPOT_STATE_REGULAR,
-  spot,
   spotFocusSteal,
   spotPadMode,
   spotSubBegin,
@@ -45,7 +44,11 @@ import {
   spotSubPop,
   spotSubPush,
 } from './spot.js';
-import { spriteClipPause, spriteClipResume, spriteClipped } from './sprites.js';
+import {
+  spriteClipPause,
+  spriteClipped,
+  spriteClipResume,
+} from './sprites.js';
 import {
   drawHBox,
   getUIElemData,
@@ -107,6 +110,7 @@ export function selboxDefaultDrawItemText({
   w, h,
   display,
   font_height,
+  line_height,
   style,
 }) {
   let text_z = z + 1;
@@ -129,6 +133,7 @@ export function selboxDefaultDrawItemText({
           x: x1, y, z: text_z,
           w: w1, h,
           text_height: font_height,
+          line_height,
           align: ALIGN.HFIT | ALIGN.VCENTER,
           text: pre,
         });
@@ -137,6 +142,7 @@ export function selboxDefaultDrawItemText({
           x: x2, y, z: text_z,
           w: w1, h,
           text_height: font_height,
+          line_height,
           align: ALIGN.HFIT | ALIGN.VCENTER,
           text: post,
         });
@@ -159,6 +165,7 @@ export function selboxDefaultDrawItemText({
       w: w - display.xpad * 2,
       h,
       text_height: font_height,
+      line_height,
       align: (item.centered || display.centered ? ALIGN.HCENTERFIT : ALIGN.HFIT) |
         ALIGN.VCENTER,
       text: item.name,
@@ -273,6 +280,7 @@ class SelectionBoxBase {
     this.display = cloneShallow(default_display);
     this.scroll_height = 0;
     this.font_height = uiTextHeight();
+    this.line_height = null;
     this.entry_height = uiButtonHeight();
     this.auto_reset = true;
     this.reset_selection = false;
@@ -482,11 +490,15 @@ class SelectionBoxBase {
       display,
       entry_height,
       font_height,
+      line_height,
       key,
       selected: old_sel,
       show_as_focused,
       width,
     } = this;
+    if (line_height === null) {
+      line_height = font_height;
+    }
     let { scroll_height } = ctx;
     let eff_width = width;
     const y_save = y;
@@ -647,6 +659,7 @@ class SelectionBoxBase {
         image_set, color,
         image_set_extra, image_set_extra_alpha,
         font_height,
+        line_height,
         display,
         style,
       });
@@ -772,7 +785,10 @@ class GlovDropDown extends SelectionBoxBase {
 
   run(params) {
     this.applyParams(params);
-    let { x, y, z, width, font_height, entry_height, disabled, key, display, ctx } = this;
+    let { x, y, z, width, font_height, line_height, entry_height, disabled, key, display, ctx } = this;
+    if (line_height === null) {
+      line_height = font_height;
+    }
 
     this.handleInitialSelection();
 
@@ -855,6 +871,7 @@ class GlovDropDown extends SelectionBoxBase {
       w: width - display.xpad - glov_ui.sprites.menu_header.uidata.wh[2] * entry_height,
       h: entry_height,
       text_height: font_height,
+      line_height,
       align: (display.centered ? ALIGN.HCENTER : ALIGN.HLEFT) | ALIGN.HFIT | ALIGN.VCENTER,
       text: this.items[eff_selection].name,
     };
@@ -944,6 +961,10 @@ export function dropDownCreate(params) {
 export function dropDown(param, current, opts) {
   opts = opts || {};
   param.auto_reset = false; // Handled every frame here automatically
+  if (typeof current === 'string' && typeof param.items[0] === 'string') {
+    // string current, and string items, no tags, handle automatically
+    current = param.items.indexOf(current);
+  }
   let { suppress_return_during_dropdown } = opts;
   // let dropdown = getUIElemData<SelectionBox, SelectionBoxOpts>('dropdown', param, dropDownCreate);
   let dropdown = getUIElemData('dropdown', param, dropDownCreate);

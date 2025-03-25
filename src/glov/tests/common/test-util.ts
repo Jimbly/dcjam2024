@@ -1,9 +1,9 @@
 import assert from 'assert';
-import { asyncSeries } from 'glov-async';
 import { DataObject } from 'glov/common/types';
 import {
   cmpNumericSmart,
   dateToFileTimestamp,
+  defaultsDeep,
   empty,
   lerpAngle,
   nearSameAngle,
@@ -12,6 +12,7 @@ import {
   trimEnd,
 } from 'glov/common/util';
 import 'glov/server/test';
+import { asyncSeries } from 'glov-async';
 
 const { PI } = Math;
 
@@ -117,6 +118,19 @@ asyncSeries([
       'Thing 11',
       'Z',
     ].join(','));
+    next();
+  },
+  function testDefaultsDeep(next) {
+    assert.deepEqual(defaultsDeep({}, { a: 1 }), { a: 1 });
+    assert.deepEqual(defaultsDeep({ a: 2 }, { a: 1 }), { a: 2 });
+    assert.deepEqual(defaultsDeep({ a: 2, b: 3 }, { a: 1 }), { a: 2, b: 3 });
+    assert.deepEqual(defaultsDeep({ a: 2 }, { b: 3 }), { a: 2, b: 3 });
+    assert.deepEqual(defaultsDeep({ }, { a: [1,2] }), { a: [1,2] });
+    assert.deepEqual(defaultsDeep({ a: [2] }, { a: [1,2] }), { a: [2] });
+    assert.deepEqual(defaultsDeep({ a: 'string' }, { a: { b: 1 } }), { a: 'string' });
+    assert.deepEqual(defaultsDeep({ a: { b: 1 } }, { a: 'string' }), { a: { b: 1 } });
+    assert.deepEqual(defaultsDeep({ a: { b: 1 } }, { a: [1] }), { a: { b: 1 } });
+    assert.deepEqual(defaultsDeep({ a: [2] }, { a: { b: 1 } }), { a: [2] });
     next();
   },
 ], function (err) {

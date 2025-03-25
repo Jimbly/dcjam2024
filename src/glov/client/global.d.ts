@@ -1,4 +1,3 @@
-/* eslint-env browser */
 declare module 'glov/client/global' {
   global {
     interface Window {
@@ -7,7 +6,7 @@ declare module 'glov/client/global' {
       conf_env?: string;
 
       // GLOV bootstrap
-      debugmsg: (msg: string, clear: boolean) => void;
+      debugmsg: (msg: string, clear?: boolean) => void;
       Z: Record<string, number>;
     }
 

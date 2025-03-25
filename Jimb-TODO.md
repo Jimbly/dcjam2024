@@ -1,3 +1,6 @@
+Merging latest GLOV issues:
+  chat dialogs are now full width instead of smaller
+
 TODO
 * lighting flicker l3 (after insanity)
   * maybe height noise thingy?

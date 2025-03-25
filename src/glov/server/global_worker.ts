@@ -1,11 +1,11 @@
 import assert from 'assert';
+import type { CmdDef } from 'glov/common/cmd_parse';
 import {
-  CmdDef,
   HandlerSource,
-  TSMap,
   isClientHandlerSource,
+  TSMap,
 } from 'glov/common/types';
-import { ChannelServer } from './channel_server';
+import type { ChannelServer } from './channel_server';
 import {
   ChannelWorker,
   ClientHandlerFunction,

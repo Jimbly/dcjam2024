@@ -1,6 +1,5 @@
 // Portions Copyright 2019 Jimb Esser (https://github.com/Jimbly/)
 // Released under MIT License: https://opensource.org/licenses/MIT
-/* global WebSocket */
 
 /* eslint-disable import/order */
 import { getAPIPath, setCurrentEnvironment } from 'glov/client/environments';
@@ -77,7 +76,7 @@ WSClient.prototype.timeSinceDisconnect = function () {
 };
 
 function getVersionUrlParams() {
-  return `plat=${platformGetID()}&ver=${exports.CURRENT_VERSION}&build=${BUILD_TIMESTAMP}`;
+  return `plat=${platformGetID()}&ver=${exports.CURRENT_VERSION}&build=${BUILD_TIMESTAMP}&sesuid=${session_uid}`;
 }
 
 function jsonParseResponse(response) {
@@ -332,7 +331,7 @@ WSClient.prototype.connectAfterReady = function (for_reconnect) {
     .replace(/api\/$/, 'ws'); // 'wss://foo.com/product/ws';
   path = `${path}?${getVersionUrlParams()}${
     for_reconnect && client.id && client.secret ? `&reconnect=${client.id}&secret=${client.secret}` : ''
-  }&sesuid=${session_uid}${connect_url_params}`;
+  }${connect_url_params}`;
   let socket = new WebSocket(path);
   socket.binaryType = 'arraybuffer';
   client.socket = socket;

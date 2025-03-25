@@ -16,11 +16,11 @@ import {
   DISPLAY_NAME_MAX_VISUAL_SIZE,
 } from 'glov/common/net_common';
 import {
-  EMAIL_REGEX,
-  VALID_USER_ID_REGEX,
   deprecate,
+  EMAIL_REGEX,
   empty,
   sanitize,
+  VALID_USER_ID_REGEX,
 } from 'glov/common/util.js';
 import { isProfane, isReserved } from 'glov/common/words/profanity_common.js';
 
@@ -124,6 +124,7 @@ function setFriendExternalId(friend, provider, external_id) {
   friend.ids[provider] = external_id;
 }
 
+// Note: use BaseUserWorkerPublicData in client_worker.ts when converting this to TypeScript
 export class DefaultUserWorker extends ChannelWorker {
   constructor(channel_server, channel_id, channel_data) {
     super(channel_server, channel_id, channel_data);
@@ -147,6 +148,10 @@ export class DefaultUserWorker extends ChannelWorker {
       if (password_deleted && this.getChannelData('private.external')) {
         this.setChannelData('private.password_deleted', undefined);
         this.setChannelData('private.password', password_deleted);
+      }
+
+      if (this.getChannelData(`private.friends.${this.user_id}`)) {
+        this.setChannelData(`private.friends.${this.user_id}`, undefined);
       }
     }
   }
@@ -405,6 +410,9 @@ export class DefaultUserWorker extends ChannelWorker {
     if (!validUserId(user_id)) {
       return void resp_func('Invalid User ID');
     }
+    if (user_id === this.user_id) {
+      return void resp_func('Cannot block yourself');
+    }
     let friends = this.getFriendsList();
     let friend = friends[user_id];
     if (friend?.status === FriendStatus.Blocked) {
@@ -449,7 +457,7 @@ export class DefaultUserWorker extends ChannelWorker {
         return void resp_func('Error parsing arguments');
       }
       if (value !== cur_value) {
-        this.logSrc(source, `Set privacy_presence=${value}`);
+        this.debugSrc(source, `Set privacy_presence=${value}`);
         this.setChannelData('public.privacy_presence', value);
         cur_value = value;
         this.updatePresence(Boolean(cur_value));
@@ -702,6 +710,11 @@ export class DefaultUserWorker extends ChannelWorker {
     if (!this.getChannelData('private.auto_ip_ban')) {
       return;
     }
+    if (login_ip.includes(',')) {
+      // Using left-most IP (should be accurate if proxy is trustworthy)
+      // Could potentially ban both IPs, but the other (proxy) IP changes with every single request on Cloudflare
+      login_ip = login_ip.split(',')[0];
+    }
     this.error(`Queuing delayed automatic IP ban for account ${this.user_id} from IP ${login_ip}`);
     setTimeout(() => {
       if (this.shutting_down) {
@@ -742,15 +755,18 @@ export class DefaultUserWorker extends ChannelWorker {
       this.setChannelData('private.display_name_change', undefined); // reset cooldown
     }
     this.checkAutoIPBan(data.ip);
+    data.resp_extra = {
+      hash: data.password ? undefined : md5(data.salt + this.getChannelData('private.password')),
+      email: this.getChannelData('private.email'),
+    };
     if (this.onUserLogin) {
       this.onUserLogin(data);
     }
-    metricsAdd('user.login', 1);
+    metricsAdd('user.login', 1, 'high');
 
     resp_func(null, {
       public_data: this.getChannelData('public'),
-      email: this.getChannelData('private.email'),
-      hash: data.password ? undefined : md5(data.salt + this.getChannelData('private.password')),
+      extra: data.resp_extra,
     });
   }
   handleLogin(src, data, resp_func) {
@@ -776,7 +792,7 @@ export class DefaultUserWorker extends ChannelWorker {
     if (md5(data.salt + this.getChannelData('private.password')) !== data.password) {
       return resp_func('Invalid password');
     }
-    metricsAdd('user.login_pass', 1);
+    metricsAdd('user.login_pass', 1, 'low');
     return this.handleLoginShared(data, resp_func);
   }
   handleLoginExternal(src, data, resp_func) {
@@ -810,7 +826,7 @@ export class DefaultUserWorker extends ChannelWorker {
       this.setChannelData('private.external', true);
       return this.createShared(data, resp_func);
     }
-    metricsAdd(`user.login_${data.provider}`, 1);
+    metricsAdd(`user.login_${data.provider}`, 1, 'low');
     return this.handleLoginShared(data, resp_func);
   }
   handleCreate(src, data, resp_func) {
@@ -829,6 +845,7 @@ export class DefaultUserWorker extends ChannelWorker {
     return this.createShared(data, resp_func);
   }
   createShared(data, resp_func) {
+    data.resp_extra = {};
     if (this.onUserCreate) {
       let err = this.onUserCreate(data);
       if (err) {
@@ -853,12 +870,12 @@ export class DefaultUserWorker extends ChannelWorker {
     private_data.last_time = Date.now();
     this.setChannelData('private', private_data);
     this.setChannelData('public', public_data);
-    metricsAdd('user.create', 1);
+    metricsAdd('user.create', 1, 'high');
+    data.resp_extra.email = this.getChannelData('private.email');
+    data.resp_extra.hash = data.password ? undefined : md5(data.salt + this.getChannelData('private.password'));
     return resp_func(null, {
       public_data: this.getChannelData('public'),
-      first_session: true,
-      email: this.getChannelData('private.email'),
-      hash: data.password ? undefined : md5(data.salt + this.getChannelData('private.password')),
+      extra: data.resp_extra,
     });
   }
 
@@ -905,6 +922,8 @@ export class DefaultUserWorker extends ChannelWorker {
   }
 
   handleSetEmail(src, email, resp_func) {
+    // Note: intentionally allowing this even if !this.exists() - this message
+    //  may be sent _before_ the login_external message
     if (!email) {
       return resp_func('Missing email');
     }
@@ -941,7 +960,7 @@ export class DefaultUserWorker extends ChannelWorker {
     if (this.rich_presence && src.type === 'client') {
       let presence_data = this.filteredPresenceData();
       if (this.canSeePresence(src.user_id) && !empty(presence_data)) {
-        this.sendChannelMessage(src.channel_id, 'presence', presence_data);
+        this.sendChannelMessage(src.channel_id, 'presence', presence_data, null, 'social');
       }
     }
     if (src.type === 'client' && src.user_id === this.user_id) {
@@ -976,9 +995,9 @@ export class DefaultUserWorker extends ChannelWorker {
       let client = clients[client_id];
       if (client.ids) {
         if (this.canSeePresence(client.ids.user_id)) {
-          this.sendChannelMessage(`client.${client_id}`, 'presence', presence_data);
+          this.sendChannelMessage(`client.${client_id}`, 'presence', presence_data, null, 'social');
         } else if (force_clear) {
-          this.sendChannelMessage(`client.${client_id}`, 'presence', {});
+          this.sendChannelMessage(`client.${client_id}`, 'presence', {}, null, 'social');
         }
       }
     }
@@ -988,7 +1007,7 @@ export class DefaultUserWorker extends ChannelWorker {
     for (let client_id in clients) {
       let client = clients[client_id];
       if (client.ids && client.ids.user_id === user_id) {
-        this.sendChannelMessage(`client.${client_id}`, 'presence', {});
+        this.sendChannelMessage(`client.${client_id}`, 'presence', {}, null, 'social');
       }
     }
   }
@@ -1136,6 +1155,7 @@ DefaultUserWorker.prototype.auto_destroy = true;
 DefaultUserWorker.prototype.require_email = true;
 DefaultUserWorker.prototype.rich_presence = true;
 DefaultUserWorker.prototype.maintain_client_list = true; // needed for rich_presence features
+DefaultUserWorker.prototype.user_data_map = null; // But, we don't need to track display names of people for that
 
 let inited = false;
 let user_worker = DefaultUserWorker;

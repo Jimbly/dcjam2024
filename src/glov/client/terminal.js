@@ -79,6 +79,25 @@ class CharInfo {
   }
 }
 
+const default_palette = [
+  vec4(0/64,0/64,0/63,1),
+  vec4(0/64,0/64,42/63,1),
+  vec4(0/64,42/64,0/63,1),
+  vec4(0/64,42/64,42/63,1),
+  vec4(42/64,0/64,0/63,1),
+  vec4(42/64,0/64,42/63,1),
+  vec4(42/64,21/64,0/63,1),
+  vec4(42/64,42/64,42/63,1),
+  vec4(18/64,18/64,18/63,1),
+  vec4(21/64,21/64,63/63,1),
+  vec4(21/64,63/64,21/63,1),
+  vec4(21/64,63/64,63/63,1),
+  vec4(63/64,21/64,21/63,1),
+  vec4(63/64,21/64,63/63,1),
+  vec4(63/64,63/64,21/63,1),
+  vec4(63/64,63/64,63/63,1),
+];
+
 class GlovTerminal {
   constructor(params) {
     params = params || {};
@@ -116,24 +135,12 @@ class GlovTerminal {
     this.x1 = this.w;
     this.y1 = this.h;
 
-    this.palette = params.palette || [
-      vec4(0/64,0/64,0/63,1),
-      vec4(0/64,0/64,42/63,1),
-      vec4(0/64,42/64,0/63,1),
-      vec4(0/64,42/64,42/63,1),
-      vec4(42/64,0/64,0/63,1),
-      vec4(42/64,0/64,42/63,1),
-      vec4(42/64,21/64,0/63,1),
-      vec4(42/64,42/64,42/63,1),
-      vec4(18/64,18/64,18/63,1),
-      vec4(21/64,21/64,63/63,1),
-      vec4(21/64,63/64,21/63,1),
-      vec4(21/64,63/64,63/63,1),
-      vec4(63/64,21/64,21/63,1),
-      vec4(63/64,21/64,63/63,1),
-      vec4(63/64,63/64,21/63,1),
-      vec4(63/64,63/64,63/63,1),
-    ];
+    this.palette = params.palette || [];
+    for (let ii = 0; ii < default_palette.length; ++ii) {
+      if (!this.palette[ii]) {
+        this.palette[ii] = default_palette[ii];
+      }
+    }
     this.font_styles = [];
     for (let ii = 0; ii < this.palette.length; ++ii) {
       this.font_styles.push(glov_font.style(null, {
@@ -144,6 +151,8 @@ class GlovTerminal {
     this.char_height = params.char_height || 16;
     this.font = params.font || engine.font;
     this.auto_scroll = params.auto_scroll ?? true;
+    this.auto_crlf = params.auto_crlf ?? false;
+    this.ignore_newline_after_wrap = params.ignore_newline_after_wrap ?? false;
     this.buffer = new Array(this.h);
     this.prebuffer = new Array(this.h); // before applying the mods
     for (let ii = 0; ii < this.h; ++ii) {
@@ -320,12 +329,14 @@ class GlovTerminal {
     this.auto_scroll = b;
   }
   checkwrap() {
+    let ret = false;
     if (this.x < this.x0) {
       this.x = this.x0;
     }
     if (this.x >= this.x1) {
       this.x = this.x0;
       this.y++;
+      ret = true;
     }
     if (this.y >= this.y1) {
       this.y = this.y1 - 1;
@@ -333,6 +344,7 @@ class GlovTerminal {
         this.mod(MOD_SCROLL);
       }
     }
+    return ret;
   }
   cr() {
     this.x = this.x0;
@@ -381,6 +393,7 @@ class GlovTerminal {
   print(params) {
     this.moveto(params.x, params.y);
     this.color(params.fg, params.bg);
+    let just_wrapped = false; // maybe should persist between print() calls?
     let text = params.text || '';
     if (text && !text.length) {
       text = [text];
@@ -474,7 +487,16 @@ class GlovTerminal {
       } else if (ch === '\n') {
         handled = true;
         ++ii;
-        this.lf();
+        if (this.ignore_newline_after_wrap && just_wrapped) {
+          // ignore
+          just_wrapped = false;
+        } else {
+          if (this.auto_crlf) {
+            this.crlf();
+          } else {
+            this.lf();
+          }
+        }
       } else if (ch === '\r') {
         handled = true;
         ++ii;
@@ -485,7 +507,7 @@ class GlovTerminal {
           this.mod(MOD_CH, ch);
         }
         ++this.x;
-        this.checkwrap();
+        just_wrapped = this.checkwrap();
         ++ii;
       }
     }
@@ -781,6 +803,21 @@ class GlovTerminal {
     return ret;
   }
 
+  isAnimating() {
+    return Boolean(this.mod_head);
+  }
+  finishAnimating() {
+    while (this.mod_head) {
+      let mod = this.mod_head;
+      this.mod_head = mod.next;
+      if (!mod.next) {
+        this.mod_tail = null;
+      }
+      this.domod(this.buffer, mod);
+    }
+    this.mod_countdown = 0;
+  }
+
   render() {
     let dt = engine.getFrameDt();
     this.frame++;
@@ -849,7 +886,7 @@ class GlovTerminal {
       if (cursor_blink) {
         ui.drawRect(cx, cy + char_height - draw_cursor[1] - 1,
           cx + char_width, cy + char_height - draw_cursor[0],
-          z + 0.75, palette[playback.fg]);
+          z + 0.75, palette[this.mod_head ? playback.fg : this.fg]);
       }
     }
     // Draw background rects
@@ -893,51 +930,4 @@ class GlovTerminal {
 
 export function terminalCreate(params) {
   return new GlovTerminal(params);
-}
-
-// Convenience functions for generating ANSI strings from named colors
-export const ansi = { bg: {} };
-[
-  'black',
-  'red',
-  'green',
-  'yellow',
-  'blue',
-  'magenta',
-  'cyan',
-  'white',
-].forEach(function (color, idx) {
-  ansi[color] = function (str) {
-    return `${ESC}[${30 + idx}m${str}${ESC}[0m`;
-  };
-  ansi[color].bright = function (str) {
-    return `${ESC}[${30 + idx};1m${str}${ESC}[0m`;
-  };
-  ansi.bg[color] = function (str) {
-    return `${ESC}[${40 + idx}m${str}${ESC}[0m`;
-  };
-});
-ansi.normal = function (str) {
-  return `${ESC}[0m${str}`;
-};
-ansi.blink = function (str) {
-  return `${ESC}[5m${str}${ESC}[0m`;
-};
-
-// eslint-disable-next-line no-control-regex
-const strip_ansi = /\u001b\[(?:[0-9;]*)[0-9A-ORZcf-nqry=><]/g;
-export function padRight(str, width) {
-  let len = str.replace(strip_ansi, '').length;
-  if (len < width) {
-    str += new Array(width - len + 1).join(' ');
-  }
-  return str;
-}
-
-export function padLeft(str, width) {
-  let len = str.replace(strip_ansi, '').length;
-  if (len < width) {
-    str = new Array(width - len + 1).join(' ') + str;
-  }
-  return str;
 }

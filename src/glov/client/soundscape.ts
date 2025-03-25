@@ -1,6 +1,7 @@
 import assert from 'assert';
 import { ridx } from '../common/util';
-import * as engine from './engine.js';
+import * as engine from './engine';
+import * as settings from './settings';
 import {
   GlovSound,
   GlovSoundSetUp,
@@ -12,6 +13,8 @@ import {
   soundResumed,
 } from './sound';
 import {
+  dataLayerHasMax,
+  SoundScape,
   SSDataFile,
   SSDataLayer,
   SSDataTagLayer,
@@ -22,12 +25,8 @@ import {
   SSSoundState,
   SSSoundStateBase,
   SSTagLayer,
-  SoundScape,
-  dataLayerHasMax,
 } from './soundscape_types';
 
-// TODO: Replace with "import * as settings" and replace settings.x with settings.get('x')
-const settings = require('./settings');
 const { floor, max, min, random } = Math;
 
 export * from './soundscape_types';

@@ -1,9 +1,8 @@
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 /* globals HTMLElement, Event */
 
 import {
-  TSMap,
   TextVisualLimit,
+  TSMap,
   VoidFunc,
 } from 'glov/common/types';
 import { ROVec4 } from 'glov/common/vmath';
@@ -21,8 +20,10 @@ export const Z_MIN_INC: number;
 export const LINE_ALIGN: number;
 export const LINE_CAP_SQUARE: number;
 export const LINE_CAP_ROUND: number;
+export const LINE_NO_AA: number;
 export function makeColorSet(color: ROVec4): ColorSet;
 export function colorSetMakeCustom(regular: ROVec4, rollover: ROVec4, down: ROVec4, disabled: ROVec4): ColorSet;
+export function colorSetGetField(color_set: ColorSet, field: ButtonStateString): ROVec4;
 export interface UIBox extends Box {
   z?: number;
 }
@@ -84,7 +85,8 @@ export function buttonWasFocused(): boolean;
 export function buttonLastSpotRet(): ButtonRet;
 export function colorSetSetShades(rollover: number, down: number, disabled: number): void;
 export function loadUISprite(name: string, ws: number[], hs: number[]): void;
-type UISpriteDef = {
+export type UISpriteDef = {
+  atlas?: string;
   name?: string;
   url?: string;
   ws?: number[];
@@ -103,7 +105,8 @@ export function uiGetDOMElem(last_elem: HTMLElement, allow_modal: boolean): null
 export function uiGetDOMTabIndex(): number;
 export type BaseSoundKey = 'button_click' | 'rollover';
 export type UISoundID = SoundID & { opts?: SoundLoadOpts };
-export function uiBindSounds(sounds?: Partial<Record<string, UISoundID | UISoundID[] | null>>): void;
+export type UISounds = Partial<Record<string, UISoundID | UISoundID[] | null>>;
+export function uiBindSounds(sounds?: UISounds): void;
 export interface DrawHBoxParam extends UIBox {
   no_min_width?: boolean;
 }
@@ -155,6 +158,7 @@ export interface TooltipBoxParam {
   tooltip_width?: number;
   tooltip_above?: boolean;
   tooltip_right?: boolean;
+  tooltip_left?: boolean;
   tooltip_center?: boolean;
   tooltip_markdown?: boolean; // defaults true
   tooltip: TooltipValue;
@@ -192,6 +196,7 @@ export interface ButtonParam extends Partial<TooltipParam>, Partial<SpotParam> {
   base_name?: string;
   no_bg?: boolean;
   style?: UIStyle;
+  tooltip_left?: boolean;
 }
 export interface ButtonTextParam extends ButtonParam {
   text: Text;
@@ -201,10 +206,11 @@ export interface ButtonTextParam extends ButtonParam {
   font_style_focused?: FontStyle;
   font_style_disabled?: FontStyle;
   align?: ALIGN;
+  markdown?: boolean; // defaults to false
 }
 export interface ButtonImageParamBase extends ButtonParam {
   shrink?: number;
-  frame?: number;
+  frame?: number | string;
   img_rect?: ROVec4;
   left_align?: boolean;
   img_color?: ROVec4;
@@ -212,6 +218,7 @@ export interface ButtonImageParamBase extends ButtonParam {
   color1?: ROVec4;
   rotation?: number;
   flip?: boolean;
+  yoffs?: YOffs;
 }
 export interface ButtonImageParam1 extends ButtonImageParamBase {
   imgs: Sprite[];
@@ -228,7 +235,15 @@ export function buttonText(param: ButtonTextParam): ButtonRet | null;
 export function buttonImage(param: ButtonImageParam): ButtonRet | null;
 export type ButtonGenericParam = ButtonTextParam | ButtonImageParam;
 export function button(param: ButtonGenericParam): ButtonRet | null;
-export function buttonSetDefaultYOffs(y_offs: Partial<Record<ButtonStateString, number>>): void;
+export type YOffs = Partial<Record<ButtonStateString, number>>;
+export function buttonSetDefaultYOffs(y_offs: YOffs): void;
+
+
+type CheckboxParam = ButtonTextParam & {
+  base_name_checked?: string; // default 'checked'
+  base_name_unchecked?: string; // default 'unchecked'
+};
+export function checkbox(value: boolean, param: CheckboxParam): boolean;
 
 export function print(font_style: FontStyle | null, x: number, y: number, z: number, text: Text): number;
 
@@ -244,7 +259,7 @@ export type LabelImageOptions = {
   w: number;
   h: number;
   img: Sprite;
-  frame?: number;
+  frame?: number | string;
   img_color?: ROVec4;
   img_color_focused?: ROVec4;
 };
@@ -280,7 +295,7 @@ export type ModalDialogTickCallbackParams = {
   readonly font_height: number;
   readonly fullscreen_mode: boolean;
 };
-export type ModalDialogTickCallback = (param: ModalDialogTickCallbackParams) => string | void;
+export type ModalDialogTickCallback = (param: ModalDialogTickCallbackParams) => number | void;
 export type ModalDialogButtons<CB=VoidFunc> = TSMap<ModalDialogButton<CB>>;
 export interface ModalDialogParamBase<CB> {
   title?: Text;
@@ -394,10 +409,10 @@ export function setButtonHeight(button_height: number): void;
 export function setPanelPixelScale(scale: number): void;
 export function setModalSizes(
   modal_button_width: number,
-  width: number,
-  y0: number,
-  title_scale: number,
-  pad: number,
+  width?: number,
+  y0?: number,
+  title_scale?: number,
+  pad?: number,
 ): void;
 export function setTooltipWidth(tooltip_width: number, tooltip_panel_pixel_scale: number): void;
 export function setTooltipTextOffset(tooltip_text_offs: number): void;
@@ -433,6 +448,15 @@ type UISpriteSet = {
   slider_notch?: UISpriteDef;
   slider_handle?: UISpriteDef;
 
+  checked?: UISpriteDef;
+  checked_rollover?: UISpriteDef;
+  checked_down?: UISpriteDef;
+  checked_disabled?: UISpriteDef;
+  unchecked?: UISpriteDef;
+  unchecked_rollover?: UISpriteDef;
+  unchecked_down?: UISpriteDef;
+  unchecked_disabled?: UISpriteDef;
+
   scrollbar_bottom?: UISpriteDef;
   scrollbar_trough?: UISpriteDef;
   scrollbar_top?: UISpriteDef;
@@ -440,6 +464,10 @@ type UISpriteSet = {
   scrollbar_handle?: UISpriteDef;
   progress_bar?: UISpriteDef;
   progress_bar_trough?: UISpriteDef;
+
+  collapsagories?: UISpriteDef;
+  collapsagories_rollover?: UISpriteDef;
+  collapsagories_shadow_down?: UISpriteDef;
 };
 export const internal : {
   checkHooks(param: { hook?: HookList }, click: boolean): void;

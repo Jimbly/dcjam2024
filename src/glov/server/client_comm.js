@@ -5,18 +5,21 @@ import assert from 'assert';
 import * as crypto from 'crypto';
 import * as fs from 'fs';
 import {
-  MAX_CLIENT_UPLOAD_SIZE,
   chunkedReceiverCleanup,
   chunkedReceiverFinish,
   chunkedReceiverInit,
   chunkedReceiverOnChunk,
   chunkedReceiverStart,
+  MAX_CLIENT_UPLOAD_SIZE,
 } from 'glov/common/chunked_send';
 import { ERR_NO_USER_ID, ERR_UNAUTHORIZED } from 'glov/common/external_users_common';
 import { isPacket } from 'glov/common/packet';
 import { perfCounterAdd, perfCounterAddValue } from 'glov/common/perfcounters';
 import { unicode_replacement_chars } from 'glov/common/replacement_chars';
-import { logdata, merge } from 'glov/common/util';
+import {
+  EMAIL_REGEX,
+  logdata,
+} from 'glov/common/util';
 import {
   isProfane,
   profanityCommonStartup,
@@ -43,6 +46,14 @@ function defaultUserIdMappingHandler(client_channel, valid_login_data, resp_func
   client_channel.sendChannelMessage(
     'idmapper.idmapper',
     'id_map_get_id',
+    { provider: valid_login_data.provider, provider_id: valid_login_data.external_id },
+    (err, result) => resp_func(err, result?.user_id));
+}
+
+export function defaultUserIdMappingAutoCreateHandler(client_channel, valid_login_data, resp_func) {
+  client_channel.sendChannelMessage(
+    'idmapper.idmapper',
+    'id_map_get_create_id',
     { provider: valid_login_data.provider, provider_id: valid_login_data.external_id },
     (err, result) => resp_func(err, result?.user_id));
 }
@@ -87,7 +98,7 @@ function onClientDisconnect(client) {
 }
 
 function onSubscribe(client, channel_id, resp_func) {
-  client.client_channel.logDest(channel_id, 'debug', 'subscribe');
+  // client.client_channel.logDest(channel_id, 'debug', 'subscribe');
   client.client_channel.subscribeOther(channel_id, ['*'], resp_func);
 }
 
@@ -179,13 +190,13 @@ function onChannelMsg(client, data, resp_func) {
       return;
     }
   }
-  if (quietMessage(msg, payload)) {
-    if (!is_packet && typeof payload === 'object') {
-      payload.q = 1; // do not print later, either
-    }
-  } else {
-    client.client_channel.logDest(channel_id, 'debug', `channel_msg ${msg} ${log}`);
-  }
+  let cat = quietMessage(msg, payload);
+  // Disabling this: doesn't work for packets, and is adding data to payloads
+  //   Also doesn't seem to be needed anymore?
+  // if (cat && !is_packet && payload && typeof payload === 'object') {
+  //   payload.q = cat; // do not print/respect cat later, either
+  // }
+  client.client_channel.logDestCat(cat, channel_id, 'debug', `channel_msg ${msg} ${log}`);
   if (!channel_id) {
     if (is_packet) {
       payload.pool();
@@ -243,7 +254,8 @@ function onChannelMsg(client, data, resp_func) {
   };
   resp_func.expecting_response = Boolean(old_resp_func);
   client_channel.ids = client_channel.ids_direct;
-  channelServerSend(client_channel, channel_id, msg, null, payload, resp_func, true); // quiet since we already logged
+  channelServerSend(client_channel, channel_id, msg, null, payload, resp_func,
+    'redundant'); // quiet since we already logged
   client_channel.ids = client_channel.ids_base;
 }
 
@@ -315,9 +327,7 @@ function handleLoginResponse(login_message, client, user_id, resp_func, err, res
     return resp_func('Already logged in');
   }
 
-  let first_session;
-  let email;
-  let hash;
+  let extra;
   if (err) {
     client_channel.logCtx('info', `${login_message} failed: ${err}`);
   } else {
@@ -333,17 +343,13 @@ function handleLoginResponse(login_message, client, user_id, resp_func, err, res
     // Always subscribe client to own user
     onSubscribe(client, `user.${user_id}`);
 
-    first_session = resp_data.first_session;
-    email = resp_data.email;
-    hash = resp_data.hash;
+    extra = resp_data.extra;
   }
 
   return resp_func(err, {
-    first_session,
-    email,
+    ...extra, // email, hash, and app-specific things like first_session
     user_id: client_channel.ids.user_id,
     display_name: client_channel.ids.display_name,
-    hash,
   });
 }
 
@@ -386,7 +392,7 @@ function onLogin(client, data, resp_func) {
   }, handleLoginResponse.bind(null, 'login', client, user_id, resp_func));
 }
 
-function onLoginExternal(client, data, cb) {
+export function onLoginExternal(client, data, cb) {
   let client_channel = client.client_channel;
   assert(client_channel);
 
@@ -413,6 +419,10 @@ function onLoginExternal(client, data, cb) {
     assert(valid_login_data);
     let external_user_id = valid_login_data.external_id;
     assert(external_user_id);
+    let { email, display_name: provider_display_name } = valid_login_data;
+    if (provider_display_name) {
+      display_name = provider_display_name;
+    }
 
     let userIdMappingHandler = getExternalUserIdMapper(provider);
     userIdMappingHandler(client_channel, valid_login_data, (err, user_id, providers_ids) => {
@@ -424,6 +434,15 @@ function onLoginExternal(client, data, cb) {
       }
       if (!user_id) {
         return void cb(ERR_NO_USER_ID);
+      }
+
+      if (EMAIL_REGEX.test(email)) {
+        const channel = `user.${user_id}`;
+        client_channel.sendChannelMessage(channel, 'set_email', email, (err_set_email) => {
+          if (err_set_email) {
+            client_channel.logCtx('error', `unable to set email ${email}: ${err_set_email}`);
+          }
+        });
       }
 
       // Handle the case where this function is not called with extra providers' ids
@@ -445,6 +464,13 @@ function onUserCreate(client, data, resp_func) {
   client_channel.logCtx('info', `user_create ${logdata(data)}`);
   let user_id = data.user_id;
   if (!validUsername(user_id)) {
+    client_channel.logCtx('info', 'user_create failed: Invalid username');
+    return resp_func('Invalid username');
+  }
+  if (user_id.endsWith('_')) {
+    // causes minorish problems with Markdown parsing, but these already exist
+    //   in the wild, so just stop new ones from being created, do not prevent
+    //   them from logging in, etc.
     client_channel.logCtx('info', 'user_create failed: Invalid username');
     return resp_func('Invalid username');
   }
@@ -490,9 +516,7 @@ function onRandomName(client, data, resp_func) {
 }
 
 function onLog(client, data, resp_func) {
-  let client_channel = client.client_channel;
-  merge(data, client_channel.ids);
-  merge(data, client.crash_data);
+  client.clientLogData(data);
   client.client_channel.logCtx('info', 'server_log', data);
   resp_func();
 }
@@ -581,7 +605,7 @@ function onLoadMetrics(client, data, resp_func) {
   for (let ii = 0; ii < LOAD_TIME_METRICS.length; ++ii) {
     let field = LOAD_TIME_METRICS[ii];
     if (typeof data[field] === 'number') {
-      metricsStats(`clientload_${field}`, data[field]);
+      metricsStats(`clientload_${field}`, data[field], 'low');
     }
   }
   resp_func();
@@ -616,11 +640,11 @@ export function init(channel_server_in) {
     client.client_channel.client = client;
     client.crash_data = {
       addr: client.addr,
-      user_agent: client.user_agent,
       plat: client.client_plat,
       ver: client.client_ver,
       build: client.client_build,
       ua: client.user_agent,
+      sesuid: client.client_sesuid,
     };
   });
   ws_server.on('cack_data', (cack_data) => {

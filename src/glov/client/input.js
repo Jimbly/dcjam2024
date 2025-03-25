@@ -183,6 +183,7 @@ const { renderNeeded } = require('./engine.js');
 const in_event = require('./in_event.js');
 const local_storage = require('./local_storage.js');
 const { abs, max, min, sqrt } = Math;
+const { normalizeWheel } = require('./normalize_mousewheel.js');
 const pointer_lock = require('./pointer_lock.js');
 const settings = require('./settings.js');
 const { soundResume } = require('./sound.js');
@@ -400,14 +401,32 @@ function ignored(event) {
 
 let ctrl_checked = false;
 let unload_protected = false;
+let unload_override = null;
+// cb() returns a string to display a message (actual message is ignored), or false
+//   to *not* block unload, or anything else to block the unload with a message
+export function inputOverrideUnload(cb) {
+  assert(!unload_override || !cb);
+  unload_override = cb;
+}
 function beforeUnload(e) {
-  if (unload_protected && ctrl_checked) {
+  let unload_msg;
+  if (unload_override) {
+    unload_msg = unload_override();
+    if (unload_msg === false) {
+      // do *not* block the unload
+    } else if (!unload_msg) {
+      // no prompt, just block the unload
+      e.preventDefault();
+      return;
+    }
+  }
+  if (unload_protected && ctrl_checked || unload_msg) {
     // Exit pointer lock if the browser didn't do that automatically
     pointerLockExit();
     // Cancel the event
     e.preventDefault();
     // Chrome requires returnValue to be set
-    e.returnValue = 'Are you sure you want to quit?';
+    e.returnValue = unload_msg || 'Are you sure you want to quit?';
   } else {
     engine.releaseCanvas();
   }
@@ -467,9 +486,11 @@ function onKeyDown(event) {
   let code = event.keyCode;
   let no_stop = letEventThrough(event) ||
     code >= KEYS.F5 && code <= KEYS.F12 || // Chrome debug hotkeys
+    code === KEYS.F4 && (event.altKey || event.metaKey || event.ctrlKey) || // Windows/Electron close window hotkey
     code === KEYS.I && (event.altKey && event.metaKey || event.ctrlKey && event.shiftKey) || // Safari, alternate Chrome
     code === KEYS.R && event.ctrlKey || // Chrome reload hotkey
-    (code === KEYS.LEFT || code === KEYS.RIGHT) && event.altKey; // forward/back navigation
+    (code === KEYS.LEFT || code === KEYS.RIGHT) && event.altKey || // forward/back navigation
+    event.ctrlKey && code >= KEYS['0'] && code <= KEYS['9']; // Chrome tab switch hotkeys
   if (!no_stop) {
     event.stopPropagation();
     event.preventDefault();
@@ -668,11 +689,12 @@ function onWheel(event) {
   renderNeeded();
   let saved = mouse_moved; // don't trigger mouseMoved()
   onMouseMove(event, true);
+  // onUserInput(); - Browser doesn't count mousewheel as user input :(
   mouse_moved = saved;
-  let delta = -event.deltaY || event.wheelDelta || -event.detail;
+  let normalized = normalizeWheel(event);
   wheel_events.push({
     pos: [event.pageX, event.pageY],
-    delta: delta > 0 ? 1 : -1,
+    delta: -normalized.pixel_y/100,
     dispatched: false,
   });
 
@@ -691,11 +713,11 @@ function onTouchChange(event) {
   // instead, but this works well enough.
   onUserInput();
   if (!touch_mode) {
-    local_storage.set('touch_mode', true);
+    local_storage.setJSON('touch_mode', true);
     touch_mode = true;
   }
   if (pad_mode) {
-    local_storage.set('pad_mode', false);
+    local_storage.setJSON('pad_mode', false);
     pad_mode = false;
   }
   if (event.cancelable !== false) {
@@ -861,9 +883,6 @@ export function startup(_canvas, params) {
 
   handleTouches(canvas);
 
-  // For iOS, this is needed in test_fullscreen, but not here, for some reason
-  //window.addEventListener('gesturestart', ignored, false);
-
   window.addEventListener('beforeunload', beforeUnload, false);
 }
 
@@ -894,7 +913,7 @@ function updatePadState(gpd, ps, b, padcode) {
     ps[padcode] = DOWN_EDGE;
     onUserInput();
     if (touch_mode) {
-      local_storage.set('touch_mode', false);
+      local_storage.setJSON('touch_mode', false);
       touch_mode = false;
     }
     if (!pad_mode) {
@@ -1383,7 +1402,9 @@ export function keyDownEdge(keycode, opts) {
     return 0;
   }
   let r = ks.down_edge;
-  ks.down_edge = 0;
+  if (!opts || !opts.peek) {
+    ks.down_edge = 0;
+  }
   return r;
 }
 export function keyUpEdge(keycode, opts) {
@@ -1400,7 +1421,9 @@ export function keyUpEdge(keycode, opts) {
     return 0;
   }
   let r = ks.up_edge;
-  ks.up_edge = 0;
+  if (!opts || !opts.peek) {
+    ks.up_edge = 0;
+  }
   return r;
 }
 
@@ -1655,6 +1678,7 @@ export function drag(param) {
         is_down_edge,
         down_time: touch_data.down_time,
         touch_id,
+        dropped: touch_data.up_edge,
       };
     }
   }
@@ -1674,7 +1698,9 @@ export function longPress(param) {
 
   for (let touch_id in touches) {
     let touch_data = touches[touch_id];
-    if (!(button === ANY || button === touch_data.button) || touch_data.long_press_dispatched) {
+    if (!(button === ANY || button === touch_data.button) || touch_data.long_press_dispatched ||
+      touch_data.button === POINTERLOCK
+    ) {
       continue;
     }
     if (checkPos(touch_data.start_pos, pos_param)) {

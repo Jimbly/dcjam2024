@@ -1,6 +1,6 @@
 // Portions Copyright 2019 Jimb Esser (https://github.com/Jimbly/)
 // Released under MIT License: https://opensource.org/licenses/MIT
-/* eslint no-bitwise:off, complexity:off, @typescript-eslint/no-shadow:off */
+/* eslint no-bitwise:off, @typescript-eslint/no-shadow:off */
 
 exports.style = fontStyle; // eslint-disable-line @typescript-eslint/no-use-before-define
 exports.styleColored = fontStyleColored; // eslint-disable-line @typescript-eslint/no-use-before-define
@@ -39,7 +39,7 @@ const { transformX, transformY } = require('./camera2d.js');
 const engine = require('./engine.js');
 const geom = require('./geom.js');
 const { getStringFromLocalizable } = require('./localization.js');
-const { max, min, round } = Math;
+const { cos, sin, max, min, round } = Math;
 // const settings = require('./settings.js');
 const { shaderCreate, shadersPrelink } = require('./shaders.js');
 const sprites = require('./sprites.js');
@@ -381,6 +381,7 @@ function GlovFont(font_info, texture_name) {
   });
   this.textures = [this.texture];
   this.integral = Boolean(font_info.noFilter); // TODO: often only want this for pixely = strict modes?
+  this.hard_cutoff = this.integral; // Maybe only if also pixely-strict?
 
   this.font_info = font_info;
   this.font_size = font_info.font_size;
@@ -559,8 +560,21 @@ export function fontSetDefaultSize(h) {
   default_size = h;
 }
 
+let font_rot = 0;
+let font_rot_cos = 0;
+let font_rot_sin = 0;
+let font_rot_origin_x = 0;
+let font_rot_origin_y = 0;
+export function fontRotate(rot, rot_origin_x, rot_origin_y) {
+  font_rot = rot;
+  font_rot_cos = cos(rot);
+  font_rot_sin = sin(rot);
+  font_rot_origin_x = transformX(rot_origin_x);
+  font_rot_origin_y = transformY(rot_origin_y);
+}
+
 GlovFont.prototype.draw = function (param) {
-  let { style, color, alpha, x, y, z, size, w, h, align, text, indent } = param;
+  let { style, color, alpha, x, y, z, size, w, h, align, text, indent, rot } = param;
   if (color) {
     style = fontStyleColored(style, color);
   }
@@ -570,14 +584,24 @@ GlovFont.prototype.draw = function (param) {
   indent = indent || 0;
   size = size || default_size;
   z = z || Z.UI;
+  if (rot) {
+    // TODO: x/y should be calculated w.r.t. w/h if align is specified
+    fontRotate(rot, x, y);
+  }
+  let ret;
   if (align) {
     if (align & ALIGN.HWRAP) {
-      return this.drawSizedAlignedWrapped(style, x, y, z, indent, size, align & ~ALIGN.HWRAP, w, h, text);
+      ret = this.drawSizedAlignedWrapped(style, x, y, z, indent, size, align & ~ALIGN.HWRAP, w, h, text);
+    } else {
+      ret = this.drawSizedAligned(style, x, y, z, size, align, w || 0, h || 0, text);
     }
-    return this.drawSizedAligned(style, x, y, z, size, align, w || 0, h || 0, text);
   } else {
-    return this.drawSized(style, x, y, z, size, text);
+    ret = this.drawSized(style, x, y, z, size, text);
   }
+  if (rot) {
+    fontRotate(0);
+  }
+  return ret;
 };
 
 // line_cb(x0, int linenum, const char *line, x1)
@@ -624,6 +648,32 @@ GlovFont.prototype.infoFromChar = function (c) {
   }
   // no char info, not whitespace, show replacement even if ascii, control code
   return this.replacement_character;
+};
+
+const strip_opts_default = {
+  tab: true,
+  newline: true,
+};
+GlovFont.prototype.stripUnprintable = function (text, opts) {
+  opts = opts || strip_opts_default;
+  text = getStringFromLocalizable(text);
+  for (let ii = text.length - 1; ii >= 0; --ii) {
+    let code = text.charCodeAt(ii);
+    let strip = false;
+    if (code === 10) {
+      strip = opts.newline ? ' ' : false;
+    } else if (code === 9) {
+      strip = opts.tab ? ' ' : false;
+    } else if (code >= 10 && code <= 13) {
+      strip = ' ';
+    } else if (!this.char_infos[code]) {
+      strip = '?';
+    }
+    if (strip) {
+      text = `${text.slice(0, ii)}${strip}${text.slice(ii + 1)}`;
+    }
+  }
+  return text;
 };
 
 GlovFont.prototype.getCharacterWidth = function (style, x_size, c) {
@@ -890,7 +940,13 @@ GlovFont.prototype.drawScaled = function () {
   padding4[1] = max(outer_scaled*ysc - glow_yoffs, padding1);
   padding4[3] = max(outer_scaled*ysc + glow_yoffs, padding1);
 
+  if (this.hard_cutoff) {
+    value[0] *= 512;
+    value[1] = value[1] * 512 - 255.5;
+    value[2] = value[2] * 512 - 255.5;
+  }
   techParamsSet('param0', value);
+
   let value2 = temp_vec4_glow_params;
   // Glow mult
   if (applied_style.glow_outer) {
@@ -899,7 +955,7 @@ GlovFont.prototype.drawScaled = function () {
       ((applied_style.glow_outer - applied_style.glow_inner) * delta_per_source_pixel * font_texel_scale));
   } else {
     // Avoid sending `Infinity` to GPU
-    value2[2] = value[3] = 0;
+    value2[2] = value2[3] = 0;
   }
 
   v4scale(padding_in_font_space, padding4, 1 / avg_scale_font);
@@ -939,6 +995,10 @@ GlovFont.prototype.drawScaled = function () {
   let sort_y = transformY(y);
   let color = applied_style.color_vec4;
   let shader = this.shader;
+  let turx;
+  let tury;
+  let tllx;
+  let tlly;
 
   for (let i=0; i<len; i++) {
     const c = text.charCodeAt(i);
@@ -991,14 +1051,38 @@ GlovFont.prototype.drawScaled = function () {
           let x1 = xx + w;
           let zz = z + z_advance * i;
 
-          let tx0 = transformX(xx);
-          let ty0 = transformY(yy);
-          let tx1 = transformX(x1);
-          let ty1 = transformY(y1);
+          let tulx = transformX(xx);
+          let tuly = transformY(yy);
+          let tlrx = transformX(x1);
+          let tlry = transformY(y1);
+          if (font_rot) {
+            let tw = tlrx - tulx;
+            let th = tlry - tuly;
+            let relxoffs = tulx - font_rot_origin_x;
+            let relyoffs = tuly - font_rot_origin_y;
+            tulx = font_rot_origin_x + relxoffs * font_rot_cos - relyoffs * font_rot_sin;
+            tuly = font_rot_origin_y + relxoffs * font_rot_sin + relyoffs * font_rot_cos;
+            let cosw = font_rot_cos * tw;
+            let sinw = font_rot_sin * tw;
+            let sinh = font_rot_sin * th;
+            let cosh = font_rot_cos * th;
+            turx = tulx + cosw;
+            tury = tuly + sinw;
+            tllx = tulx - sinh;
+            tlly = tuly + cosh;
+            tlrx = tulx + cosw - sinh;
+            tlry = tuly + sinw + cosh;
+          } else {
+            turx = tlrx;
+            tury = tuly;
+            tllx = tulx;
+            tlly = tlry;
+          }
+
           let elem = spriteDataAlloc(texs, shader, tech_params, blend_mode);
           let data = elem.data;
-          data[0] = tx0;
-          data[1] = ty0;
+          data[0] = tulx;
+          data[1] = tuly;
           data[2] = color[0];
           data[3] = color[1];
           data[4] = color[2];
@@ -1006,8 +1090,8 @@ GlovFont.prototype.drawScaled = function () {
           data[6] = u0;
           data[7] = v0;
 
-          data[8] = tx0;
-          data[9] = ty1;
+          data[8] = tllx;
+          data[9] = tlly;
           data[10] = color[0];
           data[11] = color[1];
           data[12] = color[2];
@@ -1015,8 +1099,8 @@ GlovFont.prototype.drawScaled = function () {
           data[14] = u0;
           data[15] = v1;
 
-          data[16] = tx1;
-          data[17] = ty1;
+          data[16] = tlrx;
+          data[17] = tlry;
           data[18] = color[0];
           data[19] = color[1];
           data[20] = color[2];
@@ -1024,8 +1108,8 @@ GlovFont.prototype.drawScaled = function () {
           data[22] = u1;
           data[23] = v1;
 
-          data[24] = tx1;
-          data[25] = ty0;
+          data[24] = turx;
+          data[25] = tury;
           data[26] = color[0];
           data[27] = color[1];
           data[28] = color[2];
@@ -1033,7 +1117,7 @@ GlovFont.prototype.drawScaled = function () {
           data[30] = u1;
           data[31] = v0;
 
-          elem.x = tx0;
+          elem.x = tulx;
           elem.y = sort_y;
           elem.queue(zz);
 

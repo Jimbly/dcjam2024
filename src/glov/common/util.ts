@@ -83,8 +83,12 @@ export function defaultsDeep<A, B>(dest: A, src: B): A & B {
   for (let f in src) {
     if (!has(dest, f)) {
       (dest as DataObject)[f] = src[f];
-    } else if (typeof (dest as DataObject)[f] === 'object') {
-      defaultsDeep((dest as DataObject)[f], src[f]);
+    } else {
+      let vd = (dest as DataObject)[f];
+      let vs = src[f];
+      if (typeof vd === 'object' && !Array.isArray(vd) && typeof vs === 'object' && !Array.isArray(vs)) {
+        defaultsDeep(vd, src[f]);
+      }
     }
   }
   return dest as (A & B);
@@ -300,7 +304,7 @@ export function lineLineIntersect(p1: Vec2, p2: Vec2, p3: Vec2, p4: Vec2): boole
 //     o.__proto__ = p; // eslint-disable-line no-proto
 //     return o;
 //   };
-// eslint-disable-next-line @typescript-eslint/ban-types
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 export function inherits(ctor: Constructor | Function, superCtor: Constructor | Function): void {
   // From Node.js
   assert(typeof superCtor === 'function');
@@ -372,9 +376,9 @@ export function toArray(array_like: Float32Array | Int32Array | Uint8Array): num
   return Array.prototype.slice.call(array_like);
 }
 
-export function arrayToSet(array: number[]): Partial<Record<number, true>>;
-export function arrayToSet(array: string[]): Partial<Record<string, true>>;
-export function arrayToSet<T extends string | number>(array: T[]): Partial<Record<T, true>> {
+export function arrayToSet(array: Readonly<number[]>): Partial<Record<number, true>>;
+export function arrayToSet(array: Readonly<string[]>): Partial<Record<string, true>>;
+export function arrayToSet<T extends string | number>(array: Readonly<T[]>): Partial<Record<T, true>> {
   let ret = Object.create(null);
   for (let ii = 0; ii < array.length; ++ii) {
     ret[array[ii]] = true;
@@ -619,16 +623,16 @@ export function callbackify(f: (...args: any[]) => Promise<unknown>): (...args: 
     let cb = arguments[arguments.length - 1]; // eslint-disable-line prefer-rest-params
     assert.equal(typeof cb, 'function');
     let args = Array.prototype.slice.call(arguments, 0, -1); // eslint-disable-line prefer-rest-params
-    let p = f.apply(this, args); // eslint-disable-line @typescript-eslint/no-invalid-this
+    let p = f.apply(this, args);
     p.then((result) => {
       if (cb) {
         // escape promise so it doesn't catch and re-throw the error!
-        nextTick(cb.bind(this, null, result)); // eslint-disable-line @typescript-eslint/no-invalid-this
+        nextTick(cb.bind(this, null, result));
         cb = null;
       }
     }).catch((err) => {
       if (cb) {
-        nextTick(cb.bind(this, err)); // eslint-disable-line @typescript-eslint/no-invalid-this
+        nextTick(cb.bind(this, err));
         cb = null;
       }
     });
@@ -640,7 +644,7 @@ export function callbackify(f: (...args: any[]) => Promise<unknown>): (...args: 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function unpromisify<P extends any[], T=never>(f: (this: T, ...args: P) => void): (this: T, ...args: P) => void {
   return function (this: T): void {
-  // eslint-disable-next-line @typescript-eslint/no-invalid-this, prefer-rest-params, @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line prefer-rest-params, @typescript-eslint/no-explicit-any
     nextTick((f as any).apply.bind(f, this, arguments));
   };
 }
@@ -713,4 +717,41 @@ export function cmpNumericSmart(a: string, b: string): number {
   } else {
     return 0;
   }
+}
+
+export function mdEscape(text: string): string {
+  return text.replace(/([\\[*_])/g, '\\$1');
+}
+
+type AsyncDictCacheInternal<T> = Partial<Record<string, {
+  in_flight?: Array<(value: T) => void>;
+  value?: T;
+}>>;
+let async_dict_caches: Record<string, Record<never, never>> = {};
+export function asyncDictionaryGet<T>(
+  cache_in: string | Record<never, never>, // {}
+  key: string,
+  get: (key: string, cb: (value: T) => void)=> void,
+  cb: (value: T) => void
+): void {
+  if (typeof cache_in === 'string') {
+    cache_in = async_dict_caches[cache_in] = async_dict_caches[cache_in] || {};
+  }
+  let cache = cache_in as AsyncDictCacheInternal<T>;
+  let elem = cache[key];
+  if (elem) {
+    if (elem.in_flight) {
+      elem.in_flight.push(cb);
+    } else {
+      cb(elem.value!);
+    }
+    return;
+  }
+  cache[key] = elem = {
+    in_flight: [cb],
+  };
+  get(key, function (value: T) {
+    elem.value = value;
+    callEach(elem.in_flight, elem.in_flight = undefined, value);
+  });
 }

@@ -3,7 +3,7 @@
 
 import assert from 'assert';
 import { clamp, merge } from 'glov/common/util';
-import { Vec4, vec2, vec4 } from 'glov/common/vmath';
+import { vec2, Vec4, vec4 } from 'glov/common/vmath';
 import * as camera2d from './camera2d';
 import * as engine from './engine';
 import { renderNeeded } from './engine';
@@ -15,16 +15,17 @@ import {
   PAD,
 } from './input';
 import {
+  spot,
   SPOT_DEFAULT_BUTTON,
   SPOT_STATE_DOWN,
   SPOT_STATE_FOCUSED,
-  spot,
   spotPadMode,
   spotSubBegin,
   spotSubEnd,
   spotUnfocus,
 } from './spot';
 import { spriteClipPop, spriteClipPush } from './sprites';
+import { textureDefaultIsNearest } from './textures';
 import * as ui from './ui';
 import { uiTextHeight } from './ui';
 
@@ -315,7 +316,10 @@ class ScrollAreaInternal implements ScrollArea {
     let trough_height = this.h - button_h * 2;
     handle_pixel_h = max(handle_pixel_h, min(handle_pixel_min_h, trough_height * 0.75));
     let handle_screenpos = this.y + button_h_nopad + handle_pos * (this.h - button_h_nopad * 2 - handle_pixel_h);
-    // TODO: round handle_screenpos in pixely modes?
+    if (textureDefaultIsNearest()) {
+      // round handle_screenpos in pixely modes?
+      handle_screenpos = round(handle_screenpos);
+    }
     let top_color = this.color;
     let bottom_color = this.color;
     let handle_color = this.color;
@@ -524,12 +528,25 @@ class ScrollAreaInternal implements ScrollArea {
     let trough_draw_height = trough_height + trough_draw_pad * 2;
     let trough_v0 = -trough_draw_pad / pixel_scale / scrollbar_trough.uidata.total_h;
     let trough_v1 = trough_v0 + trough_draw_height / pixel_scale / scrollbar_trough.uidata.total_h;
-    scrollbar_trough.draw({
-      x: bar_x0, y: this.y + trough_draw_pad, z: this.z+0.1,
-      w: bar_w, h: trough_draw_height,
-      uvs: [scrollbar_trough.uvs[0], trough_v0, scrollbar_trough.uvs[2], trough_v1],
-      color: trough_color,
-    });
+    if (scrollbar_trough.texs[0].wrap_t === gl.REPEAT) {
+      scrollbar_trough.draw({
+        x: bar_x0, y: this.y + trough_draw_pad, z: this.z+0.1,
+        w: bar_w, h: trough_draw_height,
+        uvs: [scrollbar_trough.uvs[0], trough_v0, scrollbar_trough.uvs[2], trough_v1],
+        color: trough_color,
+      });
+    } else if (scrollbar_trough.uidata.heights.length === 3) {
+      ui.drawVBox({
+        x: bar_x0, y: this.y + trough_draw_pad, z: this.z+0.1,
+        w: bar_w, h: trough_draw_height,
+      }, scrollbar_trough, trough_color);
+    } else {
+      scrollbar_trough.draw({
+        x: bar_x0, y: this.y + trough_draw_pad, z: this.z+0.1,
+        w: bar_w, h: trough_draw_height,
+        color: trough_color,
+      });
+    }
 
     ui.drawVBox({
       x: bar_x0, y: handle_screenpos, z: this.z + 0.3,

@@ -8,7 +8,7 @@ function requireVersion(dep, required) {
     ver = process.versions.node;
   } else {
     try {
-      // eslint-disable-next-line global-require, import/no-dynamic-require
+      // eslint-disable-next-line n/global-require
       ver = require(`${dep}/package.json`).version;
     } catch (e) {
       return `"${dep}": missing`;
@@ -55,7 +55,7 @@ module.exports = function (filename) {
   }
 
   function prettyInterface() {
-    // eslint-disable-next-line global-require
+    // eslint-disable-next-line n/global-require
     const console_api = require('console-api');
     console_api.setPalette(console_api.palettes.desaturated);
     let project_name = 'glov';
@@ -72,11 +72,11 @@ module.exports = function (filename) {
   prettyInterface();
 
   requireVersions({
-    // 'nodejs': '16.13.0',
-    'glov-build': '1.0.43',
+    'nodejs': '22.12.0', // also in package.json and eslint.config.mjs
+    'glov-build': '1.0.48',
     'glov-build-browserify': '1.0.8',
     'glov-build-cache': '1.1.0',
-    'glov-build-concat': '1.0.10',
+    'glov-build-concat': '1.0.13',
     'glov-build-preresolve': '1.2.0',
     '@jimbly/howler': '0.0.9',
     '@jimbly/babel-plugin-transform-modules-simple-commonjs': '0.0.3',

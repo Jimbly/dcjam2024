@@ -1,9 +1,9 @@
 // Portions Copyright 2019 Jimb Esser (https://github.com/Jimbly/)
 // Released under MIT License: https://opensource.org/licenses/MIT
 
-require('./must_import.js')('channel_server.js', __filename); // eslint-disable-line import/order
+require('./must_import.js')('channel_server.js', __filename);
 
-export let cwstats = { msgs: 0, bytes: 0 };
+export let cwstats = { msgs: 0, bytes: 0, inflight_set: 0 };
 export let ERR_QUIET = 'ERR_QUIET';
 
 const AUTO_DESTROY_TIME = 90000;
@@ -23,34 +23,37 @@ import {
   ackInitReceiver,
   ackReadHeader,
 } from 'glov/common/ack';
-import * as cmd_parse_mod from 'glov/common/cmd_parse';
+import type {
+  CmdDef,
+  CmdParse,
+} from 'glov/common/cmd_parse';
 import {
   dotPropDelete,
   dotPropGet,
   dotPropSet,
 } from 'glov/common/dot-prop';
 import {
-  Packet,
   isPacket,
+  Packet,
 } from 'glov/common/packet';
 import {
   ChannelDataClients,
   ClientHandlerSource,
   ClientIDs,
-  CmdDef,
   DataObject,
   ErrorCallback,
   HandlerCallback,
   HandlerSource,
+  isClientHandlerSource,
+  isDataObject,
+  LoggedInClientHandlerSource,
   NetErrorCallback,
   NetResponseCallback,
   NetResponseCallbackCalledBySystem,
   NumberBoolean,
+  Roles,
   TSMap,
-  UnimplementedData,
   VoidFunc,
-  isClientHandlerSource,
-  isDataObject,
 } from 'glov/common/types';
 import {
   callEach,
@@ -59,27 +62,32 @@ import {
 } from 'glov/common/util';
 import {
   ChannelServer,
-  PAK_HINT_NEWSEQ,
-  PAK_ID_MASK,
   channelServerPak,
   channelServerSend,
+  PAK_HINT_NEWSEQ,
+  PAK_ID_MASK,
+  quietMessage,
 } from './channel_server';
 import { ERR_NOT_FOUND } from './exchange';
-import { logEx } from './log';
+import { logCat, logEx } from './log';
 import {
   packetLog,
   packetLogInit,
 } from './packet_log';
 
-const { min } = Math;
 
-type CmdParse = ReturnType<typeof cmd_parse_mod.create>;
+// Quiet flag or category string
+export type QCat = 1 | string;
+
+const { min } = Math;
 
 // How long to wait before failing an out of order packet and running it anyway
 const OOO_PACKET_FAIL_PINGS = 15; // For testing this, disable pak_new_seq below?
 
 // Delay subsequent writes by at least 1.5 seconds
-const METADATA_COMMIT_RATELIMIT = 1500;
+const METADATA_COMMIT_RATELIMIT_MIN = 1500;
+// Delay writes by at most 20 seconds
+const METADATA_COMMIT_RATELIMIT_MAX = 20000;
 
 function throwErr(err?: Error): void {
   if (err) {
@@ -204,7 +212,7 @@ export type HandleNewClientOpts = {
   suppress_join: boolean; // May be modified by override handleNewClient
 };
 
-type ApplyChannelDataParam = {
+export type ApplyChannelDataParam = {
   key: string;
   value: unknown;
 };
@@ -212,7 +220,7 @@ type ApplyChannelDataParam = {
 type EmitChannelDataParam = {
   key: string;
   value: unknown;
-  q?: 1;
+  q?: QCat;
 };
 
 type CmdParseAutoRet = {
@@ -220,7 +228,7 @@ type CmdParseAutoRet = {
   err: string;
 } | {
   found: 1;
-  resp: UnimplementedData;
+  resp: unknown;
 };
 
 type BatchedSetPair = [string, unknown] | [string];
@@ -238,8 +246,8 @@ export type HandlerFunction<P=never, R=never> = (
   data: P,
   resp_func: NetResponseCallback<R>
 ) => void;
-export type ClientHandlerFunction<P=never, R=never> = (
-  source: ClientHandlerSource,
+export type ClientHandlerFunction<P=never, R=never, S=ClientHandlerSource> = (
+  source: S,
   data: P,
   resp_func: NetResponseCallback<R>
 ) => void;
@@ -298,7 +306,9 @@ export class ChannelWorker {
   on_flush: OnFlushCB[] | null = null;
 
   cmd_parse_source!: ClientHandlerSource; // valid in any command parse handler
-  access?: TSMap<1>;
+  access?: Roles;
+
+  maintain_client_list_need_subscribe: boolean;
 
   declare last_sub_id: number; // Allocated as needed, depending on worker options
   declare attempting_shutdown: boolean; // Allocated as needed, depending on worker options
@@ -320,7 +330,7 @@ export class ChannelWorker {
   declare allow_client_direct: TSMap<true>;
   // default: always assume datastore usage
   declare no_datastore: boolean;
-  declare user_data_map: TSMap<string>;
+  declare user_data_map: TSMap<string> | null;
   declare user_fields_to_subscribe: string[];
 
   // On-prototype from channel_server
@@ -373,6 +383,10 @@ export class ChannelWorker {
     // Handle modes that can be enabled via statics on prototype
     if (this.maintain_client_list) {
       this.data.public.clients = {};
+      this.maintain_client_list_need_subscribe = Boolean(this.user_data_map && !empty(this.user_data_map) ||
+        this.user_fields_to_subscribe && this.user_fields_to_subscribe.length);
+    } else {
+      this.maintain_client_list_need_subscribe = false;
     }
 
     this.default_mem_usage = {
@@ -528,7 +542,7 @@ export class ChannelWorker {
       };
 
       if (this.emit_join_leave_events && !opts.suppress_join) {
-        this.channelEmit('join', ids);
+        this.channelEmit('join', ids, undefined, 'chatverbose');
       }
 
       if (this.maintain_client_list) {
@@ -540,8 +554,8 @@ export class ChannelWorker {
           this.getRoles(client_src!, roles);
           ids.roles = roles;
         }
-        this.setChannelData(`public.clients.${src.id}.ids`, ids);
-        if (user_id) {
+        this.setChannelData(`public.clients.${src.id}.ids`, ids, 'clientlist');
+        if (user_id && this.maintain_client_list_need_subscribe) {
           this.subscribeClientToUser(src.id, user_id);
         }
       }
@@ -563,7 +577,7 @@ export class ChannelWorker {
     this.sendChannelMessage(channel_id, 'channel_data', {
       public: out,
       sub_id: subscription_id,
-    });
+    }, undefined, 'subs');
 
     if (this.postNewClient) {
       this.postNewClient(src);
@@ -575,54 +589,54 @@ export class ChannelWorker {
   autoDestroyStart(): void {
     let { channel_id, channel_server } = this;
     let self = this;
-    this.info('Empty time expired, starting auto-destroy, locking...');
+    this.infoCat('lifecycle', 'Empty time expired, starting auto-destroy, locking...');
     assert(this.registered);
     this.attempting_shutdown = true;
     function unlock(next?: VoidFunc): void {
       if (next) {
-        self.pak('master.master', 'master_unlock').send((err) => {
+        self.pak('master.master', 'master_unlock', null, 'lifecycle').send((err) => {
           assert(!err, err!);
           self.attempting_shutdown = false;
           next();
         });
       } else {
         // do *not* expect a response, we are gone.
-        self.pak('master.master', 'master_unlock').send();
+        self.pak('master.master', 'master_unlock', null, 'lifecycle').send();
         self.attempting_shutdown = false;
       }
     }
 
-    let pak = this.pak('master.master', 'master_lock');
+    let pak = this.pak('master.master', 'master_lock', null, 'lifecycle');
     pak.writeAnsiString(channel_server.csuid);
     pak.send((err) => {
       assert(!err, err!);
       if (!this.shouldShutdown()) {
-        this.info('locked, but no longer should shutdown, unlocking...');
+        this.infoCat('lifecycle', 'locked, but no longer should shutdown, unlocking...');
         unlock(() => {
           this.info('unlocked');
           self.checkAutoDestroy(false); // If we're empty again, need to check in a while
         });
         return;
       }
-      this.debug('locked, unregistering from exchange...');
+      this.debugCat('lifecycle', 'locked, unregistering from exchange...');
       channel_server.exchange.unregister(channel_id, (err: string | null) => {
         channel_server.last_worker = this;
         assert(!err, err!);
         if (!this.shouldShutdown()) {
           // abort!
-          this.info('unregistered from exchange, but no longer should shutdown, re-registering...');
+          this.infoCat('lifecycle', 'unregistered from exchange, but no longer should shutdown, re-registering...');
           channel_server.exchange.register(channel_id, this.handleMessage.bind(this), (err: string | null) => {
-            this.info('re-registered to exchange, unlocking...');
+            this.infoCat('lifecycle', 're-registered to exchange, unlocking...');
             assert(!err, err!); // master locked, so no one else should be able to create at this time
             unlock(() => {
-              this.info('unlocked');
+              this.infoCat('lifecycle', 'unlocked');
               self.checkAutoDestroy(false); // If we're empty again, need to check in a while
             });
           });
           return;
         }
         // unregistered, now actually finish shutdown and let the master know to unlock us
-        this.debug('unregistered, unlocking and finalizing shutdown');
+        this.debugCat('lifecycle', 'unregistered, unlocking and finalizing shutdown');
         unlock();
         channel_server.removeChannelLocal(channel_id, false);
         this.shutdownFinal();
@@ -680,13 +694,13 @@ export class ChannelWorker {
       this.handleClientDisconnect(src, opts);
     }
     if (this.emit_join_leave_events && !opts.suppress_leave && is_client) {
-      this.channelEmit('leave', src);
+      this.channelEmit('leave', src, undefined, 'chatverbose');
     }
 
     if (this.maintain_client_list && is_client) {
       let user_id = this.getChannelData(`public.clients.${src.id}.ids.user_id`);
-      this.setChannelData(`public.clients.${src.id}`, undefined);
-      if (user_id) {
+      this.setChannelData(`public.clients.${src.id}`, undefined, 'clientlist');
+      if (user_id && this.maintain_client_list_need_subscribe) {
         this.unsubscribeOther(`user.${user_id}`);
       }
     }
@@ -703,7 +717,7 @@ export class ChannelWorker {
     assert(Array.isArray(field_list));
     this.subscribe_counts[other_channel_id] = (this.subscribe_counts[other_channel_id] || 0) + 1;
     if (this.subscribe_counts[other_channel_id] !== 1) {
-      this.debug(`->${other_channel_id}: subscribe - already subscribed`);
+      this.debugCat('subs', `->${other_channel_id}: subscribe - already subscribed`);
       if (resp_func) {
         resp_func(null);
       }
@@ -717,7 +731,7 @@ export class ChannelWorker {
           this.warn(`->${other_channel_id} subscribe failed: ${err}, ignoring`);
           err = null;
         } else {
-          this.log(`->${other_channel_id} subscribe failed: ${err}`);
+          this.logCat('subs', `->${other_channel_id} subscribe failed: ${err}`);
         }
       }
       if (err) {
@@ -739,7 +753,7 @@ export class ChannelWorker {
           resp_func(null);
         }
       }
-    });
+    }, 'subs');
   }
   unsubscribeOther(other_channel_id: string): void {
     // Note: subscribe count will already be 0 if we called .subscribeOther and
@@ -747,12 +761,12 @@ export class ChannelWorker {
     // initiated request, such as after a force_unsub message, or a bug/timing issue.
     assert(this.channel_type === 'client' || this.subscribe_counts[other_channel_id] || this.had_subscribe_error);
     if (!this.subscribe_counts[other_channel_id]) {
-      this.log(`->${other_channel_id}: unsubscribe - failed: not subscribed`);
+      this.logCat('subs', `->${other_channel_id}: unsubscribe - failed: not subscribed`);
       return;
     }
     --this.subscribe_counts[other_channel_id]!;
     if (this.subscribe_counts[other_channel_id]) {
-      this.debug(`->${other_channel_id}: unsubscribe - still subscribed (refcount)`);
+      this.debugCat('subs', `->${other_channel_id}: unsubscribe - still subscribed (refcount)`);
       return;
     }
 
@@ -770,7 +784,7 @@ export class ChannelWorker {
       } else {
         // succeeded, nothing special
       }
-    });
+    }, 'subs');
   }
   unsubscribeAll(): void {
     for (let channel_id in this.subscribe_counts) {
@@ -780,13 +794,14 @@ export class ChannelWorker {
       }
     }
   }
-  pak(dest: string, msg: string, ref_pak?: Packet | null, q?: 1 | undefined): Packet {
-    return channelServerPak(this, dest, msg, ref_pak, q);
+  pak(dest: string, msg: string, ref_pak?: Packet | null, qcat?: QCat): Packet {
+    return channelServerPak(this, dest, msg, ref_pak, qcat);
   }
   setChannelDataOnOther(channel_id: string, key: string, value: unknown,
-    resp_func: NetResponseCallbackCalledBySystem
+    resp_func: NetResponseCallbackCalledBySystem,
+    qcat?: QCat,
   ): void {
-    let pak = this.pak(channel_id, 'set_channel_data');
+    let pak = this.pak(channel_id, 'set_channel_data', null, qcat);
     pak.writeBool(false);
     pak.writeAnsiString(key);
     pak.writeJSON(value);
@@ -805,7 +820,7 @@ export class ChannelWorker {
       let client_elem = channel_data.public.clients[client_id];
       if (client_elem) {
         let old_ids = client_elem.ids || {};
-        if (old_ids.user_id !== user_id) {
+        if (old_ids.user_id !== user_id && this.maintain_client_list_need_subscribe) {
           if (old_ids.user_id) {
             this.unsubscribeOther(`user.${old_ids.user_id}`);
           }
@@ -817,14 +832,14 @@ export class ChannelWorker {
           user_id,
           client_id,
           display_name: src.display_name,
-        });
+        }, 'clientlist');
       }
     }
     resp_func();
   }
 
   subscribeClientToUser(client_id: string, user_id: string): void {
-    assert(this.maintain_client_list);
+    assert(this.maintain_client_list && this.maintain_client_list_need_subscribe);
     let channel_id = `user.${user_id}`;
     let field_list = [];
     if (this.user_data_map) {
@@ -849,9 +864,9 @@ export class ChannelWorker {
             let mapped = this.user_data_map[key]!;
             let value = existing_client[mapped];
             if (value) {
-              this.setChannelData(`public.clients.${client_id}.${mapped}`, value);
+              this.setChannelData(`public.clients.${client_id}.${mapped}`, value, 'clientlist');
             } else if (client[mapped]) {
-              this.setChannelData(`public.clients.${client_id}.${mapped}`, undefined);
+              this.setChannelData(`public.clients.${client_id}.${mapped}`, undefined, 'clientlist');
             }
           }
         } // else, okay?
@@ -896,7 +911,7 @@ export class ChannelWorker {
               let value = dotPropGet(data, key);
               if (value) {
                 let mapped = this.user_data_map[key];
-                this.setChannelData(`public.clients.${client_id}.${mapped}`, value);
+                this.setChannelData(`public.clients.${client_id}.${mapped}`, value, 'clientlist');
               }
             }
           }
@@ -936,7 +951,7 @@ export class ChannelWorker {
     }
   }
 
-  onCmdParse(source: ClientHandlerSource, data: string, resp_func: HandlerCallback): void {
+  onCmdParse(source: ClientHandlerSource, data: string, resp_func: HandlerCallback<unknown>): void {
     this.setAccessObj(source);
     this.cmd_parse.handle(this, data, resp_func);
     this.cmd_parse_source = null!;
@@ -950,7 +965,7 @@ export class ChannelWorker {
       // Currently overriding, using access provided from client_comm (may be overridden with /csr access)
       this.access = access as TSMap<1>;
     }
-    this.cmd_parse.handle(this, cmd, (err: string | null, resp: UnimplementedData) => {
+    this.cmd_parse.handle(this, cmd, (err?: string | null, resp?: unknown) => {
       if (err && this.cmd_parse.was_not_found) {
         return resp_func(null, { found: 0, err });
       }
@@ -958,22 +973,30 @@ export class ChannelWorker {
     });
   }
 
-  channelEmit(msg: string, data: unknown, except_client?: string): void {
+  channelEmit(msg: string, data: unknown, except_client?: string, q?: QCat): void {
     let count = 0;
-    let was_q: unknown = false;
-    if (data && isDataObject(data)) {
-      was_q = data.q;
-      data.q = 1;
+    if (!q) {
+      q = quietMessage(msg);
+    }
+    if (!q && data && isDataObject(data)) {
+      if (data.q) {
+        q = data.q as QCat;
+      }
     }
     for (let channel_id in this.subscribers) {
       if (channel_id === except_client) {
         continue;
       }
       ++count;
-      this.sendChannelMessage(channel_id, msg, data);
+      this.sendChannelMessage(channel_id, msg, data, undefined, 'quiet');
     }
-    if (count && !was_q) {
-      this.debug(`broadcast(${count}): ${msg} ${logdata(data)}`);
+    if (count) {
+      let log_msg = `broadcast(${count}): ${msg} ${logdata(data)}`;
+      if (q) {
+        this.debugCat(typeof q === 'string' ? q : 'quiet', log_msg);
+      } else {
+        this.debug(log_msg);
+      }
     }
   }
 
@@ -982,7 +1005,7 @@ export class ChannelWorker {
       // deny
       return resp_func('ERR_NOT_ALLOWED');
     }
-    let q = false;
+    let q;
     let key = pak.readAnsiString();
     let value = pak.readJSON();
     let set_if = pak.readJSON();
@@ -1015,6 +1038,29 @@ export class ChannelWorker {
       this.commit_queued = false;
       this.commitDataActual();
     });
+  }
+
+  shouldUseMinRateLimit(): boolean {
+    return Boolean(this.shutting_down || this.channel_server.restarting || this.on_flush);
+  }
+
+  waitForRateLimit(is_initial: boolean, fn: () => void): void {
+    let min_time = is_initial && this.on_flush ? 0 : METADATA_COMMIT_RATELIMIT_MIN;
+    let max_time = METADATA_COMMIT_RATELIMIT_MAX;
+    let start = Date.now();
+    let self = this;
+    // Poll every min_time to see if the time is elapsed, so that if the  shouldUseMinRateLimit()
+    //   changes, we respond quickly.
+    function tick(): void {
+      let dt = Date.now() - start;
+      let time = self.shouldUseMinRateLimit() ? min_time : max_time;
+      if (dt >= time || !min_time) {
+        fn();
+      } else {
+        setTimeout(tick, min_time);
+      }
+    }
+    setTimeout(tick, min_time);
   }
 
   commitDataActual(): void {
@@ -1051,18 +1097,21 @@ export class ChannelWorker {
 
     // Set data to store along with setting checks to make sure no more than one sets are in flight
     function safeSet(): void {
+      assert(self.set_in_flight);
       const incoming_data = self.data_awaiting_set;
+      assert(incoming_data);
       const data_to_compare = JSON.stringify(incoming_data);
       self.data_awaiting_set = null;
 
       // Do not write to datastore if nothing has changed
       if (data_to_compare === self.last_saved_data) {
+        self.set_in_flight = false;
+        --cwstats.inflight_set;
         callEach(self.on_flush, self.on_flush = null);
         return;
       }
 
       self.last_saved_data = data_to_compare;
-      self.set_in_flight = true;
       let on_flush: OnFlushCB[] | null = null;
       if (self.on_flush) {
         on_flush = self.on_flush;
@@ -1071,14 +1120,16 @@ export class ChannelWorker {
 
       self.channel_server.ds_store_meta.setAsync(self.store_path, incoming_data, function (err?: Error) {
         // Delay the next write
-        setTimeout(function () {
-          self.set_in_flight = false;
-
+        self.waitForRateLimit(false, function () {
           // data in memory was updated again in mid flight so we need to set to store again with the new data
           if (self.data_awaiting_set) {
             safeSet();
+          } else {
+            assert(self.set_in_flight);
+            self.set_in_flight = false;
+            --cwstats.inflight_set;
           }
-        }, METADATA_COMMIT_RATELIMIT);
+        });
         if (err) {
           throwErr(err);
         }
@@ -1090,7 +1141,10 @@ export class ChannelWorker {
       });
     }
 
-    safeSet();
+    assert(!this.set_in_flight);
+    this.set_in_flight = true;
+    ++cwstats.inflight_set;
+    this.waitForRateLimit(true, safeSet);
   }
 
   emitApplyChannelData(data: EmitChannelDataParam): void {
@@ -1101,7 +1155,7 @@ export class ChannelWorker {
     // assert(key); No - key can be === 'public'
 
     let count = 0;
-    let was_q: undefined | 1;
+    let was_q: undefined | QCat;
     if (typeof data === 'object') {
       was_q = data.q;
       data.q = 1;
@@ -1116,15 +1170,20 @@ export class ChannelWorker {
       while (key_to_check || !field_map) { // eslint-disable-line no-unmodified-loop-condition
         if (!field_map || field_map[key_to_check]) {
           ++count;
-          this.sendChannelMessage(channel_id, 'apply_channel_data', data);
+          this.sendChannelMessage(channel_id, 'apply_channel_data', data, undefined, 'quiet');
           break;
         }
         idx = key_to_check.lastIndexOf('.');
         key_to_check = idx === -1 ? '' : key_to_check.slice(0, idx);
       }
     }
-    if (count && !was_q) {
-      this.debug(`broadcast(${count}): apply_channel_data ${logdata(data)}`);
+    if (count) {
+      let msg = `broadcast(${count}): apply_channel_data ${logdata(data)}`;
+      if (was_q) {
+        this.debugCat(typeof was_q === 'string' ? was_q : 'quiet', msg);
+      } else {
+        this.debug(msg);
+      }
     }
   }
 
@@ -1183,8 +1242,15 @@ export class ChannelWorker {
     let value = pak.readJSON();
     this.setChannelDataInternal(source, key, value, q ? 1 : undefined, resp_func);
   }
-  setChannelData<T=unknown>(key: string, value: T, q?: 1): void {
+  setChannelData<T=unknown>(key: string, value: T, q?: QCat): void {
     this.setChannelDataInternal(this.core_ids, key, value, q);
+  }
+
+  addChannelData(key: string, amount: number): number {
+    assert(amount);
+    let ret: number;
+    this.setChannelData(key, (ret = (this.getChannelData(key, 0) + amount)));
+    return ret;
   }
 
   onGetChannelData(source: HandlerSource, data: string, resp_func: HandlerCallback<unknown>): void {
@@ -1286,7 +1352,7 @@ export class ChannelWorker {
     source: HandlerSource,
     key: string,
     value: unknown,
-    q: 1 | undefined | false,
+    q?: QCat,
     resp_func?: HandlerCallback
   ): void {
     assert(typeof key === 'string');
@@ -1320,7 +1386,7 @@ export class ChannelWorker {
     if (key.startsWith('public')) {
       let data: EmitChannelDataParam = { key, value };
       if (q) {
-        data.q = 1;
+        data.q = q;
       }
       this.emitApplyChannelData(data);
     }
@@ -1391,10 +1457,10 @@ export class ChannelWorker {
     });
   }
 
-  sendChannelMessage<T>(dest: string, msg: string, data: T, resp_func?: NetErrorCallback, q?: 1 | undefined): void;
-  sendChannelMessage(dest: string, msg: string, data?: unknown, resp_func?: NetErrorCallback, q?: 1 | undefined): void;
-  sendChannelMessage(dest: string, msg: string, data?: unknown, resp_func?: NetErrorCallback, q?: 1 | undefined): void {
-    channelServerSend(this, dest, msg, null, data, resp_func, q);
+  sendChannelMessage<T>(dest: string, msg: string, data: T, resp_func?: NetErrorCallback, qcat?: QCat): void;
+  sendChannelMessage(dest: string, msg: string, data?: unknown, resp_func?: NetErrorCallback, qcat?: QCat): void;
+  sendChannelMessage(dest: string, msg: string, data?: unknown, resp_func?: NetErrorCallback, qcat?: QCat): void {
+    channelServerSend(this, dest, msg, null, data, resp_func, qcat);
   }
 
   // source has at least { channel_id, type, id }, possibly also .user_id and .display_name if type === 'client'
@@ -1471,6 +1537,27 @@ export class ChannelWorker {
     logEx(this.ctx(), 'error', `${this.channel_id}:`, ...args);
   }
 
+  // _technically_ msg could be an object, etc, but it's probably an error (forgot the cat) if so?
+  debugCat(cat: string, msg: string, ...args: unknown[]): void {
+    logCat(this.ctx(), cat, 'debug', `${this.channel_id}:`, msg, ...args);
+  }
+
+  infoCat(cat: string, msg: string, ...args: unknown[]): void {
+    logCat(this.ctx(), cat, 'info', `${this.channel_id}:`, msg, ...args);
+  }
+
+  logCat(cat: string, msg: string, ...args: unknown[]): void {
+    logCat(this.ctx(), cat, 'log', `${this.channel_id}:`, msg, ...args);
+  }
+
+  warnCat(cat: string, msg: string, ...args: unknown[]): void {
+    logCat(this.ctx(), cat, 'warn', `${this.channel_id}:`, msg, ...args);
+  }
+
+  errorCat(cat: string, msg: string, ...args: unknown[]): void {
+    logCat(this.ctx(), cat, 'error', `${this.channel_id}:`, msg, ...args);
+  }
+
 
   ctxSrc(src: HandlerSource | ClientHandlerSource): TSMap<string> {
     // *not* using a static `context`, as it gets merged into
@@ -1504,6 +1591,26 @@ export class ChannelWorker {
 
   errorSrc(src: HandlerSource | ClientHandlerSource, ...args: unknown[]): void {
     logEx(this.ctxSrc(src), 'error', `${this.channel_id}:`, ...args);
+  }
+
+  debugSrcCat(src: HandlerSource | ClientHandlerSource, cat: string, msg: string, ...args: unknown[]): void {
+    logCat(this.ctxSrc(src), cat, 'debug', `${this.channel_id}:`, msg, ...args);
+  }
+
+  infoSrcCat(src: HandlerSource | ClientHandlerSource, cat: string, msg: string, ...args: unknown[]): void {
+    logCat(this.ctxSrc(src), cat, 'info', `${this.channel_id}:`, msg, ...args);
+  }
+
+  logSrcCat(src: HandlerSource | ClientHandlerSource, cat: string, msg: string, ...args: unknown[]): void {
+    logCat(this.ctxSrc(src), cat, 'log', `${this.channel_id}:`, msg, ...args);
+  }
+
+  warnSrcCat(src: HandlerSource | ClientHandlerSource, cat: string, msg: string, ...args: unknown[]): void {
+    logCat(this.ctxSrc(src), cat, 'warn', `${this.channel_id}:`, msg, ...args);
+  }
+
+  errorSrcCat(src: HandlerSource | ClientHandlerSource, cat: string, msg: string, ...args: unknown[]): void {
+    logCat(this.ctxSrc(src), cat, 'error', `${this.channel_id}:`, msg, ...args);
   }
 
   // Wraps `resp_func` so that it logs upon completion or failure
@@ -1639,6 +1746,7 @@ export class ChannelWorker {
       channel_worker.pkt_idx_timestamp[source] = channel_server.server_time;
       channel_worker.recv_pkt_idx[source] = pkt_idx;
     }
+    pak.ref(); // Add a ref count in case we need it in the exception handler
     try {
       ackHandleMessage(channel_worker, source, pak, function sendFunc(
         msg: string,
@@ -1671,6 +1779,7 @@ export class ChannelWorker {
         Buffer.from(pak.getBuffer()).toString('utf8', 0, min(max_len, 1000)))}`);
       channel_server.handleUncaughtError(e);
     }
+    pak.pool(); // Remove refcount for exception handler
   }
 
   dispatchPacket(pkt_idx: number, source: string, pak: Packet): void {
@@ -1815,6 +1924,16 @@ export class ChannelWorker {
     });
   }
   static registerClientHandler<P=never, R=never>(message: string, handler: ClientHandlerFunction<P, R>): void {
+    this.workerExtend({
+      client_handlers: {
+        [message]: handler,
+      },
+    });
+  }
+  // If require_login is used, this is safe
+  static registerLoggedInClientHandler<P=never, R=never>(
+    message: string, handler: ClientHandlerFunction<P, R, LoggedInClientHandlerSource>
+  ): void {
     this.workerExtend({
       client_handlers: {
         [message]: handler,

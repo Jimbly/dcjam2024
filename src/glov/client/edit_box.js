@@ -13,23 +13,24 @@ import { v2same } from 'glov/common/vmath';
 import * as camera2d from './camera2d';
 import * as engine from './engine';
 import {
-  KEYS,
   eatAllKeyboardInput,
   inputClick,
+  inputTouchMode,
   keyDownEdge,
+  KEYS,
   keyUpEdge,
   mouseConsumeClicks,
+  pointerLocked,
   pointerLockEnter,
   pointerLockExit,
-  pointerLocked,
 } from './input';
 import { getStringIfLocalizable } from './localization';
 import {
   spotFocusCheck,
   spotFocusSteal,
+  spotlog,
   spotSuppressKBNav,
   spotUnfocus,
-  spotlog,
 } from './spot';
 import {
   drawLine,
@@ -41,6 +42,8 @@ import {
   uiGetFont,
   uiTextHeight,
 } from './ui';
+
+const { round } = Math;
 
 let form_hook_registered = false;
 let active_edit_box;
@@ -64,10 +67,43 @@ export function editBoxTick() {
 function setActive(edit_box) {
   active_edit_box = edit_box;
   active_edit_box_frame = engine.frame_index;
+  let virt = [0,0];
+  const REQ_PAD = 20;
+  camera2d.domDeltaToVirtual(virt, [0, REQ_PAD]);
+  let padding = camera2d.y1() - (edit_box.y + edit_box.h);
+  if (padding < virt[1]) {
+    engine.setEditBoxNearBottom(REQ_PAD);
+  }
 }
 
 export function editBoxAnyActive() {
   return active_edit_box && active_edit_box_frame >= engine.frame_index - 1;
+}
+
+let osk_elem;
+let osk_timeout;
+function showOnscreenKeyboardCleanup() {
+  if (osk_timeout) {
+    clearTimeout(osk_timeout);
+    osk_timeout = null;
+    document.body.removeChild(osk_elem);
+    osk_elem = null;
+  }
+}
+function showOnscreenKeyboardInEvent() {
+  // Derived from: https://stackoverflow.com/questions/71826145/show-keyboard-on-input-focus-without-user-action
+  if (!osk_elem) {
+    osk_elem = document.createElement('input');
+    osk_elem.setAttribute('type', 'search');
+    osk_elem.setAttribute('style', 'position: fixed; top: -100px; left: -100px;');
+    document.body.appendChild(osk_elem);
+    osk_timeout = setTimeout(showOnscreenKeyboardCleanup, 1000);
+  }
+  osk_elem.focus();
+}
+
+export function showOnscreenKeyboard() {
+  return inputTouchMode() || true ? showOnscreenKeyboardInEvent : undefined;
 }
 
 function formHook(ev) {
@@ -113,6 +149,7 @@ class GlovUIEditBox {
     this.type = 'text';
     // this.h = uiButtonHeight();
     this.font_height = uiTextHeight();
+    this.last_set_text = '';
     this.text = '';
     this.placeholder = '';
     this.max_len = 0;
@@ -121,7 +158,7 @@ class GlovUIEditBox {
     this.uppercase = false;
     this.initial_focus = false;
     this.onetime_focus = false;
-    this.auto_unfocus = false;
+    this.auto_unfocus = true;
     this.focus_steal = false;
     this.initial_select = false;
     this.spellcheck = true;
@@ -138,6 +175,7 @@ class GlovUIEditBox {
     assert.equal(typeof this.text, 'string');
 
     this.last_autocomplete = null;
+    this.last_placeholder = null;
     this.is_focused = false;
     this.elem = null;
     this.input = null;
@@ -146,7 +184,6 @@ class GlovUIEditBox {
     this.last_frame = 0;
     this.out = {}; // Used by spotFocusCheck
     this.last_valid_state = {
-      // text: '', just use this.text!
       sel_start: 0,
       sel_end: 0,
     };
@@ -162,15 +199,12 @@ class GlovUIEditBox {
     if (!params) {
       return;
     }
-    let old_text = this.text;
     for (let f in params) {
-      this[f] = params[f];
+      if (f !== 'text') {
+        this[f] = params[f];
+      }
     }
-    if (this.text === undefined) {
-      // do not trigger assert if `params` has a `text: undefined` member
-      this.text = '';
-    }
-    if (params.text && params.text !== old_text) {
+    if (params.text && params.text !== this.last_set_text) {
       this.setText(params.text);
     }
     this.h = (this.multiline || 1) * this.font_height;
@@ -230,8 +264,17 @@ class GlovUIEditBox {
         }
         if (this.text === new_text) {
           // we presumably just trimmed off what they inserted, treat as error
-          valid = false;
-          debug('trimmed equal orig');
+          // Except, if the new selection point is valid, they probably inserted
+          //   a blank line at the end (and a *different* one got trimmed), so
+          //   let that through
+          if (sel_end <= new_text.length) {
+            input.value = new_text;
+            this.setSelectionRange(sel_start, sel_end);
+            debug('trimming helped to keep selection');
+          } else {
+            valid = false;
+            debug('trimmed equal orig');
+          }
         } else {
           input.value = new_text;
           this.setSelectionRange(sel_start, sel_end);
@@ -371,14 +414,23 @@ class GlovUIEditBox {
       new_text = lines.join('\n');
     }
 
-    if (this.input && this.input.value !== new_text) {
-      this.input.value = new_text;
+    let input = this.input;
+    if (input && input.value !== new_text) {
+      if (engine.defines.EDITBOX) {
+        console.log(`Editbox (multiline=${multiline}, max_len=${max_len}: ${engine.frame_index}: setText()`);
+        console.log(`  Sel range = [${input.selectionStart},${input.selectionEnd}]`);
+        console.log(`  Old text         = ${JSON.stringify(input.value)}`);
+        console.log(`  New text         = ${JSON.stringify(new_text)}`);
+      }
+      input.value = new_text;
     }
     this.text = new_text;
+    this.last_set_text = new_text;
   }
   focus() {
     if (this.input) {
       this.input.focus();
+      showOnscreenKeyboardCleanup();
       if (this.select_on_focus) {
         this.input.select();
       }
@@ -410,6 +462,7 @@ class GlovUIEditBox {
         spotlog('GLOV focused, DOM not, focusing', this);
         if (this.input) {
           this.input.focus();
+          showOnscreenKeyboardCleanup();
           if (this.select_on_focus) {
             this.input.select();
           }
@@ -474,6 +527,7 @@ class GlovUIEditBox {
     if (this.focus_steal) {
       this.focus_steal = false;
       this.focus();
+      showOnscreenKeyboardCleanup();
     }
 
     let is_reset = false;
@@ -531,8 +585,17 @@ class GlovUIEditBox {
         }
         input.className = classes.join(' ');
         // Use 'tel' instead of 'number', as it supports changing the selection
-        input.setAttribute('type', this.type === 'number' ? 'tel' : this.type);
-        input.setAttribute('placeholder', getStringIfLocalizable(this.placeholder));
+        let eff_type = this.type === 'number' ? 'tel' :
+          // Using 'search' gets around Android Chrome bug showing the password box all the time on regular inputs
+          this.type === 'text' && !this.autocomplete ? 'search' :
+          this.type;
+        input.setAttribute('type', eff_type);
+        if (eff_type === 'search' && this.type !== 'search') {
+          input.style['-webkit-appearance'] = 'none';
+        }
+        let placeholder = getStringIfLocalizable(this.placeholder);
+        input.setAttribute('placeholder', placeholder);
+        this.last_placeholder = placeholder;
         if (max_len) {
           if (multiline) {
             input.setAttribute('cols', max_len);
@@ -554,6 +617,7 @@ class GlovUIEditBox {
         this.input = input;
         if (this.initial_focus || this.onetime_focus) {
           input.focus();
+          showOnscreenKeyboardCleanup();
           setActive(this);
           this.onetime_focus = false;
         }
@@ -576,11 +640,13 @@ class GlovUIEditBox {
         this.input = null;
       }
       this.last_autocomplete = null;
+      this.last_placeholder = null;
       this.submitted = false;
       this.elem = elem;
     } else {
       if (this.input) {
         this.updateText();
+        this.last_set_text = this.text;
       }
     }
     if (elem) {
@@ -638,6 +704,12 @@ class GlovUIEditBox {
         this.last_autocomplete = this.autocomplete;
         this.input.setAttribute('autocomplete', this.autocomplete || `auto_off_${Math.random()}`);
       }
+      let placeholder = getStringIfLocalizable(this.placeholder);
+      if (this.last_placeholder !== placeholder) {
+        this.input.setAttribute('placeholder', placeholder);
+        this.last_placeholder = placeholder;
+      }
+
 
       let tab_index1 = uiGetDOMTabIndex();
       let tab_index2 = uiGetDOMTabIndex();
@@ -664,13 +736,18 @@ class GlovUIEditBox {
       eatAllKeyboardInput();
     }
     // Eat mouse events going to the edit box
-    mouseConsumeClicks({ x, y, w, h });
+    if (allow_focus) {
+      mouseConsumeClicks(clipped_rect);
+    }
 
     if (canvas_render) {
       const { center } = this;
       const { char_width, char_height, color_selection, color_caret, style_text } = canvas_render;
       let font = uiGetFont();
       let lines = text.split('\n');
+      if (this.input && this.input.scrollTop !== 0) {
+        this.input.scrollTop = 0;
+      }
       // draw text
       // TODO: maybe apply clipper here?  caller necessarily needs to set max_len and multiline appropriately, though.
       let line_width = [];
@@ -695,8 +772,8 @@ class GlovUIEditBox {
           for (let jj = first_row; jj <= last_row; ++jj) {
             let line = lines[jj];
             let selx0 = jj === first_row ? selection[0][0] : 0;
-            let selx1 = jj === last_row ? selection[1][0] : line.length;
-            let xoffs = center ? (w - line_width[jj])/2 : 0;
+            let selx1 = jj === last_row ? selection[1][0] : line && line.length || 1;
+            let xoffs = center ? round((w - line_width[jj])/2) : 0;
             drawRect(x + char_width*selx0-1 + xoffs, y + jj * char_height,
               x + char_width*selx1 + xoffs, y + (jj + 1) * char_height, z + 0.75, color_selection);
           }
@@ -705,7 +782,7 @@ class GlovUIEditBox {
           let jj = selection[1][1];
           let caret_x = x + char_width*selection[1][0] - 1;
           if (center) {
-            caret_x += (w - line_width[jj])/2;
+            caret_x += round((w - line_width[jj])/2);
           }
           drawLine(caret_x, y + char_height*jj,
             caret_x, y + char_height*(jj + 1) - 1, z + 0.5, 1, 1, color_caret);
@@ -733,11 +810,18 @@ GlovUIEditBox.prototype.SUBMIT = 'submit';
 GlovUIEditBox.prototype.CANCEL = 'cancel';
 
 export function editBoxCreate(params) {
+  if (params.glov_initial_text !== undefined) {
+    params.text = params.glov_initial_text;
+  }
   return new GlovUIEditBox(params);
 }
 
 export function editBox(params, current) {
+  params.glov_initial_text = current;
   let edit_box = getUIElemData('edit_box', params, editBoxCreate);
+  if (edit_box.last_set_text !== current) {
+    edit_box.setText(current);
+  }
   let result = edit_box.run(params);
 
   return {

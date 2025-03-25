@@ -164,7 +164,22 @@ export function main(): void {
     do_borders: false,
     show_fps: false,
     ui_sprites: {
-      ...spriteSetGet('pixely'),
+      slider_params: [1, 1, 0.3],
+
+      menu_header: { name: 'pixely/menu_header', ws: [4, 5, 12], hs: [13] },
+
+      scrollbar_bottom: { name: 'pixely/scrollbar_bottom', ws: [11], hs: [13] },
+      scrollbar_trough: { name: 'pixely/scrollbar_trough', ws: [11], hs: [8], wrap_t: true },
+      scrollbar_top: { name: 'pixely/scrollbar_top', ws: [11], hs: [13] },
+      scrollbar_handle_grabber: { name: 'pixely/scrollbar_handle_grabber', ws: [11], hs: [13] },
+      scrollbar_handle: { name: 'pixely/scrollbar_handle', ws: [11], hs: [3, 7, 3] },
+      progress_bar: { name: 'pixely/progress_bar', ws: [3, 7, 3], hs: [13] },
+      progress_bar_trough: { name: 'pixely/progress_bar_trough', ws: [3, 7, 3], hs: [13] },
+
+      collapsagories: { name: 'pixely/collapsagories', ws: [4, 5, 4], hs: [13] },
+      collapsagories_rollover: { name: 'pixely/collapsagories_rollover', ws: [4, 5, 4], hs: [13] },
+      collapsagories_shadow_down: { name: 'pixely/collapsagories_shadow_down', ws: [1, 2, 1], hs: [13] },
+
       color_set_shades: [1, 1, 1],
       button: { name: 'button', ws: [16, 16, 16], hs: [16] },
       button_rollover: { name: 'button_rollover', ws: [16, 16, 16], hs: [16] },

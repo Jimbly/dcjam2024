@@ -8,24 +8,29 @@ import { colorPicker } from './color_picker';
 import { EditBox, editBoxCreate } from './edit_box';
 import * as engine from './engine';
 import { ALIGN, Font, FontStyle, fontStyle, fontStyleAlpha } from './font';
+import { fscreenActive, fscreenEnter, fscreenExit } from './fscreen';
 import * as input from './input';
 import {
   mouseOver,
 } from './input';
 import { linkText } from './link';
 import {
+  localStorageGet,
+  localStorageSet,
+} from './local_storage';
+import {
+  markdownAuto,
   MDDrawBlock,
   MDDrawParam,
   MDLayoutBlock,
   MDLayoutCalcParam,
-  markdownAuto,
 } from './markdown';
 import { RenderableContent } from './markdown_parse';
 import { markdownImageRegister, markdownLayoutFit } from './markdown_renderables';
 import { ScrollArea, scrollAreaCreate } from './scroll_area';
 import {
-  SelectionBox,
   dropDownCreate,
+  SelectionBox,
   selectionBoxCreate,
 } from './selection_box';
 import { SimpleMenu, simpleMenuCreate } from './simple_menu';
@@ -45,7 +50,7 @@ import {
 } from './uistyle';
 import { getURLBase } from './urlhash';
 
-const { abs, ceil, random, sin } = Math;
+const { abs, ceil, max, random, round, sin } = Math;
 
 let demo_menu: SimpleMenu;
 let demo_menu_up = false;
@@ -60,6 +65,7 @@ let test_dropdown: SelectionBox;
 let test_dropdown_large: SelectionBox;
 let test_scroll_area: ScrollArea;
 let slider_value = 0.75;
+let check_value = false;
 let test_lines = 10;
 let test_color = vec4(1,0,1,1);
 let test_markdown_sprite: Sprite;
@@ -69,6 +75,7 @@ function init(x: number, y: number, column_width: number): void {
     x: x + column_width,
     y: y,
     w: column_width - 8,
+    text: localStorageGet('uitest.editbox1') || '',
   });
   edit_box2 = editBoxCreate({
     x: x + column_width + column_width,
@@ -157,6 +164,10 @@ const style_half_height = uiStyleAlloc({ text_height: '50%' });
 
 let markdown_text: string;
 let markdown_cache = {};
+let md_text_height: number = 8;
+let md_line_height: number = 8;
+let last_md_text_height: number = 8;
+let last_md_line_height: number = 8;
 
 export function run(x: number, y: number, z: number): void {
   const font: Font = ui.font;
@@ -212,6 +223,7 @@ export function run(x: number, y: number, z: number): void {
       },
     });
   }
+  localStorageSet('uitest.editbox1', edit_box1.getText());
   if (edit_box2.run() === edit_box2.SUBMIT) {
     edit_box2.setText('');
   }
@@ -296,14 +308,68 @@ export function run(x: number, y: number, z: number): void {
     text: 'Markdown',
     text_height,
   });
-  internal_y += header_h + pad;
+  internal_y += header_h;
+
+  font.draw({
+    x: 16,
+    y: internal_y + 2,
+    z: Z.UI + 20,
+    text: 'text_height',
+    color: 0x00000080,
+  });
+  font.draw({
+    x: button_width + 1,
+    y: internal_y + 2,
+    text: `${md_text_height}`,
+  });
+  md_text_height = round(slider(md_text_height, {
+    x: 0,
+    y: internal_y,
+    min: 1,
+    max: 16,
+    step: 1,
+  }));
+  if (md_text_height !== last_md_text_height) {
+    last_md_text_height = md_text_height;
+    md_line_height = max(md_line_height, md_text_height);
+    markdown_cache = {};
+  }
+  internal_y += button_height;
+
+  font.draw({
+    x: 16,
+    y: internal_y + 2,
+    z: Z.UI + 20,
+    text: 'line_height',
+    color: 0x00000080,
+  });
+  font.draw({
+    x: button_width + 1,
+    y: internal_y + 2,
+    text: `${md_line_height}`,
+  });
+  md_line_height = round(slider(md_line_height, {
+    x: 0,
+    y: internal_y,
+    min: 1,
+    max: 16,
+    step: 1,
+  }));
+  if (md_line_height !== last_md_line_height) {
+    last_md_line_height = md_line_height;
+    markdown_cache = {};
+  }
+  internal_y += button_height;
+  internal_y += pad;
+
   internal_y += markdownAuto({
     font_style,
     x: 2,
     y: internal_y,
     z: z + 1,
     w: scroll_area_w - 2,
-    text_height,
+    text_height: md_text_height,
+    line_height: md_line_height,
     align: ALIGN.HWRAP|ALIGN.HFIT,
     text: `Edit Box MD: ${edit_box1.getText()}+${edit_box2.getText()}`,
   }).h + pad;
@@ -314,7 +380,8 @@ export function run(x: number, y: number, z: number): void {
     y: internal_y,
     z: z + 1,
     w: scroll_area_w - 2,
-    text_height,
+    text_height: md_text_height,
+    line_height: md_line_height,
     align: ALIGN.HWRAP|ALIGN.HFIT,
     text: 'A[foo=bar text="Foo Bar"]B',
     cache: markdown_cache,
@@ -340,16 +407,15 @@ export function run(x: number, y: number, z: number): void {
               layout_param.text_height * 0.25;
             let dims = {
               w,
-              h: layout_param.text_height,
+              h: layout_param.line_height,
             };
             assert(markdownLayoutFit(layout_param, dims));
-            let dims2 = dims; // workaround TypeScript bug fixed in v5.4.0 TODO: REMOVE
             return [{
               dims,
               draw: (draw_param: MDDrawParam): void => {
                 let rect = {
-                  x: draw_param.x + dims2.x,
-                  y: draw_param.y + dims2.y,
+                  x: draw_param.x + dims.x,
+                  y: draw_param.y + dims.y,
                   w: dims.w,
                   h: dims.h,
                 };
@@ -370,6 +436,7 @@ export function run(x: number, y: number, z: number): void {
                   ...rect,
                   z: draw_param.z + 0.1,
                   align: ALIGN.HVCENTERFIT,
+                  size: layout_param.text_height,
                   text: text,
                 });
               },
@@ -397,7 +464,8 @@ nec arborei timentem, ut crimina vidit.
     y: internal_y,
     z: z + 1,
     w: scroll_area_w - 2,
-    text_height,
+    text_height: md_text_height,
+    line_height: md_line_height,
     align: ALIGN.HWRAP|ALIGN.HFIT,
     text: markdown_text,
   }).h + pad;
@@ -408,7 +476,8 @@ nec arborei timentem, ut crimina vidit.
     y: internal_y,
     z: z + 1,
     w: scroll_area_w - 2,
-    text_height,
+    text_height: md_text_height,
+    line_height: md_line_height,
     align: ALIGN.HWRAP|ALIGN.HFIT|ALIGN.HCENTER,
     text: markdown_text,
   }).h + pad;
@@ -432,6 +501,14 @@ nec arborei timentem, ut crimina vidit.
   if (ui.buttonText({ x: 2, y: internal_y, z, text: 'Disabled', tooltip: 'A disabled button', disabled: true })) {
     assert(false);
   }
+  internal_y += button_height + pad;
+
+  check_value = ui.checkbox(check_value, {
+    x: 2, y: internal_y, z, text: 'A _checkbox_',
+    markdown: true,
+    tooltip: `This checkbox is *${check_value ? '' : 'un'}checked*`,
+    tooltip_markdown: true,
+  });
   internal_y += button_height + pad;
 
   collapsagoriesHeader({
@@ -461,6 +538,9 @@ nec arborei timentem, ut crimina vidit.
   if (ui.buttonText({ x: 2, y: internal_y, z: z + 1, text: 'Remove Line', key: 'remove_line' })) {
     --test_lines;
   }
+  internal_y += button_height + pad;
+  ui.buttonText({ x: 2, y: internal_y, z: z + 1, text: 'Fullscreen',
+    in_event_cb: fscreenActive() ? fscreenExit : fscreenEnter });
   internal_y += button_height + pad;
   collapsagoriesStop();
   test_scroll_area.end(internal_y);

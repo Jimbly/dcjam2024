@@ -23,6 +23,7 @@ Z.FPSMETER = Z.FPSMETER || 10000;
 export const LINE_ALIGN = 1<<0;
 export const LINE_CAP_SQUARE = 1<<1;
 export const LINE_CAP_ROUND = 1<<2;
+export const LINE_NO_AA = 1<<3;
 
 export const internal = {
   checkHooks, // eslint-disable-line @typescript-eslint/no-use-before-define
@@ -38,6 +39,7 @@ export const sprites = {};
 
 /* eslint-disable import/order */
 const assert = require('assert');
+const { autoAtlas } = require('./autoatlas');
 const camera2d = require('./camera2d.js');
 const { editBoxCreate, editBoxTick } = require('./edit_box.js');
 const effects = require('./effects.js');
@@ -46,7 +48,7 @@ const glov_engine = require('./engine.js');
 const glov_font = require('./font.js');
 const { ALIGN, fontSetDefaultSize, fontStyle, fontStyleColored } = glov_font;
 const glov_input = require('./input.js');
-const { linkTick } = require('./link.js');
+const { linkTick, linkObscureRect } = require('./link.js');
 const { getStringFromLocalizable } = require('./localization.js');
 const { markdownAuto } = require('./markdown');
 const { abs, floor, max, min, round, sqrt } = Math;
@@ -70,6 +72,7 @@ const {
   spotUnfocus,
 } = require('./spot.js');
 const {
+  BLEND_ADDITIVE,
   BLEND_PREMULALPHA,
   spriteClipped,
   spriteClipPause,
@@ -115,7 +118,7 @@ const menu_fade_params_default = {
   z: Z.MODAL,
 };
 
-let color_set_shades = vec4(1, 1, 1, 1);
+let color_set_shades = vec4(1, 0.8, 1, 1);
 
 let color_sets = [];
 function applyColorSet(color_set) {
@@ -147,6 +150,10 @@ export function colorSetMakeCustom(regular, rollover, down, disabled) {
     down,
     disabled,
   };
+}
+
+export function colorSetGetField(color_set, field) {
+  return color_set[field];
 }
 
 let hooks = [];
@@ -405,6 +412,10 @@ export function loadUISprite2(name, param) {
     // skip it, assume not used
     return;
   }
+  if (param.atlas) {
+    sprites[name] = autoAtlas(param.atlas, param.name || name);
+    return;
+  }
   let wrap_s = gl.CLAMP_TO_EDGE;
   let wrap_t = param.wrap_t ? gl.REPEAT : gl.CLAMP_TO_EDGE;
   let sprite_param = {
@@ -443,31 +454,34 @@ const base_ui_sprites = {
 
   white: { url: 'white' },
 
-  button: { ws: [8, 112, 8], hs: [128] },
-  button_rollover: { ws: [8, 112, 8], hs: [128] },
-  button_down: { ws: [8, 112, 8], hs: [128] },
-  button_disabled: { ws: [8, 112, 8], hs: [128] },
-  panel: { ws: [32, 64, 32], hs: [32, 64, 32] },
+  button: { atlas: 'default' },
+  button_rollover: { atlas: 'default' },
+  button_down: { atlas: 'default' },
+  button_disabled: { atlas: 'default' },
+  panel: { atlas: 'default' },
 
-  menu_entry: { ws: [8, 112, 8], hs: [128] },
-  menu_selected: { ws: [8, 112, 8], hs: [128] },
-  menu_down: { ws: [8, 112, 8], hs: [128] },
-  menu_header: { ws: [8, 112, 136], hs: [128] },
-  slider: { ws: [56, 16, 56], hs: [128] },
-  // slider_notch: { ws: [3], hs: [13] },
-  slider_handle: { ws: [64], hs: [128] },
+  menu_entry: { atlas: 'default' },
+  menu_selected: { atlas: 'default' },
+  menu_down: { atlas: 'default' },
+  menu_header: { atlas: 'default' },
+  slider: { atlas: 'default' },
+  // slider_notch: { atlas: 'default' },
+  slider_handle: { atlas: 'default' },
 
-  scrollbar_bottom: { ws: [64], hs: [64] },
-  scrollbar_trough: { ws: [64], hs: [8], wrap_t: true },
-  scrollbar_top: { ws: [64], hs: [64] },
-  scrollbar_handle_grabber: { ws: [64], hs: [64] },
-  scrollbar_handle: { ws: [64], hs: [24, 16, 24] },
-  progress_bar: { ws: [48, 32, 48], hs: [128] },
-  progress_bar_trough: { ws: [48, 32, 48], hs: [128] },
+  checked: { atlas: 'default' },
+  unchecked: { atlas: 'default' },
 
-  collapsagories: { ws: [4, 8, 4], hs: [64] },
-  collapsagories_rollover: { ws: [4, 8, 4], hs: [64] },
-  collapsagories_shadow_down: { ws: [4, 8, 4], hs: [64] },
+  scrollbar_bottom: { atlas: 'default' },
+  scrollbar_trough: { atlas: 'default' },
+  scrollbar_top: { atlas: 'default' },
+  scrollbar_handle_grabber: { atlas: 'default' },
+  scrollbar_handle: { atlas: 'default' },
+  progress_bar: { atlas: 'default' },
+  progress_bar_trough: { atlas: 'default' },
+
+  collapsagories: { atlas: 'default' },
+  collapsagories_rollover: { atlas: 'default' },
+  collapsagories_shadow_down: { atlas: 'default' },
   collapsagories_shadow_up: null,
 };
 
@@ -497,15 +511,16 @@ function uiStartup(param) {
     sliderSetDefaultShrink(...ui_sprites.slider_params);
   }
 
-  if (sprites.button_rollover && color_set_shades[1] !== 1) {
-    colorSetSetShades(1, color_set_shades[2], color_set_shades[3]);
-  }
-  if (sprites.button_down && color_set_shades[2] !== 1) {
-    colorSetSetShades(color_set_shades[1], 1, color_set_shades[3]);
-  }
-  if (sprites.button_disabled && color_set_shades[3] !== 1) {
-    colorSetSetShades(color_set_shades[1], color_set_shades[2], 1);
-  }
+  // Not doing this, instead, ignoring the color shades when specific sprites exist
+  // if (sprites.button_rollover && color_set_shades[1] !== 1) {
+  //   colorSetSetShades(1, color_set_shades[2], color_set_shades[3]);
+  // }
+  // if (sprites.button_down && color_set_shades[2] !== 1) {
+  //   colorSetSetShades(color_set_shades[1], 1, color_set_shades[3]);
+  // }
+  // if (sprites.button_disabled && color_set_shades[3] !== 1) {
+  //   colorSetSetShades(color_set_shades[1], color_set_shades[2], 1);
+  // }
 
   button_keys = {
     ok: { key: [KEYS.O], pad: [PAD.X], low_key: [KEYS.ESC] },
@@ -593,8 +608,11 @@ export function drawHBox(coords, s, color) {
     let scale = coords.w / (ws[0] + ws[2]);
     ws[0] *= scale;
     ws[2] *= scale;
-  } else {
+  } else if (uidata.wh[1]) {
     ws[1] = max(0, coords.w - ws[0] - ws[2]);
+  } else {
+    // no rects, do simple stretch
+    ws[0] = coords.w;
   }
   draw_box_param.y = coords.y;
   draw_box_param.z = coords.z;
@@ -780,6 +798,7 @@ export function panel(param) {
   drawBox(param, param.sprite || sprites.panel, param.pixel_scale || panel_pixel_scale, color);
   if (param.eat_clicks) {
     glov_input.mouseOver(param);
+    linkObscureRect(param); // should this just happen for all non-peeking mouseOver() calls?
   }
 }
 
@@ -802,26 +821,41 @@ export function drawTooltip(param) {
     spriteClipPause();
   }
 
+  let spuid = sprites.panel.uidata;
+  let pixel_scale = param.pixel_scale || tooltip_panel_pixel_scale;
   let tooltip_w = param.tooltip_width || tooltip_width;
   let z = param.z || Z.TOOLTIP;
   let tooltip_y0 = param.y;
-  let eff_tooltip_pad = param.tooltip_pad || tooltip_pad;
-  let w = tooltip_w - eff_tooltip_pad * 2;
-  // TODO: dims (used if tooltip_above or tooltip_auto_above_offset or
-  //   tooltip_right) are potentially wrong for tooltips with markdown in them.
-  let dims = font.dims(font_style_modal, w, 0, ui_style_current.text_height, tooltip);
+  let eff_tooltip_pad_left = param.tooltip_pad || (spuid.padh && spuid.padh[0]) * pixel_scale || tooltip_pad;
+  let eff_tooltip_pad_right = param.tooltip_pad || (spuid.padh && spuid.padh[2]) * pixel_scale || tooltip_pad;
+  let eff_tooltip_pad_top = param.tooltip_pad || (spuid.padv && spuid.padv[0]) * pixel_scale || tooltip_pad;
+  let eff_tooltip_pad_bottom = param.tooltip_pad || (spuid.padv && spuid.padv[2]) * pixel_scale || tooltip_pad;
+  let w = tooltip_w - eff_tooltip_pad_left - eff_tooltip_pad_right;
+  let do_markdown = param.tooltip_markdown !== false;
+  let dims;
+  if (do_markdown) {
+    dims = markdownAuto({
+      font_style: font_style_modal,
+      w,
+      align: ALIGN.HWRAP,
+      text_height: ui_style_current.text_height,
+      text: tooltip,
+      no_draw: true,
+    });
+  } else {
+    dims = font.dims(font_style_modal, w, 0, ui_style_current.text_height, tooltip);
+  }
   let above = param.tooltip_above;
   if (!above && param.tooltip_auto_above_offset) {
-    // TODO: support markdown dims
-    above = tooltip_y0 + dims.h + eff_tooltip_pad * 2 > camera2d.y1();
+    above = tooltip_y0 + dims.h + eff_tooltip_pad_top + eff_tooltip_pad_bottom > camera2d.y1();
   }
   let x = param.x;
-  let eff_tooltip_w = dims.w + eff_tooltip_pad * 2;
+  let eff_tooltip_w = dims.w + eff_tooltip_pad_left + eff_tooltip_pad_right;
   let right = param.tooltip_right;
   let center = param.tooltip_center;
-  if (right && param.tooltip_auto_right_offset) {
+  if (right) {
     // TODO: just use markdown align right instead
-    x += param.tooltip_auto_right_offset - eff_tooltip_w;
+    x += (param.tooltip_auto_right_offset || 0) - eff_tooltip_w;
   } else if (center && param.tooltip_auto_right_offset) {
     // TODO: just use markdown align center instead
     x += (param.tooltip_auto_right_offset - eff_tooltip_w) / 2;
@@ -831,17 +865,17 @@ export function drawTooltip(param) {
   }
 
   if (above) {
-    tooltip_y0 -= dims.h + eff_tooltip_pad * 2 + (param.tooltip_auto_above_offset || 0);
+    tooltip_y0 -= dims.h + eff_tooltip_pad_top + eff_tooltip_pad_bottom + (param.tooltip_auto_above_offset || 0);
   }
-  let y = tooltip_y0 + eff_tooltip_pad;
+  let y = tooltip_y0 + eff_tooltip_pad_top;
   if (param.tooltip_markdown === false) {
     y += font.drawSizedWrapped(font_style_modal,
-      x + eff_tooltip_pad, y + tooltip_text_offs, z+1, w, 0, ui_style_current.text_height,
+      x + eff_tooltip_pad_left, y + tooltip_text_offs, z+1, w, 0, ui_style_current.text_height,
       tooltip);
   } else {
     let mddims = markdownAuto({
       font_style: font_style_modal,
-      x: x + eff_tooltip_pad,
+      x: x + eff_tooltip_pad_left,
       y: y + tooltip_text_offs,
       z: z+1,
       w,
@@ -849,11 +883,10 @@ export function drawTooltip(param) {
       text_height: ui_style_current.text_height,
       text: tooltip
     });
-    eff_tooltip_w = max(mddims.w + eff_tooltip_pad * 2, eff_tooltip_w);
+    eff_tooltip_w = max(mddims.w + eff_tooltip_pad_left + eff_tooltip_pad_right, eff_tooltip_w);
     y += mddims.h;
   }
-  y += eff_tooltip_pad;
-  let pixel_scale = param.pixel_scale || tooltip_panel_pixel_scale;
+  y += eff_tooltip_pad_bottom;
 
   panel({
     x,
@@ -890,11 +923,11 @@ export function drawTooltipBox(param) {
   }
   drawTooltip({
     x: param.x,
-    y: param.y + param.h + 2,
+    y: param.y + (param.tooltip_left ? 0 : param.h + 2),
     tooltip_auto_above_offset: param.h + 4,
     tooltip_above: param.tooltip_above,
-    tooltip_auto_right_offset: param.w,
-    tooltip_right: param.tooltip_right,
+    tooltip_auto_right_offset: param.tooltip_left ? 0 : param.tooltip_auto_right_offset,
+    tooltip_right: param.tooltip_right || param.tooltip_left,
     tooltip_center: param.tooltip_center,
     tooltip,
     tooltip_width: param.tooltip_width,
@@ -997,8 +1030,11 @@ export function buttonBackgroundDraw(param, state) {
     let base_name = param.base_name || ((param.w/param.h < 1.5 && sprites.squarebutton) ? 'squarebutton' : 'button');
     let sprite_name = `${base_name}_${state}`;
     let sprite = sprites[sprite_name];
-    // Note: was if (sprite) color = colors.regular for specific-sprite matches
-    if (!sprite) {
+    if (sprite) {
+      if (!param.color) {
+        color = colors.regular;
+      }
+    } else {
       sprite = sprites[base_name];
     }
 
@@ -1013,20 +1049,7 @@ export function buttonBackgroundDraw(param, state) {
 
 export function buttonSpotBackgroundDraw(param, spot_state) {
   profilerStartFunc();
-  let state = SPOT_STATE_TO_UI_BUTTON_STATE[spot_state];
-  let colors = param.colors || color_button;
-  let color = button_last_color = param.color || colors[state];
-  if (!param.no_bg) {
-    let base_name = param.base_name || 'button';
-    let sprite_name = `${base_name}_${state}`;
-    let sprite = sprites[sprite_name];
-    // Note: was if (sprite) color = colors.regular for specific-sprite matches
-    if (!sprite) {
-      sprite = sprites[base_name];
-    }
-
-    drawHBox(param, sprite, color);
-  }
+  buttonBackgroundDraw(param, SPOT_STATE_TO_UI_BUTTON_STATE[spot_state]);
   profilerStopFunc();
 }
 
@@ -1036,12 +1059,32 @@ export function buttonTextDraw(param, state, focused) {
   let hpad = min(param.font_height * 0.25, param.w * 0.1);
   let yoffs = (param.yoffs && param.yoffs[state] !== undefined) ? param.yoffs[state] : button_y_offs[state];
   let disabled = state === 'disabled';
-  (param.font || font).drawSizedAligned(
-    disabled ? param.font_style_disabled || font_style_disabled :
+  let font_use = (param.font || font);
+  let font_style = disabled ? param.font_style_disabled || font_style_disabled :
     focused ? param.font_style_focused || font_style_focused :
-    param.font_style_normal || font_style_normal,
-    param.x + hpad, param.y + yoffs, param.z + 0.1,
-    param.font_height, param.align || glov_font.ALIGN.HVCENTERFIT, param.w - hpad * 2, param.h, param.text);
+    param.font_style_normal || font_style_normal;
+  let x = param.x + hpad;
+  let y = param.y + yoffs;
+  let z = param.z + 0.1;
+  let w = param.w - hpad * 2;
+  let align = param.align || glov_font.ALIGN.HVCENTERFIT;
+  let text_height = param.font_height;
+  if (param.markdown) {
+    markdownAuto({
+      font: font_use,
+      font_style,
+      x, y, z,
+      w, h: param.h,
+      align,
+      text_height,
+      text: param.text
+    });
+  } else {
+    font_use.drawSizedAligned(
+      font_style,
+      x, y, z,
+      text_height, align, w, param.h, param.text);
+  }
   profilerStopFunc();
 }
 
@@ -1163,8 +1206,10 @@ export function button(param) {
   let saved_w = param.w;
   let saved_x = param.x;
   param.no_bg = true;
-  param.x += param.h * param.shrink;
-  param.w -= param.h * param.shrink;
+  let img_size = param.h * param.shrink;
+  let img_pad = param.h * (1 - param.shrink) / 2;
+  param.x += img_pad + img_size;
+  param.w -= img_pad + img_size;
   buttonTextDraw(param, state, focused);
 
   param.no_bg = saved_no_bg;
@@ -1283,6 +1328,81 @@ export function label(param) {
   }
   profilerStopFunc();
   return w || text_w;
+}
+
+export function checkbox(value, param) {
+  profilerStartFunc();
+
+  param.text = getStringFromLocalizable(param.text);
+
+  // required params
+  assert(typeof param.x === 'number');
+  assert(typeof param.y === 'number');
+  // optional params
+  param.z = param.z || Z.UI;
+  let { text } = param;
+  param.h = param.h || ui_style_current.button_height;
+  param.w = param.w || (text ? ui_style_current.button_width : param.h);
+  param.font_height = param.font_height || (param.style || ui_style_current).text_height;
+  param.align = param.align || (ALIGN.VCENTER | ALIGN.HLEFT | ALIGN.HFIT);
+
+  // do focus / tooltip / action
+  if (buttonText({
+    ...param,
+    no_bg: true,
+    text: '',
+    tooltip: param.tooltip,
+  })) {
+    value = !value;
+  }
+  let spot_ret = button_last_spot_ret;
+  let focused = spot_ret.focused;
+  let base_name_checked = param.base_name_checked || 'checked';
+  let base_name_unchecked = param.base_name_checked || 'unchecked';
+
+  // draw button / check box / check mark
+  buttonSpotBackgroundDraw({
+    ...param,
+    w: param.h,
+    base_name: value ? base_name_checked : base_name_unchecked,
+  }, spot_ret.spot_state);
+
+  // draw text
+  if (text) {
+    let font_use = param.font || font;
+    let disabled = param.disabled;
+    let font_style = disabled ? param.font_style_disabled || font_style_disabled :
+      focused ? param.font_style_focused || font_style_focused :
+      param.font_style_normal || font_style_normal;
+    text = getStringFromLocalizable(text);
+    let text_height = param.font_height;
+    let xoffs = param.h + font_use.getCharacterWidth(font_style, text_height, 0x20);
+    let x = param.x + xoffs;
+    let y = param.y;
+    let z = param.z + 0.1;
+    let w = param.w - xoffs;
+    let h = param.h;
+    let align = param.align;
+    if (param.markdown) {
+      markdownAuto({
+        font: font_use,
+        font_style,
+        x, y, z,
+        w, h,
+        align,
+        text_height,
+        text: text
+      });
+    } else {
+      font_use.drawSizedAligned(
+        font_style,
+        x, y, z,
+        text_height, align, w, h, text);
+    }
+  }
+
+  profilerStopFunc();
+  return value;
 }
 
 // Note: modal dialogs not really compatible with HTML overlay on top of the canvas!
@@ -1504,6 +1624,7 @@ export function modalTextEntry(param) {
     max_len: param.max_len,
     max_visual_size: param.max_visual_size,
     esc_clears: false,
+    auto_unfocus: true,
   });
   let buttons = {};
   for (let key in param.buttons) {
@@ -1534,7 +1655,7 @@ export function modalTextEntry(param) {
       params.y += params.font_height * (param.multiline || 1) + modal_pad;
     }
     let ret;
-    if (eb_ret === eb.SUBMIT) {
+    if (eb_ret === eb.SUBMIT && !param.multiline) {
       ret = KEYS.O; // Do OK, Yes
     } else if (eb_ret === eb.CANCEL) {
       ret = KEYS.ESC; // Do Cancel, No
@@ -1562,7 +1683,9 @@ function releaseOldUIElemData() {
   for (let type in ui_elem_data) {
     let by_type = ui_elem_data[type];
     let any = false;
-    for (let key in by_type) {
+    let keys = Object.keys(by_type);
+    for (let ii = 0; ii < keys.length; ++ii) {
+      let key = keys[ii];
       let elem_data = by_type[key];
       if (elem_data.frame_index < glov_engine.frame_index - 1) {
         delete by_type[key];
@@ -1778,10 +1901,22 @@ function premulAlphaColor(color) {
   temp_color[3] = color[3];
   return temp_color;
 }
+function premulAlphaAdditiveColor(color) {
+  temp_color[0] = color[0] * color[3];
+  temp_color[1] = color[1] * color[3];
+  temp_color[2] = color[2] * color[3];
+  temp_color[3] = 0;
+  return temp_color;
+}
 function drawElipseInternal(sprite, x0, y0, x1, y1, z, spread, tu0, tv0, tu1, tv1, color, blend) {
-  if (!blend && !glov_engine.defines.NOPREMUL) {
-    blend = BLEND_PREMULALPHA;
-    color = premulAlphaColor(color);
+  if (!glov_engine.defines.NOPREMUL) {
+    if (!blend) {
+      blend = BLEND_PREMULALPHA;
+      color = premulAlphaColor(color);
+    } else if (blend === BLEND_ADDITIVE) {
+      blend = BLEND_PREMULALPHA;
+      color = premulAlphaAdditiveColor(color);
+    }
   }
   spriteQueueRaw(sprite.texs,
     x0, y0, z, x1 - x0, y1 - y0,
@@ -1969,6 +2104,12 @@ export function drawLine(x0, y0, x1, y1, z, w, precise, color, mode) {
   step_end = 1 + precise * (step_end - 1);
   let A = 1.0 / (step_end - step_start);
   let B = -step_start * A;
+
+  if (mode & LINE_NO_AA) {
+    A *= 512;
+    B = B * 512 - (512/2-0.5);
+  }
+
   let shader_param;
   if (line_last_shader_param.param0[0] !== A ||
     line_last_shader_param.param0[1] !== B
@@ -2137,6 +2278,7 @@ export function setTooltipWidth(_tooltip_width, _tooltip_panel_pixel_scale) {
 }
 
 // This is useful for some fonts if the UI uses primarily/entirely upper-case strings, to look more centered
+// DEPRECATED: use a 9-patch panel with padding instead
 export function setTooltipTextOffset(_tooltip_text_offs) {
   tooltip_text_offs = _tooltip_text_offs;
 }

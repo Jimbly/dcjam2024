@@ -2,7 +2,6 @@
 // Released under MIT License: https://opensource.org/licenses/MIT
 
 import assert from 'assert';
-import { asyncEach } from 'glov-async';
 import {
   ActionListResponse,
   ActionMessageParam,
@@ -29,12 +28,21 @@ import {
   ClientHandlerSource,
   DataObject,
   ErrorCallback,
+  isDataObject,
   NetErrorCallback,
   NetResponseCallback,
-  isDataObject,
 } from 'glov/common/types';
-import { callEach, logdata, nop } from 'glov/common/util';
-import { entityServerDefaultLoadPlayerEntity, entity_field_defs } from 'glov/server/entity_base_server';
+import {
+  callEach,
+  deepEqual,
+  nop,
+} from 'glov/common/util';
+import {
+  entity_field_defs,
+  entityServerDefaultLoadPlayerEntity,
+  logCatForEntityActionID,
+} from 'glov/server/entity_base_server';
+import { asyncEach } from 'glov-async';
 import { ChannelWorker } from './channel_worker.js';
 import { ChattableWorker } from './chattable_worker.js';
 import {
@@ -44,10 +52,9 @@ import {
   EntityFieldDef,
   VAID,
 } from './entity_base_server';
+import { logCategoryEnabled } from './log.js';
 
 const { min } = Math;
-
-export const ENTITY_LOG_VERBOSE = false;
 
 export type JoinPayload = unknown;
 
@@ -100,23 +107,21 @@ function visibleAreaInit<
     callEach(va2.loading, va2.loading = null, err || null);
   }
   sem.vaAddToUnseenSet(vaid, va);
-  if (ENTITY_LOG_VERBOSE) {
-    sem.worker.debug(`Initializing VisibleArea ${vaid}: Loading existing entities`);
-  }
+  sem.worker.debugCat('entverbose', `Initializing VisibleArea ${vaid}: Loading existing entities`);
   sem.load_func(sem.worker, vaid, function (err?: string, ent_data?: DataObject[]) {
     if (err) {
       return void done(err);
     }
     if (!ent_data) {
       // initial load of VA
-      sem.worker.debug(`Initializing VisibleArea ${vaid}: No existing data, asking worker to initialize`);
+      sem.worker.debugCat('entverbose',
+        `Initializing VisibleArea ${vaid}: No existing data, asking worker to initialize`);
       // Want to at least save an empty ent_data[] so that the next load is not consider initial
       sem.visible_areas_need_save[vaid] = true;
       sem.emit('visible_area_init', vaid);
     } else {
-      if (ENTITY_LOG_VERBOSE || ent_data.length) {
-        sem.worker.debug(`Initializing VisibleArea ${vaid}: Loaded ${ent_data.length} entities`);
-      }
+      sem.worker.debugCat(ent_data.length ? 'ent' : 'entverbose',
+        `Initializing VisibleArea ${vaid}: Loaded ${ent_data.length} entities`);
       for (let ii = 0; ii < ent_data.length; ++ii) {
         // Same as addEntityFromSerialized(), but does not flag `visible_areas_need_save`
         let ent = sem.createEntity(ent_data[ii]);
@@ -176,7 +181,7 @@ function loadPlayerEntity<
     assert(old_client.ent_id);
     // Kick old client
     let target_channel = `client.${old_client.client_id}`;
-    sem.worker.logSrc(src, `Booting previous client ${old_client.client_id} for player_uid ${player_uid}`);
+    sem.worker.logSrcCat(src, 'ent', `Booting previous client ${old_client.client_id} for player_uid ${player_uid}`);
     // TODO: use force_unsub instead?  Probably also need an app-level message to send.
     sem.worker.sendChannelMessage(target_channel, 'force_kick');
 
@@ -268,7 +273,7 @@ export function entityManagerDefaultSaveEnts(
   ent_data: DataObject[],
   done: () => void,
 ): void {
-  worker.debug(`Saving ${ent_data.length} ent(s) for VA ${vaid}`);
+  worker.debugCat(ent_data.length ? 'ent' : 'entverbose', `Saving ${ent_data.length} ent(s) for VA ${vaid}`);
   let ser_data = {
     ver: serialized_ent_version,
     ents: ent_data,
@@ -298,7 +303,7 @@ export function entityManagerDefaultLoadEnts(
     assert(isDataObject(data));
     assert(typeof data.ver === 'number');
     if (data.ver !== serialized_ent_version) {
-      worker.debug(`Dropping old version (${data.ver}) ents for VisibleArea ${vaid}`);
+      worker.debugCat('ent', `Dropping old version (${data.ver}) ents for VisibleArea ${vaid}`);
       return cb();
     }
     assert(Array.isArray(data.ents));
@@ -412,7 +417,7 @@ class ServerEntityManagerImpl<
 >
   extends EventEmitter
   implements EntityManager<Entity>
-{ // eslint-disable-line brace-style
+{ // eslint-disable-line @stylistic/brace-style
   worker: Worker;
   field_defs_by_id: (EntityFieldDef|null)[];
 
@@ -558,11 +563,12 @@ class ServerEntityManagerImpl<
       let ent = this.entities[ent_id];
       assert(ent);
       on_ent_load_cb(ent);
-      this.worker.debugSrc(src, `${client_id}: clientAddEntity success: ent_id=${ent_id}, sub_id="${sub_id}"`);
+      this.worker.debugSrcCat(src, 'ent',
+        `${client_id}: clientAddEntity success: ent_id=${ent_id}, sub_id="${sub_id}"`);
       this.worker.sendChannelMessage(`client.${client_id}`, 'ent_id_change', {
         ent_id,
         sub_id,
-      });
+      }, undefined, 'entverbose');
     });
   }
 
@@ -589,19 +595,19 @@ class ServerEntityManagerImpl<
         return;
       }
 
-      this.worker.debugSrc(src, `${client_id}: clientJoin success: ent_id=${ent_id}, sub_id="${sub_id}"`);
+      this.worker.debugSrcCat(src, 'ent', `${client_id}: clientJoin success: ent_id=${ent_id}, sub_id="${sub_id}"`);
       // Immediately let client know their entity ID, and notify that they are
       //   now receiving entity updates (will not yet have own entity yet, though)
       this.worker.sendChannelMessage(`client.${client_id}`, 'ent_start', {
         ent_id,
         sub_id,
-      });
+      }, undefined, 'entverbose');
       // Join and initialize appropriate visible areas
       this.clientSetVisibleAreaSeesInternal(client, this.worker.semClientInitialVisibleAreaSees(join_payload, client));
       this.sendInitialEntsToClient(client, false, () => {
         // By now, client has already received the initial update for all relevant
         //   entities (should include own entity, if they have one)
-        this.worker.sendChannelMessage(`client.${client_id}`, 'ent_ready');
+        this.worker.sendChannelMessage(`client.${client_id}`, 'ent_ready', undefined, undefined, 'entverbose');
       });
     });
   }
@@ -721,7 +727,7 @@ class ServerEntityManagerImpl<
     return ent;
   }
 
-  addEntityFromSerialized(data: DataObject): void {
+  addEntityFromSerialized(data: DataObject): Entity {
     let ent = this.createEntity(data);
     assert(!ent.is_player);
     ent.fixupPostLoad();
@@ -731,11 +737,13 @@ class ServerEntityManagerImpl<
 
     // Add to dirty list so full update gets sent to all subscribers
     addToDirtyList(this, ent);
+    return ent;
   }
 
   handleActionList(src: ClientHandlerSource, pak: Packet, resp_func: NetResponseCallback<ActionListResponse>): void {
     let count = pak.readInt();
-    let actions = [];
+    let actions: ActionMessageParam[] = [];
+    let log_cat = 'entverbose';
     for (let ii = 0; ii < count; ++ii) {
       let flags = pak.readInt();
       let action_data = {} as ActionMessageParam;
@@ -770,13 +778,19 @@ class ServerEntityManagerImpl<
         }
       }
       actions.push(action_data);
+      log_cat = logCatForEntityActionID(action_data.action_id) || log_cat;
     }
-    if (ENTITY_LOG_VERBOSE) {
-      this.worker.debugSrc(src, `${src.id}: ent_action_list(${count}): ${logdata(actions)}`);
+    if (logCategoryEnabled(log_cat)) {
+      this.worker.debugSrcCat(src, log_cat, `${src.id}: ent_action_list(${count}):` +
+        ` ${JSON.stringify(actions).replace(/"/g, '')}`);
     }
+    let any_error: string | undefined;
     let results: undefined | ActionListResponse;
     asyncEach(actions, (action_data, next, idx) => {
       function returnResult(err?: string | null, data?: unknown): void {
+        if (err) {
+          any_error = any_error || err;
+        }
         if (data !== undefined || err) {
           results = results || [];
           if (!err) {
@@ -810,6 +824,10 @@ class ServerEntityManagerImpl<
       (action_data as ActionHandlerParam).src = src;
       ent.handleAction(action_data as ActionHandlerParam, returnResult);
     }, (err?: string | null) => {
+      if (err || any_error) {
+        this.worker.infoSrc(src, `${src.id}: ent_action_list(${count}) error "${err || any_error}":` +
+          ` ${JSON.stringify(actions).replace(/"/g, '')}`);
+      }
       resp_func(err, results);
     });
   }
@@ -899,6 +917,9 @@ class ServerEntityManagerImpl<
   // Optional resp_func called when all full updates have been sent to the client,
   // but dirty ents still pending, likely including one's own entity.
   clientSetVisibleAreaSees(client: SEMClient, new_visible_areas: VAID[], resp_func?: NetErrorCallback<never>): void {
+    if (deepEqual(client.visible_area_sees, new_visible_areas)) {
+      return;
+    }
     this.clientSetVisibleAreaSeesInternal(client, new_visible_areas);
     this.sendInitialEntsToClient(client, true, resp_func);
   }
@@ -926,7 +947,7 @@ class ServerEntityManagerImpl<
     delete this.visible_areas[vaid];
     delete this.visible_areas_unseen[vaid];
     this.mem_usage.va.count--;
-    this.worker.debug(`Unloaded VA ${vaid} (${count} entities)`);
+    this.worker.debugCat(count ? 'ent' : 'entverbose', `Unloaded VA ${vaid} (${count} entities)`);
   }
 
   last_unload_time: number = 0;
@@ -1039,8 +1060,8 @@ class ServerEntityManagerImpl<
     new_ents: Entity[],
     deletes: EntDelete[][] | null,
   ): void {
-    let debug: string[] | null = ENTITY_LOG_VERBOSE ? [] : null;
-    let pak = this.worker.pak(`client.${client.client_id}`, 'ent_update', null, 1);
+    let debug: string[] | null = logCategoryEnabled('entverbose') ? [] : null;
+    let pak = this.worker.pak(`client.${client.client_id}`, 'ent_update', null, 'redundant');
     pak.writeU8(EntityUpdateCmd.IsInitialList);
     if (!client.has_schema) {
       client.has_schema = true;
@@ -1067,8 +1088,8 @@ class ServerEntityManagerImpl<
       }
     }
     pak.writeU8(EntityUpdateCmd.Terminate);
-    if (ENTITY_LOG_VERBOSE) {
-      this.worker.debug(`->${client.client_id}: ent_update(initial) ${debug!.join(';')}`);
+    if (debug) {
+      this.worker.debugCat('entverbose', `->${client.client_id}: ent_update(initial) ${debug!.join(';')}`);
     }
     pak.send();
   }
@@ -1126,14 +1147,26 @@ class ServerEntityManagerImpl<
         }
         if (!other_ent) {
           // Presumably there is a delete queued, possibly in the VA we just left.
-          // Could look up why somewhere in ent_deletes, but presumably they're now
-          //   out of view anyway, so just sending 'unknown'
-          // TODO: This might go slightly wrong if there's an unrelated delete
-          //   right near us on the same frame we transition!  Maybe need to do
-          //   something smarter (either here or on the client when it next receives
-          //   an update packet)
-          dels.push([ent_id, 'unknown']);
-          delete known_entities[ent_id];
+          // If it's queued in a VA we're still in, let it get handled.
+          // This happens whenever our VAs changed and we're near a delete happening
+          let handled = false;
+          for (let ii = 0; ii < needed_areas.length && !handled; ++ii) {
+            let vaid = needed_areas[ii];
+            let va_deletes = this.ent_deletes[vaid];
+            if (va_deletes) {
+              for (let jj = 0; jj < va_deletes.length; ++jj) {
+                if (va_deletes[jj][0] === ent_id) {
+                  handled = true;
+                  break;
+                }
+              }
+            }
+          }
+          if (!handled) {
+            // If not, presumably they're now out of view anyway, so just sending 'unknown'
+            dels.push([ent_id, 'unknown']);
+            delete known_entities[ent_id];
+          }
         } else {
           let { last_vaid, current_vaid } = other_ent;
           // Delete this entity if either the current or last VAID is in an area we no longer see.
@@ -1405,13 +1438,13 @@ class ServerEntityManagerImpl<
     }
 
     if (va_updates || va_deletes || new_ents) {
-      let pak = this.worker.pak(`client.${client.client_id}`, 'ent_update', null, 1);
+      let pak = this.worker.pak(`client.${client.client_id}`, 'ent_update', null, 'redundant');
       if (!client.has_schema) {
         client.has_schema = true;
         pak.writeU8(EntityUpdateCmd.Schema);
         pak.writeJSON(this.schema);
       }
-      let debug: string[] | null = ENTITY_LOG_VERBOSE ? [] : null;
+      let debug: string[] | null = logCategoryEnabled('entverbose') ? [] : null;
       if (va_updates) {
         for (let ii = 0; ii < va_updates.length; ++ii) {
           let per_va = va_updates[ii];
@@ -1458,10 +1491,8 @@ class ServerEntityManagerImpl<
         }
       }
       pak.writeU8(EntityUpdateCmd.Terminate);
-      if (ENTITY_LOG_VERBOSE) {
-        // TODO: logging is probably too verbose, combine to summary for all updates sent?
-        this.worker.debug(`->${client.client_id}: ent_update(tick) ${debug!.join(';')}`);
-      }
+      // TODO: logging is probably too verbose, combine to summary for all updates sent?
+      // this.worker.debugCat('entverbose', `->${client.client_id}: ent_update(tick) ${debug!.join(';')}`);
       pak.send();
     }
   }

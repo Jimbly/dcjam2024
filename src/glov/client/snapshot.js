@@ -2,45 +2,49 @@
 // Released under MIT License: https://opensource.org/licenses/MIT
 /* eslint no-bitwise:off */
 
-/* eslint-disable import/order */
-const assert = require('assert');
-const camera2d = require('./camera2d.js');
-const { alphaDraw, alphaDrawListSize, alphaListPush, alphaListPop } = require('./draw_list.js');
-const effects = require('./effects.js');
-const engine = require('./engine.js');
-const { framebufferCapture } = require('./framebuffer.js');
-const mat4Copy = require('gl-mat4/copy');
-const mat4LookAt = require('gl-mat4/lookAt');
-const { max, PI, tan } = Math;
-const { shaderCreate, shadersPrelink } = require('./shaders.js');
-const sprites = require('./sprites.js');
-const {
+import assert from 'assert';
+import * as mat4Copy from 'gl-mat4/copy';
+import * as mat4LookAt from 'gl-mat4/lookAt';
+import {
+  mat4,
+  v3addScale,
+  v3copy,
+  v4copy,
+  vec3,
+  vec4,
+  zaxis,
+} from 'glov/common/vmath';
+import * as camera2d from './camera2d';
+import {
+  alphaDraw,
+  alphaDrawListSize,
+  alphaListPop,
+  alphaListPush,
+} from './draw_list';
+import * as effects from './effects';
+import * as engine from './engine';
+import { getFrameIndex } from './engine';
+import { framebufferCapture } from './framebuffer';
+import * as geom from './geom';
+import {
+  qRotateZ,
+  qTransformVec3,
+  quat,
+  unit_quat
+} from './quat';
+import { shaderCreate, shadersPrelink } from './shaders';
+import * as sprites from './sprites';
+import {
+  BLEND_ALPHA,
+  blendModeSet,
   clipCoordsScissor,
   scissorPop,
   scissorPushIntersection,
   spriteCreate,
   spriteQueueFn,
-} = require('glov/client/sprites.js');
-const {
-  blendModeSet,
-  BLEND_ALPHA,
-} = sprites;
-const { textureCreateForCapture } = require('./textures.js');
-const {
-  mat4,
-  vec3,
-  v3addScale,
-  v3copy,
-  vec4,
-  v4copy,
-  zaxis,
-} = require('glov/common/vmath.js');
-const {
-  qRotateZ,
-  qTransformVec3,
-  quat,
-  unit_quat
-} = require('./quat.js');
+} from './sprites';
+import { textureCreateForCapture } from './textures';
+const { max, PI, tan } = Math;
 
 export let OFFSET_GOLDEN = vec3(-1 / 1.618, -1, 1 / 1.618 / 1.618);
 let snapshot_shader;
@@ -105,15 +109,19 @@ function snapshotSetupMats(param) {
   let max_dim = max(param.size[0], param.size[2]);
   let dist = max_dim * DIST_SCALE + param.size[1] / 2;
   engine.setupProjection(FOV, param.w, param.h, 0.1, dist * 2);
-  v3addScale(target_pos, param.pos, param.size, 0.5);
-  if (param.rot) {
-    qRotateZ(quat_rot, unit_quat, param.rot);
-    qTransformVec3(camera_offset_rot, camera_offset, quat_rot);
+  if (param.mat) {
+    mat4Copy(view_mat, param.mat);
   } else {
-    v3copy(camera_offset_rot, camera_offset);
+    v3addScale(target_pos, param.pos, param.size, 0.5);
+    if (param.rot) {
+      qRotateZ(quat_rot, unit_quat, param.rot);
+      qTransformVec3(camera_offset_rot, camera_offset, quat_rot);
+    } else {
+      v3copy(camera_offset_rot, camera_offset);
+    }
+    v3addScale(camera_pos, target_pos, camera_offset_rot, dist);
+    mat4LookAt(view_mat, camera_pos, target_pos, zaxis);
   }
-  v3addScale(camera_pos, target_pos, camera_offset_rot, dist);
-  mat4LookAt(view_mat, camera_pos, target_pos, zaxis);
   engine.setGlobalMatrices(view_mat);
 }
 
@@ -198,6 +206,7 @@ export function snapshotDrawDynamic(param) {
 
   spriteQueueFn(z, function () {
 
+    let tris_start = geom.stats.tris;
     viewportRenderPrepare(param);
 
     snapshotSetupMats(param);
@@ -209,6 +218,11 @@ export function snapshotDrawDynamic(param) {
     }
 
     viewportRenderFinish(param);
+
+    if (param.perf_container) {
+      param.perf_container.tris = geom.stats.tris - tris_start;
+      param.perf_container.frame = getFrameIndex();
+    }
   });
 }
 

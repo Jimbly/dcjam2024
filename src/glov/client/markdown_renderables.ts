@@ -2,11 +2,12 @@ export let markdown_default_renderables: TSMap<MarkdownRenderable> = {};
 export let markdown_default_font_styles: TSMap<FontStyle> = {};
 
 import assert from 'assert';
+import type { Optional, TSMap } from 'glov/common/types';
 import verify from 'glov/common/verify';
 import {
   ROVec4,
-  Vec4,
   unit_vec,
+  Vec4,
   vec4,
 } from 'glov/common/vmath';
 import {
@@ -15,6 +16,7 @@ import {
   FontStyle,
   fontStyleColored,
 } from './font';
+import type { Box } from './geom_types';
 import {
   MDDrawBlock,
   MDDrawParam,
@@ -23,15 +25,12 @@ import {
 } from './markdown';
 import { RenderableContent } from './markdown_parse';
 import { Sprite } from './sprites';
+import type { SpriteSheet } from './spritesheet';
 import {
   sprites as ui_sprites,
 } from './ui';
 
-import type { Box } from './geom_types';
-import type { SpriteSheet } from './spritesheet';
-import type { Optional, TSMap } from 'glov/common/types';
-
-const { floor } = Math;
+const { floor, max } = Math;
 
 export function markdownRenderableAddDefault(key: string, renderable: MarkdownRenderable): void {
   markdown_default_renderables[key] = renderable;
@@ -55,14 +54,25 @@ export function markdownLayoutFit(param: MDLayoutCalcParam, dims: Optional<Box, 
   let { cursor, line_height } = param;
   if (cursor.x + dims.w > param.w + EPSILON && cursor.x !== cursor.line_x0 && (param.align & ALIGN.HWRAP)) {
     cursor.x = cursor.line_x0 = param.indent;
-    cursor.y += line_height;
+    cursor.y += line_height; // TODO: = cursor.line_y1 instead?
+    cursor.line_y1 = cursor.y;
   }
   if (cursor.x + dims.w > param.w + EPSILON && (param.align & ALIGN.HWRAP)) {
     // still over, doesn't fit on a whole line, modify w (if caller listens to that)
     dims.w = param.w - cursor.line_x0;
   }
   dims.x = cursor.x;
-  dims.y = cursor.y;
+  if (dims.h !== line_height) {
+    // always vertically center within the specified line height
+    dims.y = cursor.y + (line_height - dims.h)/2;
+    if (param.font.integral) {
+      dims.y = floor(dims.y);
+    }
+    cursor.line_y1 = max(cursor.line_y1, cursor.y + line_height, dims.y + dims.h);
+  } else {
+    dims.y = cursor.y;
+    cursor.line_y1 = max(cursor.line_y1, cursor.y + line_height);
+  }
   cursor.x += dims.w;
   // TODO: if height > line_height, track this line's height on the cursor?
   return true;
@@ -70,7 +80,7 @@ export function markdownLayoutFit(param: MDLayoutCalcParam, dims: Optional<Box, 
 
 export type MarkdownImageParam = {
   sprite: Sprite;
-  frame?: number;
+  frame?: number | string;
   color?: ROVec4;
   override?: boolean;
 };
@@ -143,6 +153,9 @@ class MDRImg implements MDLayoutBlock, MDDrawBlock, Box {
       } else {
         let tex = sprite.texs[0];
         aspect = tex.width / tex.height;
+        if (sprite.uvs) {
+          aspect *= (sprite.uvs[2] - sprite.uvs[0]) / (sprite.uvs[3] - sprite.uvs[1]);
+        }
       }
     }
     this.w = h * aspect;

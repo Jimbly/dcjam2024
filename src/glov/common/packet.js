@@ -20,12 +20,19 @@ const FLAG_PACKET_INTERNAL = PACKET_DEBUG | PACKET_RESERVED1 | PACKET_RESERVED2;
 // Internal, runtime-only (not serialized) flags < 8 bits
 const PACKET_UNOWNED_BUFFER = 1 << 8;
 
-/* eslint-disable import/order */
-const assert = require('assert');
+export const MAX_JS_INT64 = 18446744073709550000;
+//          actual          18446744073709551616
+export const MAX_JS_INT53 = 9007199254740992;
+
+import assert from 'assert';
+import {
+  base64Decode,
+  base64Encode,
+} from './base64';
+import { deprecate, isInteger, log2 } from './util';
+// import { isInteger, log2 } from '../../build.dev/common/glov/util';
+
 const { max } = Math;
-const { deprecate, isInteger, log2 } = require('./util.js');
-// const { isInteger, log2 } = require('../../build.dev/common/glov/util.js');
-const { base64Encode, base64Decode } = require('./base64.js');
 
 deprecate(exports, 'default_flags');
 
@@ -402,6 +409,7 @@ Packet.prototype.writeInt = function (v) {
       buf.setUint32(offs, v, true);
       offs += 4;
     } else {
+      assert(v <= MAX_JS_INT64); // this or higher will not fit in 2 32-bit ints (lossy above 2^53, though!)
       buf.u8[offs++] = 252 + neg;
       let low_bits = v >>> 0;
       buf.setUint32(offs, low_bits, true);

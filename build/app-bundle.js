@@ -3,6 +3,7 @@ const gb = require('glov-build');
 const browserify = require('glov-build-browserify');
 const concat = require('glov-build-concat');
 const argv = require('minimist')(process.argv.slice(2));
+const sourcemapRemap = require('./sourcemap-remap');
 const uglify = require('./uglify.js');
 
 const uglify_options_ext = { compress: true, keep_fnames: false, mangle: true };
@@ -68,6 +69,7 @@ function bundlePair(opts) {
   // deps_source: 'source',
   // is_worker: false,
   // target: 'dev:client',
+  // sourcemap_host: 'http://localhost:3000/'
   let {
     source,
     entrypoint,
@@ -80,6 +82,8 @@ function bundlePair(opts) {
     post_bundle_cb,
     bundle_uglify_opts,
     ban_deps,
+    sourcemap_host,
+    do_version,
   } = opts;
   let subtask_name = `bundle_${entrypoint.replace(/^client\//, '').replace(/\//g, '_')}`;
 
@@ -103,7 +107,7 @@ function bundlePair(opts) {
   }
   gb.task({
     name: entrypoint_name,
-    target: (do_final_bundle || bundle_uglify_opts) ? undefined : target,
+    target: (do_final_bundle || bundle_uglify_opts || sourcemap_host) ? undefined : target,
     ...browserify(entrypoint_subbundle_opts)
   });
 
@@ -114,7 +118,7 @@ function bundlePair(opts) {
       input: [
         `${entrypoint_name}:${out}`,
       ],
-      target: do_final_bundle ? undefined : target,
+      target: (do_final_bundle || sourcemap_host) ? undefined : target,
       ...uglify({ inline: false }, bundle_uglify_opts),
     });
     tasks.push(mangle_name);
@@ -142,7 +146,7 @@ function bundlePair(opts) {
       name: uglify_name,
       type: gb.SINGLE,
       input: `${deps_name}:${deps_out}`,
-      target: do_final_bundle ? undefined : target,
+      target: (do_final_bundle || sourcemap_host) ? undefined : target,
       ...uglify({ inline: Boolean(do_final_bundle) }, uglify_options_ext),
     });
     if (!do_final_bundle) {
@@ -158,13 +162,31 @@ function bundlePair(opts) {
           `${uglify_name}:${deps_out}`,
           `${entrypoint_name}:${out}`,
         ],
-        target,
+        target: sourcemap_host ? undefined : target,
         ...concatJS({
           output: out,
           first_file: `${uglify_name}:${deps_out}`
         }),
       });
     }
+  }
+
+  if (sourcemap_host) {
+    let sourcemap_host_apply_task = `${subtask_name}_sourcemap_host`;
+    gb.task({
+      name: sourcemap_host_apply_task,
+      input: tasks.map((a) => `${a}:**`),
+      target,
+      ...sourcemapRemap(function (job, filename, next) {
+        filename = `${sourcemap_host}${filename}`;
+        if (do_version) {
+          assert(opts.last_ver); // do we need to extract the version from the buffer?
+          filename = `${filename}?ver=${opts.last_ver}`;
+        }
+        next(null, filename);
+      }),
+    });
+    tasks = [sourcemap_host_apply_task];
   }
 
   // Important: one, final composite task that references each of the final outputs.
@@ -179,12 +201,13 @@ function bundlePair(opts) {
 
 const VERSION_STRING = 'BUILD_TIMESTAMP';
 const VERSION_BUFFER = Buffer.from(VERSION_STRING);
-function versionReplacer(buf) {
+function versionReplacer(param, buf) {
   let idx = buf.indexOf(VERSION_BUFFER);
   if (idx !== -1) {
-    let build_timestamp = Date.now();
+    let build_timestamp = param.last_ver = Date.now();
     if (argv.timestamp === false) { // --no-timestamp
       build_timestamp = '0000000000000';
+      param.last_ver = 0;
     }
     // Must be exactly 'BUILD_TIMESTAMP'.length (15) characters long
     build_timestamp = `"${build_timestamp}"`;
@@ -201,7 +224,7 @@ function versionReplacer(buf) {
 module.exports = function appBundle(param) {
   let { task_accum, name, out, do_version } = param;
   if (do_version) {
-    param.post_bundle_cb = versionReplacer;
+    param.post_bundle_cb = versionReplacer.bind(null, param);
   }
   gb.task({
     name,

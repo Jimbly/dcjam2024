@@ -1,17 +1,19 @@
 import assert from 'assert';
 
 import { dataError } from './data_error';
-import { FSAPI, fileBaseName } from './fsapi';
-import { clone, defaultsDeep, inherits } from './util';
+import { fileBaseName, FSAPI } from './fsapi';
 import type { DataObject, DeepPartial } from './types';
+import { clone, defaultsDeep, inherits } from './util';
 
 export type TraitedBaseClass = {
   type_id: string; // will be constant on the prototype
 };
 
 export type TraitOpts<TBaseClass extends TraitedBaseClass, TOpts, TState=never> = {
-  // eslint-disable-next-line @typescript-eslint/ban-types
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   methods?: Partial<Record<string, Function>>;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+  compound_methods?: Partial<Record<string, Function>>;
   properties?: Partial<Record<keyof TBaseClass, unknown>>; // Properties placed on the root of the entity
   default_opts?: TOpts;
   init_prototype?: (opts: TOpts) => void; // Called during load after WebGL/etc initialized
@@ -76,7 +78,7 @@ class TraitFactoryImpl<TBaseClass extends TraitedBaseClass, TCtorParam> {
     let traits = type_def.traits || [];
     let state_init = [];
     let factory_param_names = ['BaseCtor'];
-    // eslint-disable-next-line @typescript-eslint/ban-types
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
     let factory_param_values: Function[] = [BaseCtor];
     for (let ii = 0; ii < traits.length; ++ii) {
       let trait_ref = traits[ii];
@@ -139,6 +141,20 @@ function factory(${factory_param_names.join(',')}) {
       for (let key in trait_def.methods) {
         proto[key] = trait_def.methods[key];
       }
+      // Compound Methods
+      for (let key in trait_def.compound_methods) {
+        let fn = trait_def.compound_methods[key]!;
+        if (proto[key]) {
+          let nextfn = proto[key];
+          proto[key] = function () {
+            // eslint-disable-next-line prefer-rest-params
+            return fn.apply(this, arguments) || nextfn.apply(this, arguments);
+          };
+        } else {
+          proto[key] = fn;
+        }
+      }
+
       // Opts
       let num_custom_opts = Object.keys(trait_ref).length - 1; // ignore 'id'
       if (trait_def.default_opts) {
