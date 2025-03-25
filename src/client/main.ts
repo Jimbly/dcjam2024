@@ -1,4 +1,5 @@
-/*eslint global-require:off, comma-spacing:error*/
+/* eslint-disable n/global-require */
+/* eslint @stylistic/comma-spacing:error*/
 import * as local_storage from 'glov/client/local_storage.js'; // eslint-disable-line import/order
 local_storage.setStoragePrefix('dcj24'); // Before requiring anything else that might load from this
 
@@ -7,11 +8,14 @@ import { chatUICreate } from 'glov/client/chat_ui';
 import { cmd_parse } from 'glov/client/cmds';
 import * as engine from 'glov/client/engine';
 import { Font, fontCreate, fontStyle } from 'glov/client/font';
-import { markdownImageRegisterSpriteSheet, markdown_default_renderables } from 'glov/client/markdown_renderables';
+import {
+  markdown_default_renderables,
+  markdownImageRegisterSpriteSheet,
+} from 'glov/client/markdown_renderables';
 import { netInit } from 'glov/client/net';
 import * as settings from 'glov/client/settings';
+import { settingsSet } from 'glov/client/settings';
 import { shadersSetInternalDefines } from 'glov/client/shaders';
-import { spriteSetGet } from 'glov/client/sprite_sets';
 import { spritesheetTextureOpts } from 'glov/client/spritesheet';
 import { textureDefaultFilters } from 'glov/client/textures';
 import { uiSetPanelColor } from 'glov/client/ui';
@@ -76,6 +80,7 @@ export function main(): void {
   let use_fbos = 1;
   let need_dfdxy = false;
   let override_pixely = false;
+  // @ts-expect-error truthy
   if (!'AA hires') {
     need_dfdxy = true;
     antialias = true; // antialiases 3D geometry edges only
@@ -83,24 +88,27 @@ export function main(): void {
     shadersSetInternalDefines({
       SSAA4X: true,
     });
-    settings.set('pixely', 0);
+    settingsSet('pixely', 0);
     override_pixely = true;
-    settings.set('filter', 0);
-    settings.set('entity_split', 0);
-    settings.set('entity_nosplit_use_near', 1);
+    settingsSet('filter', 0);
+    settingsSet('entity_split', 0);
+    settingsSet('entity_nosplit_use_near', 1);
+  // @ts-expect-error truthy
   } else if (!'simple lowres') {
-    settings.set('pixely', 1);
-    settings.set('filter', 0);
-    settings.set('entity_split', 0);
-    settings.set('entity_nosplit_use_near', 0);
+    settingsSet('pixely', 1);
+    settingsSet('filter', 0);
+    settingsSet('entity_split', 0);
+    settingsSet('entity_nosplit_use_near', 0);
     crawlerRenderSetLODBiasRange(-2, -1.5);
+  // @ts-expect-error truthy
   } else if (!'lowres with mipmapping') {
     // also antilias=true & use_fbos=0 is potentially useful
     crawlerRenderSetLODBiasRange(-3, -1.5);
-    settings.set('pixely', 1);
-    settings.set('filter', 2);
-    settings.set('entity_split', 0);
-    settings.set('entity_nosplit_use_near', 1);
+    settingsSet('pixely', 1);
+    settingsSet('filter', 2);
+    settingsSet('entity_split', 0);
+    settingsSet('entity_nosplit_use_near', 1);
+  // @ts-expect-error truthy
   } else if (!'simple AA lowres') {
     need_dfdxy = true;
     antialias = true;
@@ -108,29 +116,32 @@ export function main(): void {
     shadersSetInternalDefines({
       SSAA4X: true,
     });
-    settings.set('pixely', 1);
-    settings.set('filter', 0);
-    settings.set('entity_split', 0);
-    settings.set('entity_nosplit_use_near', 1);
+    settingsSet('pixely', 1);
+    settingsSet('filter', 0);
+    settingsSet('entity_split', 0);
+    settingsSet('entity_nosplit_use_near', 1);
+  // @ts-expect-error truthy
   } else if ('CRT filter') {
     // need_dfdxy = true;
     // shadersSetInternalDefines({
     //   SSAA4X: true,
     // });
-    settings.set('pixely', 2);
-    settings.set('hybrid', 0);
-    settings.set('filter', 2);
-    settings.set('entity_split', 0);
-    settings.set('entity_nosplit_use_near', 0);
+    settingsSet('pixely', 2);
+    settingsSet('hybrid', 0);
+    settingsSet('filter', 2);
+    settingsSet('entity_split', 0);
+    settingsSet('entity_nosplit_use_near', 0);
     crawlerRenderSetLODBiasRange(-2, -1); // walls only
+  // @ts-expect-error truthy
   } else if (!'split logic') {
-    settings.set('pixely', 1);
-    settings.set('filter', 0);
-    settings.set('entity_split', 1);
+    settingsSet('pixely', 1);
+    settingsSet('filter', 0);
+    settingsSet('entity_split', 1);
+  // @ts-expect-error truthy
   } else if (!'split logic filter') {
-    settings.set('pixely', 1);
-    settings.set('filter', 1);
-    settings.set('entity_split', 1);
+    settingsSet('pixely', 1);
+    settingsSet('filter', 1);
+    settingsSet('entity_split', 1);
   }
   const font_info_palanquin32 = require('./img/font/palanquin32.json');
   const font_info_04b03 = require('./img/font/04b03_8x1.json');
@@ -140,7 +151,7 @@ export function main(): void {
     info: font_info,
     texture: 'font/dcj24',
   };
-  settings.set('use_fbos', use_fbos); // Needed for our effects
+  settingsSet('use_fbos', use_fbos); // Needed for our effects
 
   spritesheetTextureOpts('whitebox', { force_mipmaps: true });
   spritesheetTextureOpts('enemies', {

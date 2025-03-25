@@ -1,16 +1,15 @@
 import { clamp, clone } from 'glov/common/util';
 import {
   CrawlerScriptAPI,
-  CrawlerScriptWhen,
   crawlerScriptRegisterEvent,
   crawlerScriptRegisterFunc,
+  CrawlerScriptWhen,
 } from '../common/crawler_script';
 import { CrawlerCell, DirTypeOrCell } from '../common/crawler_state';
 import { bamfAddRandom, bamfCheck } from './bamf';
 import { crawlerEntFactory } from './crawler_entity_client';
 import { crawlerScriptAPI } from './crawler_play';
 import { doSolitudeLeave } from './dialog_data';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { dialog, dialogPush } from './dialog_system';
 import { EntityDemoClient, StatsData } from './entity_demo_client';
 import { autosave, myEnt, myEntOptional } from './play';

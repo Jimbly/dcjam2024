@@ -17,16 +17,16 @@ import {
   CrawlerLevel,
   CrawlerState,
   DIR_CELL,
-  DX,
-  DY,
   DirType,
   DirTypeOrCell,
+  DX,
+  DY,
 } from '../common/crawler_state';
 import { crawlerRoom } from './crawler_comm';
 import { CrawlerController } from './crawler_controller';
 import {
-  OnlineMode,
   crawlerMyEnt,
+  OnlineMode,
 } from './crawler_entity_client';
 import { dialog } from './dialog_system';
 import { statusSet } from './status';

@@ -3,11 +3,11 @@ import * as engine from 'glov/client/engine';
 import { ALIGN, fontStyle, fontStyleColored } from 'glov/client/font';
 import { fscreenAvailable, fscreenEnter } from 'glov/client/fscreen';
 import {
-  KEYS,
   eatAllInput,
   inputTouchMode,
   keyDown,
   keyDownEdge,
+  KEYS,
   mouseDownAnywhere,
 } from 'glov/client/input';
 import { localStorageGetJSON } from 'glov/client/local_storage';
@@ -33,16 +33,16 @@ import {
   crawlerCommWant,
 } from './crawler_comm';
 import {
-  SavedGameData,
   crawlerPlayWantMode,
   crawlerPlayWantNewGame,
+  SavedGameData,
 } from './crawler_play';
 import { creditsGo } from './credits';
 import { game_height, game_width } from './globals';
 import * as main from './main';
 import {
-  Score,
   getScoreSystem,
+  Score,
 } from './play';
 
 
@@ -307,7 +307,6 @@ function title(dt: number): void {
       x, y, text: 'Credits',
       color: [1,1,1,title_alpha.button],
     })) {
-      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       creditsGo();
     }
   }
@@ -416,7 +415,7 @@ function stateHighScores(): void {
   //   frame: settings.volume_sound ? FRAME_SOUND_ON : FRAME_SOUND_OFF,
   //   x, y: toggle_y, h: button_h, w: button_h,
   // })) {
-  //   settings.set('volume_sound', settings.volume_sound ? 0 : 1);
+  //   settingsSet('volume_sound', settings.volume_sound ? 0 : 1);
   // }
   // x += button_h + pad;
   // if (buttonImage({
@@ -425,7 +424,7 @@ function stateHighScores(): void {
   //   frame: settings.volume_music ? FRAME_MUSIC_ON : FRAME_MUSIC_OFF,
   //   x, y: toggle_y, h: button_h, w: button_h,
   // })) {
-  //   settings.set('volume_music', settings.volume_music ? 0 : 1);
+  //   settingsSet('volume_music', settings.volume_music ? 0 : 1);
   // }
 
   pad = 24;

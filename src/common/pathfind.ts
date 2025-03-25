@@ -2,9 +2,9 @@ import { CrawlerScriptAPI, getEffWall } from './crawler_script';
 import {
   CrawlerCell,
   CrawlerLevel,
+  DirType,
   DX,
   DY,
-  DirType,
   VIS_PASSED_EAST,
   VIS_PASSED_NORTH,
 } from './crawler_state';

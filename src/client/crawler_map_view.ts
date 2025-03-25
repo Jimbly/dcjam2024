@@ -25,8 +25,8 @@ import {
 } from 'glov/common/vmath';
 import {
   CrawlerScriptAPI,
-  CrawlerScriptEventMapIcon,
   crawlerScriptEventFunc,
+  CrawlerScriptEventMapIcon,
   crawlerScriptRegisterFunc,
   getEffCell,
   getEffWall,
@@ -35,9 +35,9 @@ import {
   CrawlerCell,
   CrawlerCellEvent,
   CrawlerState,
-  DX, DY,
   DirType,
   DirTypeOrCell,
+  DX, DY,
   EAST,
   NORTH,
   SOUTH,

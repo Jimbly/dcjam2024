@@ -13,12 +13,12 @@ import {
 import { ALIGN, Font, fontStyle, fontStyleAlpha } from 'glov/client/font';
 import { markdownAuto } from 'glov/client/markdown';
 import {
-  ButtonTextParam,
   buttonText,
+  ButtonTextParam,
   buttonWasFocused,
   drawBox,
-  uiGetFont,
   sprites as ui_sprites,
+  uiGetFont,
 } from 'glov/client/ui';
 import { WithRequired } from 'glov/common/types';
 import { v4copy, v4set, vec4 } from 'glov/common/vmath';

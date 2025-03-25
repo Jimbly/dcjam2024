@@ -1,4 +1,4 @@
-/* eslint global-require:off */
+/* eslint-disable n/global-require */
 
 // For debug and used internally in the build/bundling pipeline
 window.glov_build_version=BUILD_TIMESTAMP;

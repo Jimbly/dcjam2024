@@ -1,4 +1,5 @@
 Merging latest GLOV issues:
+  combat help - all text is down 1px (or, images are up 1px)
   chat dialogs are now full width instead of smaller
 
 TODO

@@ -4,7 +4,7 @@
 import type { shaderCreate } from 'glov/client/shaders';
 type Shader = ReturnType<typeof shaderCreate>;
 import type { TSMap, UnimplementedData, VoidFunc } from 'glov/common/types';
-import type { ROVec1, ROVec2, ROVec3, ROVec4 } from 'glov/common/vmath';
+import type { JSVec4, ROVec1, ROVec2, ROVec3, ROVec4 } from 'glov/common/vmath';
 // TODO: move when converted to TypeScript
 import type { BUCKET_ALPHA, BUCKET_DECAL, BUCKET_OPAQUE } from './dyn_geom';
 import type { Box } from './geom_types';
@@ -55,7 +55,7 @@ export interface SpriteDrawParams {
   w?: number; h?: number;
   frame?: number | string;
   rot?: number;
-  uvs?: ROVec4; // [u0, v0, u1, v1]
+  uvs?: ROVec4 | JSVec4; // [u0, v0, u1, v1]
   blend?: BlendMode;
   color?: ROVec4;
   shader?: Shader;

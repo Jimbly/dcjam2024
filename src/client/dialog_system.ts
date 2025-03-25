@@ -6,14 +6,14 @@ import {
   fontStyle,
 } from 'glov/client/font';
 import {
-  KEYS,
-  PAD,
   eatAllInput,
   inputClick,
   inputPadMode,
   inputTouchMode,
   keyDown,
+  KEYS,
   mouseDownAnywhere,
+  PAD,
   padButtonDown,
 } from 'glov/client/input';
 import {
@@ -27,11 +27,11 @@ import {
 } from 'glov/client/markdown_parse';
 import { Sprite } from 'glov/client/sprites';
 import {
-  PanelParam,
-  UIBox,
   buttonText,
   panel,
+  PanelParam,
   suppressNewDOMElemWarnings,
+  UIBox,
   uiButtonHeight,
   uiTextHeight,
 } from 'glov/client/ui';

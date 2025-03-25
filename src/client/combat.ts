@@ -24,21 +24,21 @@ import {
   panel,
   playUISound,
   suppressNewDOMElemWarnings,
+  sprites as ui_sprites,
   uiButtonWidth,
   uiGetFont,
   uiTextHeight,
-  sprites as ui_sprites,
 } from 'glov/client/ui';
 import { randCreate } from 'glov/common/rand_alea';
 import { DataObject, TSMap } from 'glov/common/types';
 import { easeIn, easeOut, empty, lerp } from 'glov/common/util';
 import verify from 'glov/common/verify';
 import {
-  Vec4,
   v3set,
   v4copy,
   v4set,
   vec2,
+  Vec4,
   vec4,
 } from 'glov/common/vmath';
 import { bamfCheck } from './bamf';
@@ -48,29 +48,29 @@ import { dialog } from './dialog_system';
 import {
   AttackType,
   AttackTypeToFrameEnemies,
+  Encounter,
   ENCOUNTERS,
   ENEMIES,
-  Encounter,
   EnemyDef,
 } from './encounters';
 import {
   AbilityDef,
   EntityDemoClient,
+  entityManager,
   Hero,
   HeroClassDef,
   HeroClassTier,
-  entityManager,
 } from './entity_demo_client';
 import {
+  render_height,
+  render_width,
   SANITY_W,
   VIEWPORT_X0,
   VIEWPORT_Y0,
-  render_height,
-  render_width,
 } from './globals';
 import {
-  HERO_H,
   getAbiltiyTooltip,
+  HERO_H,
   heroDrawPos,
 } from './hero_draw';
 import { ABILITIES, CLASSES, DICE_SLOTS, effectGetValue } from './heroes';
@@ -79,7 +79,6 @@ import { drawHealthBar, giveXP, myEnt, myEntOptional, sanityDamage } from './pla
 const spritesheet_icons = require('./img/icons');
 const { sprite_icons } = spritesheet_icons;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const { abs, floor, max, min, random, round, sin } = Math;
 
 let font: Font;

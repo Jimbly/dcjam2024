@@ -1,4 +1,4 @@
-/* eslint prefer-template:off, max-len:off */
+/* eslint prefer-template:off, @stylistic/max-len:off */
 import { fontStyle } from 'glov/client/font';
 import { PanelParam, playUISound, sprites as ui_sprites } from 'glov/client/ui';
 import { dialogIconsRegister } from '../common/crawler_events';
@@ -15,8 +15,8 @@ import {
 } from './dialog_system';
 import { Hero } from './entity_demo_client';
 import {
-  PORTRAIT_SIZE,
   drawHeroName,
+  PORTRAIT_SIZE,
 } from './hero_draw';
 import { CLASSES } from './heroes';
 import { onetimeEvent } from './jam_events';

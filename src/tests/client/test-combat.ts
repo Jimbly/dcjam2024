@@ -1,7 +1,6 @@
-/* eslint import/order:off, max-len:off, @typescript-eslint/no-unused-vars:off */
+/* eslint import/order:off, @stylistic/max-len:off, @typescript-eslint/no-unused-vars:off */
 import 'glov/client/test'; // Must be first
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import assert from 'assert';
 import { empty } from 'glov/common/util';
 import { combatStateInit } from '../../client/combat';

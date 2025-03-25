@@ -20,6 +20,7 @@ import {
 } from 'glov/client/local_storage';
 import { ClientChannelWorker } from 'glov/client/net';
 import * as settings from 'glov/client/settings';
+import { settingsRegister, settingsSet } from 'glov/client/settings';
 import { spotSuppressPad } from 'glov/client/spot';
 import {
   Sprite,
@@ -34,9 +35,9 @@ import * as ui from 'glov/client/ui';
 import { isMenuUp } from 'glov/client/ui';
 import * as urlhash from 'glov/client/urlhash';
 import { getURLBase } from 'glov/client/urlhash';
-import { EntityManagerEvent } from 'glov/common/entity_base_common';
+import type { CmdRespFunc } from 'glov/common/cmd_parse';
+import type { EntityManagerEvent } from 'glov/common/entity_base_common';
 import {
-  CmdRespFunc,
   DataObject,
 } from 'glov/common/types';
 import {
@@ -45,10 +46,10 @@ import {
   mod,
 } from 'glov/common/util';
 import {
-  Vec4,
   v3copy,
   v4copy,
   vec3,
+  Vec4,
   vec4,
 } from 'glov/common/vmath';
 import '../common/crawler_events'; // side effects: register events
@@ -56,11 +57,11 @@ import {
   CrawlerLevel,
   CrawlerLevelSerialized,
   CrawlerState,
+  createCrawlerState,
   DX,
   DY,
   JSVec3,
   VstyleDesc,
-  createCrawlerState,
 } from '../common/crawler_state';
 import { LevelGenerator, levelGeneratorCreate } from '../common/level_generator';
 import {
@@ -76,34 +77,34 @@ import {
 } from './crawler_comm';
 import { CrawlerController } from './crawler_controller';
 import {
-  EntityCrawlerClient,
-  OnlineMode,
   crawlerEntitiesInit,
   crawlerEntitiesOnEntStart,
   crawlerEntityManager,
   crawlerEntityManagerOffline,
   crawlerMyActionSend,
   crawlerMyEnt,
+  EntityCrawlerClient,
   entityPosManager,
   isLocal,
   isOnline,
   isOnlineOnly,
+  OnlineMode,
   onlineMode,
 } from './crawler_entity_client';
 import { mapViewActive } from './crawler_map_view';
 import {
-  FOV,
-  SPLIT_ALL,
-  SPLIT_FAR,
-  SPLIT_NEAR,
   crawlerCalc3DViewport,
   crawlerRenderDoSplit,
   crawlerRenderGameViewAngle,
   crawlerRenderViewportGet,
   crawlerSetFogColor,
   crawlerSetFogParams,
+  FOV,
   render,
   renderPrep,
+  SPLIT_ALL,
+  SPLIT_FAR,
+  SPLIT_NEAR,
 } from './crawler_render';
 import {
   crawlerRenderEntities,
@@ -172,7 +173,7 @@ export function crawlerOnPixelyChange(fn: (pixely: number) => void): void {
   on_pixely_change.push(fn);
 }
 let past_startup = false;
-settings.register({
+settingsRegister({
   filter: {
     default_value: 0, // 1 for spire, 0 for demo
     type: cmd_parse.TYPE_INT,
@@ -616,7 +617,7 @@ export function crawlerBuildModeActivate(build_mode: boolean): void {
   if (build_mode) {
     if (settings.pixely === 2) {
       was_pixely_2 = true;
-      settings.set('pixely', 3);
+      settingsSet('pixely', 3);
     }
     if (game_state.level_provider === getLevelForFloorFromWebFS) {
       // One-time switch to server-provided levels and connect to the room
@@ -634,7 +635,7 @@ export function crawlerBuildModeActivate(build_mode: boolean): void {
     }
   } else {
     if (was_pixely_2) {
-      settings.set('pixely', 2);
+      settingsSet('pixely', 2);
       was_pixely_2 = false;
     }
     if (onlineMode() === OnlineMode.ONLINE_BUILD) {

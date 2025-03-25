@@ -27,14 +27,15 @@ import { alphaDraw, opaqueDraw } from 'glov/client/draw_list';
 import {
   BUCKET_ALPHA,
   BUCKET_OPAQUE,
+  dynGeomLookAt,
   FACE_CAMERA,
   FACE_CUSTOM,
   FACE_FRUSTUM,
   FACE_XY,
-  dynGeomLookAt,
 } from 'glov/client/dyn_geom';
 import * as engine from 'glov/client/engine';
 import { geomCreateQuads } from 'glov/client/geom';
+import type { Box } from 'glov/client/geom_types';
 import mat4ScaleRotateTranslate from 'glov/client/mat4ScaleRotateTranslate';
 import { modelLoad } from 'glov/client/models';
 import {
@@ -49,21 +50,22 @@ import {
   shadersAddGlobal,
   shadersBind,
 } from 'glov/client/shaders';
+import type { BucketType, Sprite, SpriteUIData } from 'glov/client/sprites';
+import type { SpriteSheet } from 'glov/client/spritesheet';
 import {
   textureBindArray,
 } from 'glov/client/textures';
 import * as ui from 'glov/client/ui';
 import { uiTextHeight } from 'glov/client/ui';
 import { dataError, dataErrorEx } from 'glov/common/data_error';
+import { TSMap } from 'glov/common/types';
 import { isInteger, lerp, ridx } from 'glov/common/util';
 import {
+  JSVec4,
+  mat4,
   ROVec2,
   ROVec3,
   ROVec4,
-  Vec2,
-  Vec3,
-  Vec4,
-  mat4,
   rovec4,
   unit_vec,
   v2addScale,
@@ -83,8 +85,11 @@ import {
   v4copy,
   v4mul,
   v4set,
+  Vec2,
   vec2,
+  Vec3,
   vec3,
+  Vec4,
   vec4,
   zaxis,
   zero_vec,
@@ -100,11 +105,7 @@ import {
   VstyleDesc,
   WallDesc,
 } from '../common/crawler_state';
-
 import type { CrawlerScriptAPIClient } from './crawler_script_api_client';
-import type { Box } from 'glov/client/geom_types';
-import type { BucketType, Sprite, SpriteUIData } from 'glov/client/sprites';
-import type { SpriteSheet } from 'glov/client/spritesheet';
 
 type Geom = ReturnType<typeof geomCreateQuads>;
 type Shader = ReturnType<typeof shaderCreate>;
@@ -211,7 +212,7 @@ export type CrawlerThumbnailPair = [
   Sprite,
   {
     frame?: number;
-    uvs?: number[];
+    uvs?: JSVec4;
     color?: ROVec4;
   }
 ];
@@ -388,12 +389,12 @@ function frameFromAnim2(
   }
   if (t < blend_time) {
     idx = (idx + frames.length - 1) % frames.length;
-    let baseuv = uidata.rects[base_frame];
+    let baseuv = (uidata.rects as TSMap<ROVec4>)[base_frame]!;
     let frame = spritesheet.tiles[frames[idx]];
     if (frame === undefined) {
       return;
     }
-    let ouruv = uidata.rects[frame];
+    let ouruv = (uidata.rects as TSMap<ROVec4>)[frame]!;
     v2sub(out, ouruv, baseuv);
     out[2] = 1 - t / blend_time;
   } else {
@@ -638,7 +639,7 @@ function drawSimpleFiller(
 
   let orig_uvs = uv_identity;
   if (param && param.frame !== undefined) {
-    orig_uvs = sprite.uidata!.rects[param.frame];
+    orig_uvs = (sprite.uidata!.rects as TSMap<ROVec4>)[param.frame]!;
     param.frame = undefined;
   }
 
@@ -788,7 +789,7 @@ function drawSimpleCornerFloor(
   v3iAdd(temp_pos, floor_detail_offs);
   v2set(temp_size, DIM*scale, DIM*scale);
 
-  let uvs = sprite.uidata!.rects[param.frame!];
+  let uvs = (sprite.uidata!.rects as TSMap<ROVec4>)[param.frame!]!;
   if (quadrants === 4) {
     sprite.draw3D({
       ...param,
@@ -939,7 +940,7 @@ function drawSimplePillar(
   }
   let geom = pillar_geoms[key];
   if (!geom) {
-    let uvs = sprite.uidata!.rects[param.frame];
+    let uvs = (sprite.uidata!.rects as TSMap<ROVec4>)[param.frame]!;
     geom = pillar_geoms[key] = createPillar(vopts, uvs);
   }
   let offs = vopts.offs || zero_vec;

@@ -114,7 +114,10 @@ export const VIS_VISITED = 8;
 import assert from 'assert';
 import { base64CharTable } from 'glov/common/base64';
 import { dataError } from 'glov/common/data_error';
-import { FSAPI, fileBaseName } from 'glov/common/fsapi';
+import {
+  fileBaseName,
+  FSAPI,
+} from 'glov/common/fsapi';
 import { DataObject } from 'glov/common/types';
 import {
   callEach,
@@ -127,15 +130,14 @@ import {
 import verify from 'glov/common/verify';
 import {
   ROVec2,
-  Vec2,
-  Vec3,
   v2set,
+  Vec2,
   vec2,
+  Vec3,
   vec3,
 } from 'glov/common/vmath';
 import { CrawlerScriptAPI, getEffCell, getEffWall } from './crawler_script';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const { abs, ceil, floor } = Math;
 
 export type JSVec2 = [number, number];
@@ -441,6 +443,7 @@ let identity_vstyle: VstyleDesc = {
   fog_color: vec3(0,0,0),
 };
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type CrawlerLevelState = {
   // Nothing for now, may want this later, though?
 };
@@ -466,9 +469,9 @@ export class CrawlerLevel {
     stairs_in: JSVec3;
     stairs_out: JSVec3;
   } = {
-    stairs_in: [1,1,2],
-    stairs_out: [1,1,2],
-  };
+      stairs_in: [1,1,2],
+      stairs_out: [1,1,2],
+    };
   seen_cells = 0;
   total_cells = 0;
   connected = false;

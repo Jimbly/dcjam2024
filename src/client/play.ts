@@ -16,26 +16,27 @@ import {
 import { fscreenActive, fscreenAvailable, fscreenEnter, fscreenExit } from 'glov/client/fscreen';
 import * as input from 'glov/client/input';
 import {
-  KEYS,
-  PAD,
   keyDownEdge,
+  KEYS,
   keyUpEdge,
+  PAD,
   padButtonUpEdge,
 } from 'glov/client/input';
 import { markdownAuto } from 'glov/client/markdown';
 import { markdownSetColorStyle } from 'glov/client/markdown_renderables';
 import { ClientChannelWorker } from 'glov/client/net';
 import {
-  ScoreSystem,
   scoreAlloc,
+  ScoreSystem,
 } from 'glov/client/score';
 import { MenuItem } from 'glov/client/selection_box';
 import * as settings from 'glov/client/settings';
+import { settingsRegister, settingsSet } from 'glov/client/settings';
 import { SimpleMenu, simpleMenuCreate } from 'glov/client/simple_menu';
 import {
   Sprite,
-  SpriteDrawParams,
   spriteCreate,
+  SpriteDrawParams,
 } from 'glov/client/sprites';
 import {
   ButtonStateString,
@@ -46,11 +47,11 @@ import {
   modalDialog,
   panel,
   playUISound,
+  sprites as ui_sprites,
   uiButtonHeight,
   uiButtonWidth,
   uiGetFont,
   uiTextHeight,
-  sprites as ui_sprites,
 } from 'glov/client/ui';
 import * as urlhash from 'glov/client/urlhash';
 import { webFSAPI } from 'glov/client/webfs';
@@ -59,14 +60,14 @@ import {
 } from 'glov/common/types';
 import { clamp, easeIn } from 'glov/common/util';
 import {
-  Vec2,
   v2same,
   v4set,
+  Vec2,
   vec4,
 } from 'glov/common/vmath';
 import {
-  JSVec3,
   crawlerLoadData,
+  JSVec3,
 } from '../common/crawler_state';
 import {
   aiDoFloor,
@@ -128,26 +129,26 @@ import { crawlerScriptAPIDummyServer } from './crawler_script_api_client';
 import { crawlerOnScreenButton } from './crawler_ui';
 import './dialog_data';
 import {
-  DialogParam,
   dialogMoveLocked,
+  DialogParam,
   dialogRun,
   dialogStartup,
 } from './dialog_system';
 import {
-  EntityDemoClient,
-  Hero,
   entitiesAt,
+  EntityDemoClient,
   entityManager,
+  Hero,
 } from './entity_demo_client';
 // import { EntityDemoClient } from './entity_demo_client';
 import {
-  SANITY_W,
-  VIEWPORT_X0,
-  VIEWPORT_Y0,
   game_height,
   game_width,
   render_height,
   render_width,
+  SANITY_W,
+  VIEWPORT_X0,
+  VIEWPORT_Y0,
 } from './globals';
 import { heroesDraw } from './hero_draw';
 import { jamTraitsReset, jamTraitsStartup } from './jam_events';
@@ -171,8 +172,6 @@ const { abs, floor, max, min, round, sin } = Math;
 declare module 'glov/client/settings' {
   export let ai_pause: 0 | 1; // TODO: move to ai.ts
   export let show_fps: 0 | 1;
-  export let volume_sound: number;
-  export let volume_music: number;
   export let turn_toggle: 0 | 1;
 }
 
@@ -304,12 +303,12 @@ function pauseMenu(in_combat: boolean): void {
   }, {
     name: `Turn: ${settings.turn_toggle ? 'A/S/4/6/←/→': 'Q/E/7/9/LB/RB'}`,
     cb: () => {
-      settings.set('turn_toggle', 1 - settings.turn_toggle);
+      settingsSet('turn_toggle', 1 - settings.turn_toggle);
     },
   }, {
     name: `CRT Filter: ${settings.pixely === 2 ? 'ON': 'Off'}`,
     cb: () => {
-      settings.set('pixely', settings.pixely === 2 ? 1 : 2);
+      settingsSet('pixely', settings.pixely === 2 ? 1 : 2);
     },
   }];
   if (fscreenAvailable()) {
@@ -400,8 +399,8 @@ function pauseMenu(in_combat: boolean): void {
     items,
   });
 
-  settings.set('volume_sound', pause_menu.getItem(1).value);
-  settings.set('volume_music', pause_menu.getItem(2).value);
+  settingsSet('volume_sound', pause_menu.getItem(1).value as number);
+  settingsSet('volume_music', pause_menu.getItem(2).value as number);
 
   menuUp();
 }
@@ -422,7 +421,8 @@ When used, abilities always also generate [img=aggro][c=1]Aggro[/c].
 
 [c=subtitle]Monster attack targeting[/c]
 
-[img=attack_front_enemy]Frontal attacks target the hero with the [c=3]highest[/c] [img=aggro][c=1]Aggro[/c]. If there are ties, the damage is split, [c=2]rounded down[/c].
+[img=attack_front_enemy]Frontal attacks target the hero with the [c=3]highest[/c]` +
+` [img=aggro][c=1]Aggro[/c]. If there are ties, the damage is split, [c=2]rounded down[/c].
 
 [img=attack_all]Area attacks target [c=3]all[/c] heroes.
 
@@ -1348,10 +1348,10 @@ export function play(dt: number): void {
   movement_disabled_last_frame = false;
 
   if (keyDownEdge(KEYS.F3)) {
-    settings.set('show_fps', 1 - settings.show_fps);
+    settingsSet('show_fps', 1 - settings.show_fps);
   }
   if (keyDownEdge(KEYS.F)) {
-    settings.set('filter', 1 - settings.filter);
+    settingsSet('filter', 1 - settings.filter);
     renderResetFilter();
   }
 
@@ -1433,7 +1433,7 @@ export function restartFromLastSave(): void {
   crawlerPlayInitOffline();
 }
 
-settings.register({
+settingsRegister({
   ai_pause: {
     default_value: 0,
     type: cmd_parse.TYPE_INT,

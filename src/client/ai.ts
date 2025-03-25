@@ -7,28 +7,27 @@ import { playUISound } from 'glov/client/ui';
 import { EntityManager } from 'glov/common/entity_base_common';
 import { lerp, sign } from 'glov/common/util';
 import {
-  Vec2,
   v2copy,
   v2dist,
   v3copy,
+  Vec2,
 } from 'glov/common/vmath';
 import { entSamePos } from '../common/crawler_entity_common';
+import type { CrawlerScriptAPI } from '../common/crawler_script';
 import {
   BLOCK_OPEN,
   CrawlerState,
+  dirFromDelta,
+  DirType,
   DX,
   DY,
-  DirType,
   JSVec2,
   JSVec3,
-  dirFromDelta,
 } from '../common/crawler_state';
 import { crawlerEntFactory } from './crawler_entity_client';
 import { EntityDemoClient } from './entity_demo_client';
 import { myEnt } from './play';
 import { statusSet } from './status';
-
-import type { CrawlerScriptAPI } from '../common/crawler_script';
 
 const { abs, floor, min, random } = Math;
 
@@ -74,8 +73,7 @@ export function entitiesAdjacentTo<T extends Entity>(
 }
 
 
-export type WanderOpts = {
-};
+export type WanderOpts = Record<never, never>;
 export type WanderState = {
   home_pos: JSVec3;
 };
@@ -85,8 +83,7 @@ export type EntityWander = EntityDemoClient & {
   aiWander: (game_state: CrawlerState, script_api: CrawlerScriptAPI) => boolean;
 };
 
-export type PatrolOpts = {
-};
+export type PatrolOpts = Record<never, never>;
 export type PatrolState = {
   last_pos: JSVec3;
 };

@@ -9,24 +9,23 @@ import {
   NetErrorCallback,
   TSMap,
 } from 'glov/common/types.js';
+import type { ROVec2 } from 'glov/common/vmath';
 import { EntityCrawlerDataCommon, entSamePos } from '../common/crawler_entity_common';
+import type { JSVec3 } from '../common/crawler_state';
 import {
+  crawlerEntClientDefaultDraw2D,
+  crawlerEntClientDefaultOnDelete,
+  crawlerEntityManager,
   EntityCrawlerClient,
   EntityDraw2DOpts,
   EntityDrawOpts,
   EntityOnDeleteSubParam,
   Floater,
-  crawlerEntClientDefaultDraw2D,
-  crawlerEntClientDefaultOnDelete,
-  crawlerEntityManager,
 } from './crawler_entity_client';
-import { GENDER } from './names';
-
-import type { JSVec3 } from '../common/crawler_state';
 import type {
   AttackDef,
 } from './encounters';
-import type { ROVec2 } from 'glov/common/vmath';
+import { GENDER } from './names';
 
 const { random } = Math;
 

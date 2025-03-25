@@ -1,4 +1,5 @@
-/* eslint max-len: off, prefer-template:off */
+/* eslint-disable @stylistic/max-len */
+/* eslint-disable prefer-template */
 import assert from 'assert';
 import { getFrameTimestamp } from 'glov/client/engine';
 import { ALIGN, fontStyle } from 'glov/client/font';
@@ -12,25 +13,24 @@ import {
   suppressNewDOMElemWarnings,
   uiButtonHeight,
 } from 'glov/client/ui';
+import type { TSMap } from 'glov/common/types';
 import { easeOut } from 'glov/common/util';
 import { showAbilityTooltip } from './combat';
 import { crawlerGameState } from './crawler_play';
 import { Hero } from './entity_demo_client';
 import {
-  VIEWPORT_X0,
-  VIEWPORT_Y0,
   game_height,
   render_width,
+  VIEWPORT_X0,
+  VIEWPORT_Y0,
 } from './globals';
 import {
+  drawHero,
   HERO_H,
   HERO_W,
-  drawHero,
 } from './hero_draw';
 import { randomHero } from './heroes';
 import { isBootstrap, myEnt, myEntOptional } from './play';
-
-import type { TSMap } from 'glov/common/types';
 
 const { floor, max, min, random } = Math;
 
