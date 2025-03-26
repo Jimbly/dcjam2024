@@ -53,7 +53,7 @@ import {
   uiTextHeight,
 } from './ui';
 
-const { ceil, floor, max, min, round } = Math;
+const { ceil, floor, max, min } = Math;
 
 // Exported opaque types
 export type MarkdownCache = Record<string, never>;
@@ -263,7 +263,7 @@ class MDBlockText implements MDLayoutBlock {
       let indent = param.indent - inset;
       let yoffs = (line_height - text_height)/2;
       if (param.font.integral) {
-        yoffs = round(yoffs);
+        yoffs = floor(yoffs);
       }
       param.font.wrapLines(
         param.font_style, w, indent, text_height, text, param.align,
@@ -513,10 +513,9 @@ function markdownLayout(param: MarkdownStateCached & MarkdownLayoutParam): void 
         if (calc_param.align & ALIGN.HCENTER) {
           xoffs *= 0.5;
           if (calc_param.font.integral) {
-            xoffs = round(xoffs);
+            xoffs = floor(xoffs);
           }
         }
-        xoffs = round(xoffs); // DCJAM24 - only if noFilter font
         if (xoffs > 0) {
           for (let jj = row_start_idx; jj < ii; ++jj) {
             let block = draw_blocks[jj];
@@ -548,10 +547,9 @@ function markdownLayout(param: MarkdownStateCached & MarkdownLayoutParam): void 
         yoffs -= miny;
         yoffs *= 0.5;
         if (calc_param.font.integral) {
-          yoffs = round(yoffs);
+          yoffs = floor(yoffs);
         }
       }
-      yoffs = round(yoffs); // DCJAM24
       for (let ii = 0; ii < draw_blocks.length; ++ii) {
         let block = draw_blocks[ii];
         block.dims.y += yoffs;
