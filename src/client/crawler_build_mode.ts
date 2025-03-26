@@ -29,7 +29,10 @@ import {
   SelectionBoxDisplay,
 } from 'glov/client/selection_box';
 import * as settings from 'glov/client/settings';
-import { settingsRegister, settingsSet } from 'glov/client/settings';
+import {
+  settingsRegister,
+  settingsSet,
+} from 'glov/client/settings';
 import {
   button,
   buttonText,
@@ -1091,7 +1094,7 @@ let cell_prop_key_items: MenuItem[] = [
 ].map((name) => ({ name, tag: name }));
 let level_prop_key_items: MenuItem[] = [
   'title',
-  'solitude',
+  'solitude', // DCJAM
   'finale',
   'map_show_star',
   'new',

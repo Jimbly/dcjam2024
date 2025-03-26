@@ -20,7 +20,10 @@ import {
 } from 'glov/client/local_storage';
 import { ClientChannelWorker } from 'glov/client/net';
 import * as settings from 'glov/client/settings';
-import { settingsRegister, settingsSet } from 'glov/client/settings';
+import {
+  settingsRegister,
+  settingsSet,
+} from 'glov/client/settings';
 import { spotSuppressPad } from 'glov/client/spot';
 import {
   Sprite,
@@ -871,7 +874,7 @@ export function crawlerRenderFramePrep(): void {
       url: `img/${vstyle.background_img}.png`,
       wrap_s: gl.CLAMP_TO_EDGE,
       wrap_t: gl.CLAMP_TO_EDGE,
-      filter_mag: gl.NEAREST,
+      filter_mag: gl.NEAREST, // DCJAM
       filter_min: gl.NEAREST,
       force_mipmaps: false,
     });

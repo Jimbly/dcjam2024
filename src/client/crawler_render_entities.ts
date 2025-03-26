@@ -140,7 +140,7 @@ export type DrawableSpineOpts = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Spine = any; // ReturnType<typeof spineCreate>;
+type Spine = any; // ReturnType<typeof spineCreate>; DCJAM
 export type DrawableSpineState = {
   spine: Spine;
   anim_update_frame: number;

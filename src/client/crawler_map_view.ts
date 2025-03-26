@@ -229,7 +229,7 @@ export function crawlerMapViewDraw(
     } else {
       ui.font.drawSizedAligned(null, x, y + h - (text_height + 2)*2, z + 1, text_height,
         ui.font.ALIGN.HCENTER, w, 0, `${num_enemies} ${num_enemies === 1 ? 'enemy' : 'enemies'} remaining`);
-      if (game_state.floor_id < 15) {
+      if (game_state.floor_id < 15) { // DCJAM
         ui.font.drawSizedAligned(null, x, y + h - (text_height + 2), z + 1, text_height,
           ui.font.ALIGN.HCENTER, w, 0, `${percLabel(level.seen_cells, level.total_cells)} explored`);
       }
@@ -286,6 +286,7 @@ export function crawlerMapViewDraw(
       ui.font.drawSizedAligned(style_map_name, x, y + 1, z + 1, text_height,
         ui.font.ALIGN.HCENTER, w, 0, floor_title);
     }
+    // DCJAM
     if (level.seen_cells === level.total_cells && !num_enemies && level.props.map_show_star) {
       sprite_icons.draw({
         x: x + w - 9 + 1,

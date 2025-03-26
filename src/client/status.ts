@@ -8,7 +8,7 @@ import {
 } from 'glov/client/ui';
 import { vec4 } from 'glov/common/vmath';
 
-const { max, round } = Math;
+const { max, round } = Math; // DCJAM
 
 class StatusMessage {
   counter = 0;
@@ -33,7 +33,7 @@ function statusReset(): void {
   ({ font } = ui);
 }
 
-let style_status = fontStyleColored(null, 0xFFFFFFff);
+let style_status = fontStyleColored(null, 0xFFFFFFff); // DCJAM
 
 export function statusPush(text: string, style?: FontStyle): StatusMessage {
   let msg = new StatusMessage(text, style || style_status);
