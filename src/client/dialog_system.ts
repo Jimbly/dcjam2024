@@ -310,7 +310,7 @@ export function dialogRun(dt: number, viewport: UIBox & { pad_top: number; pad_b
 
   temp_color[3] = alpha;
   let panel_param: PanelParam;
-  if (transient && dims.h === text_height) {
+  if (transient && (dims.h === text_height || dims.h === line_height)) {
     let text_w = dims.w;
     panel_param = {
       x: x + round((w - text_w)/2) - HPAD,
