@@ -1,7 +1,3 @@
-Merging latest GLOV issues:
-  combat help - all text is down 1px (or, images are up 1px)
-  chat dialogs are now full width instead of smaller
-
 TODO
 * lighting flicker l3 (after insanity)
   * maybe height noise thingy?
@@ -51,20 +47,17 @@ Polish
 * change wander to only wander between 2 spaces, start and random neighbor, then can enable on all
 * scrolling starfield
 * in forest: put axe on ground on other side of blocker
-
-Post-game fixes / polish
-* Check everything with CRT filter off
-  * just switch to pixely=1 anyway for consistency?
 * JD Nation bug - network disconnect, clicked "new", screen goes black, never fades up to in-game
   * likely due to loading level 1 json file never finishing - add retries and error message on this
+    * should have asserted / thrown an error, it looks like?
+
+Post-game fixes / polish
 * bug: markdown image from auto atlas is not getting aspect ratio (unless passing frame = 0)
 * merge things back to crawler branch as appropriate
 * allow entities and simple rendering to use atlases as well as (instead of?) spritesheets
 * bias features for simple billboard details
 * reorganize all of the example entities to use a spritesheet
 * add support for multiple fonts with different heights to dialog system and/or markdown - handwriting font would be cool
-* tooltip width and markdown not playing correctly, probably also height
 * origin in entdef depends heavily on aspect ratio of image, but it shouldn't?
-* Nilo "face wilts" dialog is not markdownTruncating correctly
 * Simple way to do dialog as pure text data, and then just add code callbacks the get ran beyond the go-to-dialog
 * player controller alternate mode to just do instant step and lerping, feels so good in other games and would work perfect in the editor
