@@ -52,12 +52,5 @@ Polish
     * should have asserted / thrown an error, it looks like?
 
 Post-game fixes / polish
-* bug: markdown image from auto atlas is not getting aspect ratio (unless passing frame = 0)
-* merge things back to crawler branch as appropriate
-* allow entities and simple rendering to use atlases as well as (instead of?) spritesheets
-* bias features for simple billboard details
-* reorganize all of the example entities to use a spritesheet
 * add support for multiple fonts with different heights to dialog system and/or markdown - handwriting font would be cool
-* origin in entdef depends heavily on aspect ratio of image, but it shouldn't?
 * Simple way to do dialog as pure text data, and then just add code callbacks the get ran beyond the go-to-dialog
-* player controller alternate mode to just do instant step and lerping, feels so good in other games and would work perfect in the editor
